@@ -1,26 +1,35 @@
 "use client"
 
-import {getSession, useSession} from "next-auth/react";
-import {Session} from "next-auth";
+import { useSession } from "next-auth/react";
 
-export async function getAuthToken(): Promise<string> {
-    const session : Session | null = await getSession();
-
-    if (!session?.accessToken) {
-        return "";
-    }
-
-    return session.accessToken;
+export function useUserEmail(): string {
+    const { data: session } = useSession();
+    return session?.user?.email ?? "";
 }
 
-export function hasGrant(grantName: string): boolean {
+export function useAuthToken(): string {
     const { data: session } = useSession();
+    return session?.accessToken ?? "";
+}
 
-    if (!session?.user?.role) {
-        return false;
-    }
+export function useUserGrants(): string[] {
+    const { data: session } = useSession();
+    if (!session) return [];
+    return session.user?.role?.flatMap((x: { grants: any[] }) =>
+        x.grants?.map(y => y.name) ?? []
+    ) ?? [];
+}
 
-    return session.user.role.some((role: { grants: any[]; }) =>
-        role.grants?.some(grant  => grant.name === grantName)
-    );
+export function useUserRoles(): string[] {
+    const { data: session } = useSession();
+    if (!session) return [];
+    return session.user?.role?.map((x: { name: string }) => x.name) ?? [];
+}
+
+export function useHasGrant(grantName: string): boolean {
+    const { data: session } = useSession();
+    if (!session) return false;
+    return session.user?.role?.some(
+        (x: { grants: any[] }) => x.grants?.some(y => y.name === grantName)
+    ) ?? false;
 }

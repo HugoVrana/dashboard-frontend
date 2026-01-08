@@ -1,13 +1,13 @@
-import { getAuthToken, getUserEmail, getUserGrants, getUserRoles } from "@/app/lib/permission/permissionsServerClient";
+import {getAuthToken, getUserEmail, getUserGrants, getUserRoles} from "@/app/lib/permission/permissionsServerClient";
 import { ScrollArea } from "@/app/ui/base/scroll-area";
 import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
 import {Badge} from "@/app/ui/base/badge";
 
 export default function UserOverlay() {
-    const userEmail: string = getUserEmail();
-    const roles: string[] = getUserRoles();
-    const grants: string[] = getUserGrants();
-    const token: string = getAuthToken();
+    const userEmail : string = getUserEmail();
+    const roles : string[] = getUserRoles();
+    const grants : string[] = getUserGrants();
+    const token : string = getAuthToken();
 
     return (
         <div className="space-y-4">

@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useContext } from "react"
 import { Settings, X } from "lucide-react"
-import APIConfigOverlay from "@/app/ui/devOverlay/apiConfigOverlay";
-import UserOverlay from "@/app/ui/devOverlay/userOverlay";
+import APIConfigOverlay from "@/app/ui/custom/devOverlay/apiConfigOverlay";
+import UserOverlay from "@/app/ui/custom/devOverlay/userOverlay";
 import { ApiContext } from "@/app/lib/devOverlay/apiContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/ui/base/tabs";
 import {Button} from "@/app/ui/base/button";
