@@ -3,31 +3,17 @@ image: node:20-alpine
 stages:
   - build
 
-variables:
-  PNPM_HOME: "${CI_PROJECT_DIR}/.pnpm"
-
 cache:
-  key:
-    files:
-      - pnpm-lock.yaml
   paths:
-    - .pnpm
-    - .pnpm-store
     - node_modules
 
 before_script:
-  # Install pnpm
-  - npm install -g pnpm
-  - pnpm config set store-dir ${CI_PROJECT_DIR}/.pnpm-store
-  # Add pnpm global bin to PATH
-  - export PATH="${PNPM_HOME}:$PATH"
-  # Install dependencies
-  - pnpm install --frozen-lockfile
+  - npm ci
 
 build:
   stage: build
   script:
-    - pnpm run build
+    - npm run build
   artifacts:
     paths:
       - .next
