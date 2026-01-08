@@ -8,6 +8,7 @@ import {DevOverlay} from "@/app/ui/custom/devOverlay/devOverlay";
 import {ThemeProvider} from "@/app/lib/theme/themeContext";
 import {Analytics} from "@vercel/analytics/next";
 import {geistMono, geistSans} from "@/app/ui/fonts";
+import ExampleNavigationMenu from "@/app/ui/base/navigation-menu";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 export default function RootLayout({
@@ -24,6 +25,7 @@ export default function RootLayout({
         <SessionProvider>
             <ThemeProvider>
                 <APIProvider id={"api_provider"}>
+                    <ExampleNavigationMenu/>
                     {children}
                     <DevOverlay key={"dev_overlay"} />
                 </APIProvider>

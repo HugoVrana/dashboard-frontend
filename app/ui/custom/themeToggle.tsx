@@ -6,7 +6,7 @@ import { Switch } from "@/app/ui/base/switch"
 import { ThemeContext } from "@/app/lib/theme/themeContext"
 
 export function ThemeToggle() {
-    const { isDark, toggleTheme } = useContext(ThemeContext)
+    const { isDark, toggleTheme } = useContext(ThemeContext);
 
     return (
         <div className="flex items-center gap-2">
