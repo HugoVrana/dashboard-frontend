@@ -1,51 +1,77 @@
-import {getAuthToken, getUserEmail, getUserGrants, getUserRoles} from "@/app/lib/permission/permissionsServerClient";
+import { getAuthToken, getUserEmail, getUserGrants, getUserRoles } from "@/app/lib/permission/permissionsServerClient";
+import { ScrollArea } from "@/app/ui/base/scroll-area";
+import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
+import {Badge} from "@/app/ui/base/badge";
 
 export default function UserOverlay() {
-    const userEmail : string = getUserEmail();
-    const roles : string[] = getUserRoles();
-    const grants : string[] = getUserGrants();
-    const token : string = getAuthToken();
-    return(
-        <>
-            {/*User Info: Email*/}
-            <div>
-                <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium">Email:</span>
-                </div>
-                <div className="text-xs text-gray-400 break-all">
-                    <div>{userEmail || "—"}</div>
-                </div>
-            </div>
+    const userEmail: string = getUserEmail();
+    const roles: string[] = getUserRoles();
+    const grants: string[] = getUserGrants();
+    const token: string = getAuthToken();
 
-            {/*User Info: Roles*/}
-            <div>
-                <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium">Roles:</span>
-                </div>
-                <div className="text-xs text-gray-400 break-all">
-                    <div>{roles.length > 0 ? roles.join(", ") : "—"}</div>
-                </div>
-            </div>
+    return (
+        <div className="space-y-4">
+            <Card className="bg-gray-800 border-gray-700 w-70">
+                <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Email</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-xs text-gray-400 break-all">
+                        {userEmail || "—"}
+                    </p>
+                </CardContent>
+            </Card>
 
-            {/*User Info: Grants*/}
-            <div>
-                <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium">Grants:</span>
-                </div>
-                <div className="text-xs text-gray-400 break-all">
-                    <div>{grants.length > 0 ? grants.join(", ") : "—"}</div>
-                </div>
-            </div>
+            <Card className="bg-gray-800 border-gray-700 w-70">
+                <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Roles</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {roles.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                            {roles.map((role) => (
+                                <Badge key={role} variant="secondary" className="bg-gray-700 text-gray-300">
+                                    {role}
+                                </Badge>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-xs text-gray-400">—</p>
+                    )}
+                </CardContent>
+            </Card>
 
-            {/*User Info: Auth token*/}
-            <div>
-                <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium">Token:</span>
-                </div>
-                <div className="text-xs text-gray-400 break-all">
-                    <div>{token}</div>
-                </div>
-            </div>
-        </>
+            <Card className="bg-gray-800 border-gray-700 w-70">
+                <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Grants</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {grants.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                            {grants.map((grant) => (
+                                <Badge key={grant} variant="secondary" className="bg-gray-700 text-gray-300">
+                                    {grant}
+                                </Badge>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-xs text-gray-400">—</p>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800 border-gray-700 w-70">
+                <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Token</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ScrollArea className="h-20">
+                        <p className="text-xs text-gray-400 font-mono break-all">
+                            {token || "—"}
+                        </p>
+                    </ScrollArea>
+                </CardContent>
+            </Card>
+        </div>
     );
 }
