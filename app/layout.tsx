@@ -5,6 +5,7 @@ import "./globals.css";
 import {SessionProvider} from "next-auth/react";
 import {APIProvider} from "@/app/lib/devOverlay/apiContext";
 import {DevOverlay} from "@/app/ui/custom/devOverlay/devOverlay";
+import {ThemeProvider} from "@/app/lib/theme/themeContext";
 import {Analytics} from "@vercel/analytics/next";
 import {geistMono, geistSans} from "@/app/ui/fonts";
 
@@ -15,16 +16,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
         <head>
             <title>Dashboard</title>
         </head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider>
-            <APIProvider id={"api_provider"}>
-                {children}
-                <DevOverlay key={"dev_overlay"} />
-            </APIProvider>
+            <ThemeProvider>
+                <APIProvider id={"api_provider"}>
+                    {children}
+                    <DevOverlay key={"dev_overlay"} />
+                </APIProvider>
+            </ThemeProvider>
         </SessionProvider>
         <Analytics />
         </body>
