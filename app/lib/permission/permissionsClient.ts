@@ -2,17 +2,17 @@
 
 import { useSession } from "next-auth/react";
 
-export function useUserEmail(): string {
+export function getUserEmail(): string {
     const { data: session } = useSession();
     return session?.user?.email ?? "";
 }
 
-export function useAuthToken(): string {
+export function getAuthToken(): string {
     const { data: session } = useSession();
     return session?.accessToken ?? "";
 }
 
-export function useUserGrants(): string[] {
+export function getUserGrants(): string[] {
     const { data: session } = useSession();
     if (!session) return [];
     return session.user?.role?.flatMap((x: { grants: any[] }) =>
@@ -20,13 +20,13 @@ export function useUserGrants(): string[] {
     ) ?? [];
 }
 
-export function useUserRoles(): string[] {
+export function getUserRoles(): string[] {
     const { data: session } = useSession();
     if (!session) return [];
     return session.user?.role?.map((x: { name: string }) => x.name) ?? [];
 }
 
-export function useHasGrant(grantName: string): boolean {
+export function hasGrant(grantName: string): boolean {
     const { data: session } = useSession();
     if (!session) return false;
     return session.user?.role?.some(
