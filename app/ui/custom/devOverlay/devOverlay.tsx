@@ -5,12 +5,14 @@ import { Settings, X } from "lucide-react"
 import APIConfigOverlay from "@/app/ui/custom/devOverlay/apiConfigOverlay";
 import UserOverlay from "@/app/ui/custom/devOverlay/userOverlay";
 import { ApiContext } from "@/app/lib/devOverlay/apiContext";
+import { ThemeContext } from "@/app/lib/theme/themeContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/ui/base/tabs";
 import {Button} from "@/app/ui/base/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
 
 export function DevOverlay() {
     const context = useContext(ApiContext);
+    const { isDark } = useContext(ThemeContext);
     const [isVisible, setIsVisible] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -33,10 +35,14 @@ export function DevOverlay() {
                 <Button
                     onClick={() => setIsExpanded(true)}
                     size="icon"
-                    className="h-12 w-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-lg"
+                    className={`h-12 w-12 rounded-full shadow-lg ${
+                        isDark
+                            ? "bg-gray-900 hover:bg-gray-800 text-white"
+                            : "bg-blue-600 hover:bg-blue-700 text-white"
+                    }`}
                     title="Development Tools"
                 >
-                    <Settings className="h-100 w-100" />
+                    <Settings className="h-6 w-6" />
                 </Button>
             ) : (
                 <Card className="bg-gray-900 border-gray-700 shadow-xl min-w-80">

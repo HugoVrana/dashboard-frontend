@@ -7,6 +7,7 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent} from "./ui/base/card";
 import {Button} from "@/app/ui/base/button";
 import {getUserEmail} from "@/app/lib/permission/permissionsServerClient";
+import {ThemeToggle} from "@/app/ui/custom/themeToggle";
 
 export default function Home() {
 
@@ -15,6 +16,11 @@ export default function Home() {
 
     return (
         <main className="flex min-h-screen flex-col p-6">
+            {/* Theme Toggle */}
+            <div className="absolute top-6 right-6">
+                <ThemeToggle />
+            </div>
+
             {/* Header Banner */}
             <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
                 <AcmeLogo />
@@ -23,10 +29,10 @@ export default function Home() {
             {/* Main Content */}
             <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
                 {/* Welcome Card */}
-                <Card className="md:w-2/5 bg-gray-50 border-0">
+                <Card className="md:w-2/5 bg-secondary border-0">
                     <CardContent className="flex flex-col justify-center gap-6 px-6 py-10 md:px-20">
-                        <div className="relative w-0 h-0 border-l-[15px] border-r-[15px] border-b-[26px] border-l-transparent border-r-transparent border-b-black" />
-                        <p className={`text-xl text-gray-800 md:text-3xl md:leading-normal`}>
+                        <div className="relative w-0 h-0 border-l-[15px] border-r-[15px] border-b-[26px] border-l-transparent border-r-transparent border-b-foreground" />
+                        <p className={`text-xl text-foreground md:text-3xl md:leading-normal`}>
                             <strong>Welcome to Acme.</strong> This is the example for the{" "}
                             <a href="https://nextjs.org/learn/" className="text-blue-500 hover:underline">
                                 Next.js Learn Course
