@@ -8,10 +8,13 @@ import {Card, CardContent} from "./ui/base/card";
 import {Button} from "@/app/ui/base/button";
 import {ThemeToggle} from "@/app/ui/custom/themeToggle";
 import { useSession } from "next-auth/react";
+import {useContext} from "react";
+import {ThemeContext} from "@/app/lib/theme/themeContext";
 
 export default function Home() {
     const { data: session } = useSession();
     const isLoggedIn : boolean = !!session?.user;
+    const { isDark } = useContext(ThemeContext);
 
     return (
         <main className="flex min-h-screen flex-col p-6">
@@ -62,7 +65,7 @@ export default function Home() {
                 {/* Hero Images */}
                 <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
                     <Image
-                        src="/hero-desktop.png"
+                        src={isDark ? "/hero-desktop-dark.jpg" : "/hero-desktop.png"}
                         width={1000}
                         height={760}
                         className="hidden md:block"
