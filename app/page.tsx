@@ -6,13 +6,12 @@ import { ArrowRight } from "lucide-react";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent} from "./ui/base/card";
 import {Button} from "@/app/ui/base/button";
-import {getUserEmail} from "@/app/lib/permission/permissionsServerClient";
 import {ThemeToggle} from "@/app/ui/custom/themeToggle";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
-
-    const userEmail : string = getUserEmail();
-    const isLoggedIn : boolean = userEmail !== "";
+    const { data: session } = useSession();
+    const isLoggedIn : boolean = !!session?.user;
 
     return (
         <main className="flex min-h-screen flex-col p-6">
