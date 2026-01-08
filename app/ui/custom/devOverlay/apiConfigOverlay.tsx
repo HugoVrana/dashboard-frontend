@@ -3,8 +3,8 @@
 import { useContext } from "react";
 import { ApiContext } from "@/app/lib/devOverlay/apiContext";
 import {Badge} from "@/app/ui/base/badge";
-import { Button } from "../base/button";
-import {Card, CardContent, CardHeader, CardTitle} from "../base/card";
+import { Button } from "../../base/button";
+import {Card, CardContent, CardHeader, CardTitle} from "../../base/card";
 import {Label} from "@/app/ui/base/label";
 
 export default function APIConfigOverlay() {

@@ -1,24 +1,14 @@
 "use client"
 
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import {SessionProvider} from "next-auth/react";
 import {APIProvider} from "@/app/lib/devOverlay/apiContext";
-import {DevOverlay} from "@/app/ui/devOverlay/devOverlay";
+import {DevOverlay} from "@/app/ui/custom/devOverlay/devOverlay";
+import {Analytics} from "@vercel/analytics/next";
+import {geistMono, geistSans} from "@/app/ui/fonts";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,16 +16,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-      <SessionProvider>
-          <APIProvider id={"api_provider"}>
-              {children}
-              <DevOverlay key={"dev_overlay"} />
-          </APIProvider>
-      </SessionProvider>
-      </body>
+        <head>
+            <title>Dashboard</title>
+        </head>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SessionProvider>
+            <APIProvider id={"api_provider"}>
+                {children}
+                <DevOverlay key={"dev_overlay"} />
+            </APIProvider>
+        </SessionProvider>
+        <Analytics />
+        </body>
     </html>
   );
 }
