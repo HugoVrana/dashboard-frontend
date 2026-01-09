@@ -1,10 +1,10 @@
 'use client'
 
 import { logout } from '@/app/lib/actions';
-import { PowerIcon } from '@heroicons/react/24/outline';
 import {useActionState, useContext} from "react";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
+import {PowerIcon} from "lucide-react";
 
 export default function LogoutButton() {
     const { dashboardAuthApiIsLocal } = useContext(ApiContext);
