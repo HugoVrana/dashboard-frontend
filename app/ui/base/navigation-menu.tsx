@@ -50,7 +50,7 @@ export default function DashboardNavigationMenu() {
   );
 
   return (
-      <NavigationMenu.Root className="relative w-full rounded-lg">
+      <NavigationMenu.Root className="relative z-50 w-full rounded-lg">
         {/* Top-right toggle */}
         <div className="absolute right-2 top-2 z-10">
           <ThemeToggle />

@@ -1,18 +1,14 @@
 "use client"
 
-import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import LoginRegisterForm from "@/app/ui/custom/auth/loginRegisterForms";
 
 export default function LoginPage() {
     return (
         <main className="flex items-center justify-center md:h-screen">
-            <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-                <div className="flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36">
-                    <div className="w-32 text-white md:w-36">
-                        <AcmeLogo />
-                    </div>
+            <div className="relative mx-auto flex w-full max-w-[400px] flex-col p-4">
+                <div className="-mt-4">
+                    <LoginRegisterForm />
                 </div>
-                <LoginRegisterForm />
             </div>
         </main>
     );
