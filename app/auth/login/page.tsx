@@ -1,6 +1,6 @@
 "use client"
 
-import LoginRegisterForm from "@/app/ui/custom/auth/loginRegisterForms";
+import LoginRegisterForm from "@/app/ui/custom/auth/loginRegisterForm";
 
 export default function LoginPage() {
     return (

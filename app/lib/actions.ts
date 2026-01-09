@@ -1,4 +1,4 @@
-'use server';
+"use server"
 
 import {mapToInvoiceCreate, mapToInvoiceUpdate} from "@/app/typeValidators/invoiceValidator";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
@@ -16,11 +16,9 @@ import {RegisterRequest} from "@/app/models/auth/registerRequest";
 import {UserInfo} from "@/app/models/auth/userInfo";
 import {AuthError} from "@auth/core/errors";
 import {isRedirectError} from "next/dist/client/components/redirect-error";
-import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
 import {deleteInvoice, postInvoice, putInvoice} from "@/app/lib/dataAccess/invoiceServerClient";
 import {createUser} from "@/app/lib/dataAccess/usersServerClient";
 
-const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 
 export async function createInvoice(url: string, prevState: State, formData: FormData) : Promise<State> {
     console.log("Creating invoice step 1");
@@ -31,7 +29,6 @@ export async function createInvoice(url: string, prevState: State, formData: For
     });
 
     if (!validatedFields.success) {
-        grafanaClient.error("Invalid form data", {route: "POST /invoices", error: validatedFields.error});
         console.error("Invalid form data", validatedFields.error);
         return {
             errors: validatedFields.error.flatten().fieldErrors,
@@ -41,7 +38,6 @@ export async function createInvoice(url: string, prevState: State, formData: For
 
     let invoiceCreate : InvoiceCreate | null = mapToInvoiceCreate(validatedFields.data);
     if (invoiceCreate == null) {
-        grafanaClient.error("Object could not be mapped to InvoiceCreate", {route: "POST /invoices", error: "Object could not be mapped to InvoiceCreate"});
         console.error("Object could not be mapped to InvoiceCreate");
         return {
             message: 'Missing Fields. Failed to Create Invoice.',
@@ -58,10 +54,8 @@ export async function createInvoice(url: string, prevState: State, formData: For
         }
         console.log("Invoice created successfully!");
         console.log(res);
-        grafanaClient.info("Invoice created successfully", {route: "POST /invoices", invoice: res});
     } catch (e) {
         console.error("Error creating invoice:", e);
-        grafanaClient.error("Error creating invoice", {route: "POST /invoices", error: e});
         return {
             message : "Failed to create invoice. Please try again.",
         }
@@ -80,14 +74,12 @@ export async function updateInvoice(url : string, prevState : State, formData : 
     });
 
     if (!validatedFields.success) {
-        grafanaClient.error("Invalid form data", {route: "PUT /invoices", error: validatedFields.error});
         console.error("Invalid form data", validatedFields.error);
         throw new Error(validatedFields.error.message);
     }
 
     let invoiceUpdate : InvoiceUpdate | null = mapToInvoiceUpdate(validatedFields.data);
     if (invoiceUpdate == null) {
-        grafanaClient.error("Object could not be mapped to InvoiceUpdate", {route: "PUT /invoices", error: "Object could not be mapped to InvoiceUpdate"});
         console.error("Object could not be mapped to InvoiceUpdate");
         throw new Error("Object could not be mapped to InvoiceUpdate");
     }
@@ -96,14 +88,11 @@ export async function updateInvoice(url : string, prevState : State, formData : 
         console.log("Server Action reached");
         let res : InvoiceRead | null = await putInvoice(url + "/" + invoiceUpdate.invoice_id, invoiceUpdate);
         if (res?.id == null){
-            grafanaClient.error("Failed to update invoice", {route: "PUT /invoices", invoice: invoiceUpdate});
             throw new Error("Failed to create invoice. Please try again.");
         }
-        grafanaClient.info("Invoice updated successfully", {route: "PUT /invoices", invoice: invoiceUpdate});
         console.log("Invoice created successfully!");
         console.log(res);
     } catch (e) {
-        grafanaClient.error("Error updating invoice", {route: "PUT /invoices", error: e});
         console.error("Error creating invoice:", e);
         return { message: 'Database Error: Failed to Update Invoice.' };
     }
@@ -118,14 +107,13 @@ export async function removeInvoice(url : string, prevState : State, formData : 
     });
 
     if (!validatedFields.success) {
-        grafanaClient.error("Invalid form data", {route: "DELETE /invoices", error: validatedFields.error});
         console.error("Invalid form data", validatedFields.error);
         throw new Error(validatedFields.error.message);
     }
 
     let invoiceId : string = validatedFields.data.invoiceId;
     if (invoiceId == null) {
-        grafanaClient.error("Invalid invoice id", {route: "DELETE /invoices", error: "Invalid invoice id"});
+
         console.error("Invalid invoice id");
         throw new Error("Invalid invoice id");
     }
@@ -134,15 +122,14 @@ export async function removeInvoice(url : string, prevState : State, formData : 
         console.log("Server Action reached");
         let res : number = await deleteInvoice(url, invoiceId);
         if (res == 0){
-            grafanaClient.error("Failed to delete invoice", {route: "DELETE /invoices", invoiceId: invoiceId});
+
             throw new Error("Failed to delete invoice. Please try again.");
         }
-        grafanaClient.info("Invoice deleted successfully", {route: "DELETE /invoices", invoiceId: invoiceId});
+
         console.log("Invoice deleted successfully!");
         console.log(res);
     }
     catch (e) {
-        grafanaClient.error("Error deleting invoice", {route: "DELETE /invoices", error: e});
         console.error("Error deleting invoice:", e);
         return { message: 'Database Error: Failed to Delete Invoice.' };
     }
@@ -150,7 +137,9 @@ export async function removeInvoice(url : string, prevState : State, formData : 
     redirect("/dashboard/invoices");
 }
 
-export async function login(url: string, prevState: State | undefined, formData: FormData): Promise<State> {
+export async function login(url: string, prevState: any, formData: FormData): Promise<State> {
+    console.log("Logging in user");
+
     const validatedFields = z.object({
         email: z.string().email(),
         password: z.string().min(6),
@@ -163,10 +152,7 @@ export async function login(url: string, prevState: State | undefined, formData:
 
     if (!validatedFields.success) {
         try{
-            await grafanaClient.error("Invalid login form data", {
-                route: "POST /auth/login",
-                error: validatedFields.error
-            });
+
         }
         catch (e) {}
 
@@ -177,7 +163,7 @@ export async function login(url: string, prevState: State | undefined, formData:
 
     try {
         // Log successful login attempt
-        await grafanaClient.info("User attempting login", { route: "POST /auth/login", email });
+
 
         // signIn will throw a redirect on success, which we need to let through
         await signIn('credentials', {
@@ -190,10 +176,10 @@ export async function login(url: string, prevState: State | undefined, formData:
         if (error instanceof AuthError) {
             switch (error.type) {
                 case 'CredentialsSignin':
-                    await grafanaClient.error("Invalid credentials", { route: "POST /auth/login", error });
+
                     return { message: 'Invalid credentials.' };
                 default:
-                    await grafanaClient.error("Something went wrong", { route: "POST /auth/login", error });
+
                     return { message: 'Something went wrong.' };
             }
         }
@@ -203,7 +189,6 @@ export async function login(url: string, prevState: State | undefined, formData:
         }
 
         // Log unexpected errors instead of re-throwing
-        grafanaClient.error("Unexpected login error", { route: "POST /auth/login", error });
         return { message: 'Something went wrong.' };
     }
 
@@ -212,6 +197,8 @@ export async function login(url: string, prevState: State | undefined, formData:
 }
 
 export async function register(url: string, prevState: State | undefined, formData: FormData): Promise<State> {
+    console.log("Registering user");
+
     // Validate the form data
     const validatedFields = z.object({
         email: z.string().email(),
@@ -222,10 +209,7 @@ export async function register(url: string, prevState: State | undefined, formDa
     });
 
     if (!validatedFields.success) {
-        grafanaClient.error("Invalid registration form data", {
-            route: "POST /auth/register",
-            error: validatedFields.error
-        });
+
         return { message: 'Invalid form data. Please check your inputs.'};
     }
 
@@ -240,13 +224,11 @@ export async function register(url: string, prevState: State | undefined, formDa
 
         let res : UserInfo | null = await createUser(url, registerRequest);
         if (!res) {
-            grafanaClient.error("User has not been created", {route: "POST /auth/register", error: registerRequest});
             console.error("Error registering an user", res);
             return { message: 'User not registered!'};
         }
 
         if (!res.id) {
-            grafanaClient.error("User has not been created", {route: "POST /auth/register", error: registerRequest});
             console.error("Error registering an user", res);
             return { message: 'User not registered!'};
         }
@@ -261,10 +243,6 @@ export async function register(url: string, prevState: State | undefined, formDa
         });
     } catch (error) {
         if (error instanceof AuthError) {
-            grafanaClient.error("Error during registration/login", {
-                route: "POST /auth/register",
-                error
-            });
             console.error("Registration error:", error);
             return {
                 message: 'User registered but login failed. Please try logging in manually.',
