@@ -19,7 +19,6 @@ import {isRedirectError} from "next/dist/client/components/redirect-error";
 import {deleteInvoice, postInvoice, putInvoice} from "@/app/lib/dataAccess/invoiceServerClient";
 import {createUser} from "@/app/lib/dataAccess/usersServerClient";
 
-
 export async function createInvoice(url: string, prevState: State, formData: FormData) : Promise<State> {
     console.log("Creating invoice step 1");
     const validatedFields = InvoiceCreateFormSchema.safeParse({

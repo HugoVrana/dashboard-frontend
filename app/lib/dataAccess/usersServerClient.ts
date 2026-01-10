@@ -1,6 +1,5 @@
 import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
 import {RegisterRequest} from "@/app/models/auth/registerRequest";
-import {getAuthToken} from "@/app/lib/permission/permissionsServerClient";
 import {isUserInfo, mapToUserInfo} from "@/app/typeValidators/userInfoValidator";
 import {LoginRequest} from "@/app/models/auth/loginRequest";
 import {AuthResponse} from "@/app/models/auth/authResponse";
@@ -19,8 +18,8 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
             body : JSON.stringify(registerRequest),
             headers : {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                Authorization : `Bearer ${await getAuthToken()}`
+                "Access-Control-Allow-Origin": "*"
+                // Don't ever add auth token here
             }
         });
 
@@ -75,7 +74,8 @@ export async function loginUserWithTokens(
             method : "POST",
             body : JSON.stringify(loginRequest),
             headers : {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
             }
         });
 
