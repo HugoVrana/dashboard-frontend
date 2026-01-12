@@ -1,0 +1,25 @@
+{
+  "lang" :{
+    "de" : "Deutsch",
+    "en" : "Englisch"
+  },
+  "nav": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "login": "Anmelden",
+    "logout": "Abmelden"
+  },
+  "auth": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "signUp": "Registrieren"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
+  }
+}

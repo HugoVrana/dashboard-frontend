@@ -1,38 +1,34 @@
-"use client"
-
 import { Inter } from "next/font/google";
 import "./globals.css";
-import {SessionProvider} from "next-auth/react";
-import {APIProvider} from "@/app/lib/devOverlay/apiContext";
-import {DevOverlay} from "@/app/ui/custom/devOverlay/devOverlay";
-import {ThemeProvider} from "@/app/lib/theme/themeContext";
-import {Analytics} from "@vercel/analytics/next";
-import {geistMono, geistSans} from "@/app/ui/fonts";
-import {themeInitScript} from "@/app/ui/custom/themeSwitchFix";
-import {Navbar} from "@/app/ui/custom/navbar";
+import { Analytics } from "@vercel/analytics/next";
+import { geistMono, geistSans } from "@/app/ui/fonts";
+import { themeInitScript } from "@/app/ui/custom/navigation/themeSwitchFix";
+import { Navbar } from "@/app/ui/custom/navigation/navbar";
+import { DevOverlay } from "@/app/ui/custom/devOverlay/devOverlay";
+import { Providers } from "./providers";
+import {getLocale, getMessages, getTimeZone} from "next-intl/server";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
-export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
-  return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+export default async function RootLayout({children,} : {children: React.ReactNode;}) {
+    const locale : string = await getLocale();
+    const messages = await getMessages();
+    const timeZone = await getTimeZone();
+
+    return (
+        <html lang={locale} className={inter.variable} suppressHydrationWarning>
         <head>
             <title>Dashboard</title>
-            {/*Pretty ugly D:*/}
             <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         </head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-            <SessionProvider>
-                <ThemeProvider>
-                    <APIProvider id={"api_provider"}>
-                        <Navbar />
-                        {children}
-                        <DevOverlay key={"dev_overlay"} />
-                    </APIProvider>
-                </ThemeProvider>
-            </SessionProvider>
-            <Analytics />
+        <Providers messages={messages} locale={locale} timeZone={timeZone}>
+            <Navbar />
+            {children}
+            <DevOverlay key="dev_overlay" />
+        </Providers>
+        <Analytics />
         </body>
-    </html>
-  );
+        </html>
+    );
 }

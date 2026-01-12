@@ -9,6 +9,7 @@ import { ThemeContext } from "@/app/lib/theme/themeContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/ui/base/tabs";
 import {Button} from "@/app/ui/base/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
+import EnvOverlay from "@/app/ui/custom/devOverlay/envOverlay";
 
 export function DevOverlay() {
     const context = useContext(ApiContext);
@@ -61,7 +62,7 @@ export function DevOverlay() {
                     </CardHeader>
                     <CardContent>
                         <Tabs defaultValue="api" className="w-full">
-                            <TabsList className="grid w-full grid-cols-2 bg-gray-800">
+                            <TabsList className="grid w-full grid-cols-3 bg-gray-800">
                                 <TabsTrigger
                                     value="api"
                                     className="data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-400"
@@ -74,12 +75,19 @@ export function DevOverlay() {
                                 >
                                     User Info
                                 </TabsTrigger>
+                                <TabsTrigger value="env"
+                                             className="data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-400">
+                                    Env Variables
+                                </TabsTrigger>
                             </TabsList>
                             <TabsContent value="api" className="mt-4">
                                 <APIConfigOverlay />
                             </TabsContent>
                             <TabsContent value="user" className="mt-4">
                                 <UserOverlay />
+                            </TabsContent>
+                            <TabsContent value="env" className="mt-4">
+                                <EnvOverlay />
                             </TabsContent>
                         </Tabs>
                     </CardContent>

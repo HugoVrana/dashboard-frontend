@@ -11,7 +11,7 @@ export default function UserOverlay() {
 
     return (
         <div className="space-y-4">
-            <Card className="bg-gray-800 border-gray-700 w-70">
+            <Card className="bg-gray-800 border-gray-700">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-white">Email</CardTitle>
                 </CardHeader>
@@ -22,7 +22,7 @@ export default function UserOverlay() {
                 </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700 w-70">
+            <Card className="bg-gray-800 border-gray-700">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-white">Roles</CardTitle>
                 </CardHeader>
@@ -41,7 +41,7 @@ export default function UserOverlay() {
                 </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700 w-70">
+            <Card className="bg-gray-800 border-gray-700">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-white">Grants</CardTitle>
                 </CardHeader>
@@ -60,7 +60,7 @@ export default function UserOverlay() {
                 </CardContent>
             </Card>
 
-            <Card className="bg-gray-800 border-gray-700 w-70">
+            <Card className="bg-gray-800 border-gray-700">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-white">Token</CardTitle>
                 </CardHeader>
