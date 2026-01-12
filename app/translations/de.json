@@ -1,4 +1,8 @@
 {
+  "lang" :{
+    "de" : "Deutsch",
+    "en" : "Englisch"
+  },
   "nav": {
     "home": "Startseite",
     "dashboard": "Dashboard",

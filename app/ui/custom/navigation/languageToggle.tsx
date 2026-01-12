@@ -9,9 +9,11 @@ import {
 } from "@/app/ui/base/select";
 import { getCookie } from "@/app/lib/cookieUtil";
 import { GlobeIcon } from "lucide-react";
+import {useTranslations} from "next-intl";
 
 export function LanguageToggle() {
     const [locale, setLocale] = useState("en");
+    const t = useTranslations("lang");
 
     useEffect(() => {
         async function fetchLocale() {
@@ -36,8 +38,12 @@ export function LanguageToggle() {
                 <span className="sr-only">Change language</span>
             </SelectTrigger>
             <SelectContent align="end">
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="de">Deutsch</SelectItem>
+                <SelectItem value="en">
+                    {t("en")}
+                </SelectItem>
+                <SelectItem value="de">
+                    {t("de")}
+                </SelectItem>
             </SelectContent>
         </Select>
     );
