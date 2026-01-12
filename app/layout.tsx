@@ -8,8 +8,8 @@ import {DevOverlay} from "@/app/ui/custom/devOverlay/devOverlay";
 import {ThemeProvider} from "@/app/lib/theme/themeContext";
 import {Analytics} from "@vercel/analytics/next";
 import {geistMono, geistSans} from "@/app/ui/fonts";
-import {themeInitScript} from "@/app/ui/custom/themeSwitchFix";
-import {Navbar} from "@/app/ui/custom/navbar";
+import {themeInitScript} from "@/app/ui/custom/navigation/themeSwitchFix";
+import {Navbar} from "@/app/ui/custom/navigation/navbar";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 

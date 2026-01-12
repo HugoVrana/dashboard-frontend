@@ -11,7 +11,8 @@ import {
 } from "@/app/ui/base/navigation-menu";
 import {Button} from "@/app/ui/base/button";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
-import {ThemeToggle} from "@/app/ui/custom/themeToggle";
+import {ThemeToggle} from "@/app/ui/custom/navigation/themeToggle";
+import {LanguageToggle} from "@/app/ui/custom/navigation/languageToggle";
 
 export function Navbar() {
     const { data: session, status } = useSession();
@@ -24,16 +25,16 @@ export function Navbar() {
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuLink>
-                                <Link href={"/"} className="flex h-10 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-15 mt-2">
+                            <NavigationMenuLink href={"/"}>
+                                <div className="flex h-10 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-15 mt-2">
                                     <AcmeLogo />
-                                </Link>
+                                </div>
                             </NavigationMenuLink>
                         </NavigationMenuItem>
 
                         <NavigationMenuItem>
-                            <NavigationMenuLink>
-                                <Link href={"/"}>Home</Link>
+                            <NavigationMenuLink href={"/"}>
+                                Home
                             </NavigationMenuLink>
                         </NavigationMenuItem>
 
@@ -49,6 +50,7 @@ export function Navbar() {
 
                 {/* Right side */}
                 <div className="flex items-center gap-2">
+                    <LanguageToggle/>
                     <ThemeToggle/>
                     {status === "loading" ? (
                         <div className="h-9 w-20 animate-pulse rounded-lg bg-muted" />
