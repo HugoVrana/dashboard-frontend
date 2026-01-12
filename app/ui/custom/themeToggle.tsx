@@ -1,22 +1,27 @@
 "use client"
 
-import { useContext } from "react"
+import {useEffect, useState} from "react"
 import { Sun, Moon } from "lucide-react"
-import { Switch } from "@/app/ui/base/switch"
-import { ThemeContext } from "@/app/lib/theme/themeContext"
+import {Button} from "@/app/ui/base/button";
 
 export function ThemeToggle() {
-    const { isDark, toggleTheme } = useContext(ThemeContext);
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        setIsDark(document.documentElement.classList.contains("dark"));
+    }, []);
+
+    const toggleTheme = () => {
+        const newIsDark = !isDark;
+        setIsDark(newIsDark);
+        document.documentElement.classList.toggle("dark", newIsDark);
+        localStorage.setItem("theme-mode", newIsDark ? "dark" : "light");
+    };
 
     return (
-        <div className="flex items-center gap-2">
-            <Sun className="size-4 text-muted-foreground" />
-            <Switch
-                checked={isDark}
-                onCheckedChange={toggleTheme}
-                aria-label="Toggle dark mode"
-            />
-            <Moon className="size-4 text-muted-foreground" />
-        </div>
-    )
+        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            <span className="sr-only">Toggle theme</span>
+        </Button>
+    );
 }

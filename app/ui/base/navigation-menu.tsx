@@ -1,215 +1,162 @@
-"use client";
-
-import * as React from "react";
-import { useContext } from "react";
-import { NavigationMenu } from "@base-ui/react/navigation-menu";
-import { ThemeContext } from "@/app/lib/theme/themeContext";
-import { ThemeToggle } from "@/app/ui/custom/themeToggle";
-import {signOut} from "next-auth/react";
-import {getUserEmail} from "@/app/lib/permission/permissionsClient";
-import {ChevronDown} from "lucide-react";
+import { NavigationMenu as NavigationMenuPrimitive } from "@base-ui/react/navigation-menu"
+import { cva } from "class-variance-authority"
+import { ChevronDownIcon } from "lucide-react"
 import {cn} from "@/app/lib/utils";
 
-export default function DashboardNavigationMenu() {
-    const { isDark } = useContext(ThemeContext);
-    const userEmail : string = getUserEmail();
-    console.log("User email: " + userEmail);
-    const loggedIn : boolean = userEmail != "";
-
-    const colors = {
-        trigger: isDark
-            ? "bg-zinc-900 text-zinc-100 hover:bg-zinc-800 active:bg-zinc-800 data-[popup-open]:bg-zinc-800"
-            : "bg-gray-50 text-gray-900 hover:bg-gray-100 active:bg-gray-100 data-[popup-open]:bg-gray-100",
-        popup: isDark
-            ? "bg-zinc-950 text-zinc-100 shadow-none outline-zinc-800"
-            : "bg-white text-gray-900 shadow-lg shadow-gray-200 outline-gray-200",
-        linkCard: isDark ? "hover:bg-zinc-900" : "hover:bg-gray-100",
-        mutedText: isDark ? "text-zinc-400" : "text-gray-500",
-        arrowBorder: isDark ? "fill-none" : "fill-gray-200",
-        arrowFill: isDark ? "fill-zinc-950" : "fill-white",
-        logoutButton: isDark
-            ? "text-red-400 hover:bg-zinc-800"
-            : "text-red-600 hover:bg-gray-100",
-    };
-
-    const triggerClassName = cn(
-        "box-border flex items-center justify-center gap-1.5 h-10",
-        "px-2 xs:px-3.5 m-0 rounded-md font-medium",
-        "text-[0.925rem] xs:text-base leading-6 select-none no-underline",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 focus-visible:relative",
-        colors.trigger
-    );
-
-    const contentClassName =
-        "w-[calc(100vw_-_40px)] h-full p-6 xs:w-max xs:min-w-[400px] xs:w-max " +
-        "transition-[opacity,transform,translate] duration-[var(--duration)] ease-[var(--easing)] " +
-        "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 " +
-        "data-[starting-style]:data-[activation-direction=left]:translate-x-[-50%] " +
-        "data-[starting-style]:data-[activation-direction=right]:translate-x-[50%] " +
-        "data-[ending-style]:data-[activation-direction=left]:translate-x-[50%] " +
-        "data-[ending-style]:data-[activation-direction=right]:translate-x-[-50%]";
-
-    const linkCardClassName = cn(
-        "block rounded-md p-2 xs:p-3 no-underline text-inherit",
-        "focus-visible:relative focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800",
-        colors.linkCard
-    );
-
-    return (
-        <NavigationMenu.Root className="relative z-50 w-full rounded-lg">
-            <NavigationMenu.List className="relative flex items-center gap-2">
-                {/* Left side nav items */}
-                <NavigationMenu.Item>
-                    <NavigationMenu.Trigger className={triggerClassName}>
-                        Overview
-                        <NavigationMenu.Icon className="transition-transform duration-200 ease-in-out data-[popup-open]:rotate-180">
-                            <ChevronDown />
-                        </NavigationMenu.Icon>
-                    </NavigationMenu.Trigger>
-
-                    <NavigationMenu.Content className={contentClassName}>
-                        <ul className="grid list-none grid-cols-1 gap-0 xs:grid-cols-[12rem_12rem]">
-                            {overviewLinks.map((item) => (
-                                <li key={item.href}>
-                                    <Link href={item.href} className={linkCardClassName}>
-                                        <h3 className="m-0 mb-1 text-base leading-5 font-medium">
-                                            {item.title}
-                                        </h3>
-                                        <p className={cn("m-0 text-sm leading-5", colors.mutedText)}>
-                                            {item.description}
-                                        </p>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </NavigationMenu.Content>
-                </NavigationMenu.Item>
-
-                <NavigationMenu.Item>
-                    <NavigationMenu.Trigger className={triggerClassName}>
-                        Handbook
-                        <NavigationMenu.Icon className="transition-transform duration-200 ease-in-out data-[popup-open]:rotate-180">
-                            <ChevronDown />
-                        </NavigationMenu.Icon>
-                    </NavigationMenu.Trigger>
-
-                    <NavigationMenu.Content className={contentClassName}>
-                        <ul className="flex max-w-[400px] flex-col justify-center">
-                            {handbookLinks.map((item) => (
-                                <li key={item.href}>
-                                    <Link href={item.href} className={linkCardClassName}>
-                                        <h3 className="m-0 mb-1 text-base leading-5 font-medium">
-                                            {item.title}
-                                        </h3>
-                                        <p className={cn("m-0 text-sm leading-5", colors.mutedText)}>
-                                            {item.description}
-                                        </p>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </NavigationMenu.Content>
-                </NavigationMenu.Item>
-
-                <NavigationMenu.Item>
-                    <a className={triggerClassName} href="https://github.com/mui/base-ui">
-                        GitHub
-                    </a>
-                </NavigationMenu.Item>
-
-                {/* Spacer to push right items */}
-                <div className="flex-1" />
-
-                {/* Right side: Theme toggle and User menu */}
-                <ThemeToggle />
-
-                {loggedIn && (
-                    <NavigationMenu.Item>
-                        <NavigationMenu.Trigger className={triggerClassName}>
-                            <UserIcon />
-                            <span className="hidden sm:inline max-w-37.5 truncate">
-                                {userEmail}
-                            </span>
-                            <NavigationMenu.Icon className="transition-transform duration-200 ease-in-out data-popup-open:rotate-180">
-                                <ChevronDown />
-                            </NavigationMenu.Icon>
-                        </NavigationMenu.Trigger>
-                        <NavigationMenu.Content className={contentClassName}>
-                            <div className="flex flex-col gap-2 min-w-[200px]">
-                                <div className="px-3 py-2">
-                                    <p className={cn("text-xs", colors.mutedText)}>Signed in as</p>
-                                    <p className="text-sm font-medium truncate">{userEmail}</p>
-                                </div>
-                                <hr className={cn("border-t", isDark ? "border-zinc-800" : "border-gray-200")} />
-                                <button
-                                    onClick={() => signOut({ redirectTo: "/" })}
-                                    className={cn(
-                                        "flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-left",
-                                        "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800",
-                                        colors.logoutButton
-                                    )}>
-                                    <LogoutIcon />
-                                    Sign out
-                                </button>
-                            </div>
-                        </NavigationMenu.Content>
-                    </NavigationMenu.Item>
-                )}
-
-                {!loggedIn && (
-                    <Link href="/auth/login">Sign in</Link>
-                )}
-            </NavigationMenu.List>
-
-            <NavigationMenu.Portal>
-                <NavigationMenu.Positioner
-                    sideOffset={10}
-                    collisionPadding={{ top: 5, bottom: 5, left: 20, right: 20 }}
-                    collisionAvoidance={{ side: "none" }}
-                    className="box-border h-[var(--positioner-height)] w-[var(--positioner-width)] max-w-[var(--available-width)] transition-[top,left,right,bottom] duration-[var(--duration)] ease-[var(--easing)] before:absolute before:content-[''] data-[instant]:transition-none data-[side=bottom]:before:top-[-10px] data-[side=bottom]:before:right-0 data-[side=bottom]:before:left-0 data-[side=bottom]:before:h-2.5 data-[side=left]:before:top-0 data-[side=left]:before:right-[-10px] data-[side=left]:before:bottom-0 data-[side=left]:before:w-2.5 data-[side=right]:before:top-0 data-[side=right]:before:bottom-0 data-[side=right]:before:left-[-10px] data-[side=right]:before:w-2.5 data-[side=top]:before:right-0 data-[side=top]:before:bottom-[-10px] data-[side=top]:before:left-0 data-[side=top]:before:h-2.5"
-                    style={{
-                        ["--duration" as string]: "0.35s",
-                        ["--easing" as string]: "cubic-bezier(0.22, 1, 0.36, 1)",
-                    }}
-                >
-                </NavigationMenu.Positioner>
-            </NavigationMenu.Portal>
-        </NavigationMenu.Root>
-    );
+function NavigationMenu({
+  className,
+  children,
+  ...props
+}: NavigationMenuPrimitive.Root.Props) {
+  return (
+    <NavigationMenuPrimitive.Root
+      data-slot="navigation-menu"
+      className={cn(
+        "max-w-max group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <NavigationMenuPositioner />
+    </NavigationMenuPrimitive.Root>
+  )
 }
 
-function Link(props: NavigationMenu.Link.Props) {
-    return <NavigationMenu.Link render={<a />} {...props} />;
+function NavigationMenuList({
+  className,
+  ...props
+}: NavigationMenuPrimitive.List.Props) {
+  return (
+    <NavigationMenuPrimitive.List
+      data-slot="navigation-menu-list"
+      className={cn(
+        "gap-0 group flex flex-1 list-none items-center justify-center",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-function UserIcon(props: React.ComponentProps<"svg">) {
-    return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-        </svg>
-    );
+function NavigationMenuItem({
+  className,
+  ...props
+}: NavigationMenuPrimitive.Item.Props) {
+  return (
+    <NavigationMenuPrimitive.Item
+      data-slot="navigation-menu-item"
+      className={cn("relative", className)}
+      {...props}
+    />
+  )
 }
 
-function LogoutIcon(props: React.ComponentProps<"svg">) {
-    return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>
-    );
+const navigationMenuTriggerStyle = cva(
+  "bg-background hover:bg-muted focus:bg-muted data-open:hover:bg-muted data-open:focus:bg-muted data-open:bg-muted/50 focus-visible:ring-ring/50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all focus-visible:ring-[3px] focus-visible:outline-1 disabled:opacity-50 group/navigation-menu-trigger inline-flex h-9 w-max items-center justify-center disabled:pointer-events-none outline-none"
+)
+
+function NavigationMenuTrigger({
+  className,
+  children,
+  ...props
+}: NavigationMenuPrimitive.Trigger.Props) {
+  return (
+    <NavigationMenuPrimitive.Trigger
+      data-slot="navigation-menu-trigger"
+      className={cn(navigationMenuTriggerStyle(), "group", className)}
+      {...props}
+    >
+      {children}{" "}
+      <ChevronDownIcon className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180" aria-hidden="true" />
+    </NavigationMenuPrimitive.Trigger>
+  )
 }
 
-const overviewLinks = [
-    { href: "/react/overview/quick-start", title: "Quick Start", description: "Install and assemble your first component." },
-    { href: "/react/overview/accessibility", title: "Accessibility", description: "Learn how we build accessible components." },
-    { href: "/react/overview/releases", title: "Releases", description: "See what's new in the latest Base UI versions." },
-    { href: "/react/overview/about", title: "About", description: "Learn more about Base UI and our mission." },
-] as const;
+function NavigationMenuContent({
+  className,
+  ...props
+}: NavigationMenuPrimitive.Content.Props) {
+  return (
+    <NavigationMenuPrimitive.Content
+      data-slot="navigation-menu-content"
+      className={cn(
+        "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-open:animate-in group-data-[viewport=false]/navigation-menu:data-closed:animate-out group-data-[viewport=false]/navigation-menu:data-closed:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-open:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-open:fade-in-0 group-data-[viewport=false]/navigation-menu:data-closed:fade-out-0 group-data-[viewport=false]/navigation-menu:ring-foreground/10 p-1 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:duration-300 h-full w-auto **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-const handbookLinks = [
-    { href: "/react/handbook/styling", title: "Styling", description: "Base UI components can be styled with plain CSS, Tailwind CSS, CSS-in-JS, or CSS Modules." },
-    { href: "/react/handbook/animation", title: "Animation", description: "Base UI components can be animated with CSS transitions, CSS animations, or JavaScript libraries." },
-    { href: "/react/handbook/composition", title: "Composition", description: "Base UI components can be replaced and composed with your own existing components." },
-] as const;
+function NavigationMenuPositioner({
+  className,
+  side = "bottom",
+  sideOffset = 8,
+  align = "start",
+  alignOffset = 0,
+  ...props
+}: NavigationMenuPrimitive.Positioner.Props) {
+  return (
+    <NavigationMenuPrimitive.Portal>
+      <NavigationMenuPrimitive.Positioner
+        side={side}
+        sideOffset={sideOffset}
+        align={align}
+        alignOffset={alignOffset}
+        className={cn(
+          "transition-[top,left,right,bottom] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] data-[side=bottom]:before:top-[-10px] data-[side=bottom]:before:right-0 data-[side=bottom]:before:left-0 isolate z-50 h-[var(--positioner-height)] w-[var(--positioner-width)] max-w-[var(--available-width)] data-[instant]:transition-none",
+          className
+        )}
+        {...props}
+      >
+        <NavigationMenuPrimitive.Popup className="bg-popover text-popover-foreground ring-foreground/10 rounded-lg shadow ring-1 transition-all ease-[cubic-bezier(0.22,1,0.36,1)] outline-none data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[ending-style]:duration-150 data-[starting-style]:scale-90 data-[starting-style]:opacity-0 xs:w-(--popup-width) relative h-(--popup-height) w-(--popup-width) origin-(--transform-origin)">
+          <NavigationMenuPrimitive.Viewport className="relative size-full overflow-hidden" />
+        </NavigationMenuPrimitive.Popup>
+      </NavigationMenuPrimitive.Positioner>
+    </NavigationMenuPrimitive.Portal>
+  )
+}
+
+function NavigationMenuLink({
+  className,
+  ...props
+}: NavigationMenuPrimitive.Link.Props) {
+  return (
+    <NavigationMenuPrimitive.Link
+      data-slot="navigation-menu-link"
+      className={cn("data-active:focus:bg-muted data-active:hover:bg-muted data-active:bg-muted/50 focus-visible:ring-ring/50 hover:bg-muted focus:bg-muted flex items-center gap-2 rounded-lg p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4 [[data-slot=navigation-menu-content]_&]:rounded-md", className)}
+      {...props}
+    />
+  )
+}
+
+function NavigationMenuIndicator({
+  className,
+  ...props
+}: NavigationMenuPrimitive.Icon.Props) {
+  return (
+    <NavigationMenuPrimitive.Icon
+      data-slot="navigation-menu-indicator"
+      className={cn(
+        "data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden",
+        className
+      )}
+      {...props}
+    >
+      <div className="bg-border rounded-tl-sm shadow-md relative top-[60%] h-2 w-2 rotate-45" />
+    </NavigationMenuPrimitive.Icon>
+  )
+}
+
+export {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+  NavigationMenuPositioner,
+}
