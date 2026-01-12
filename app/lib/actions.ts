@@ -136,7 +136,7 @@ export async function removeInvoice(url : string, prevState : State, formData : 
     redirect("/dashboard/invoices");
 }
 
-export async function login(url: string, prevState: any, formData: FormData): Promise<State> {
+export async function login(url: string, prevState: State | undefined, formData: FormData): Promise<State> {
     console.log("Logging in user");
 
     const validatedFields = z.object({
