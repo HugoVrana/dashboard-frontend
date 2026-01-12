@@ -3,10 +3,6 @@ image: node:20-alpine
 stages:
   - build
 
-cache:
-  paths:
-    - node_modules
-
 before_script:
   - npm ci
 
