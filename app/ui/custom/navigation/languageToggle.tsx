@@ -7,9 +7,8 @@ import {
     SelectContent,
     SelectItem,
 } from "@/app/ui/base/select";
-import { getCookie, setCookie } from "@/app/lib/cookieUtil";
+import { getCookie } from "@/app/lib/cookieUtil";
 import { GlobeIcon } from "lucide-react";
-import {cn} from "@/app/lib/utils";
 
 export function LanguageToggle() {
     const [locale, setLocale] = useState("en");
@@ -25,13 +24,14 @@ export function LanguageToggle() {
     const changeLocale = (value: string | null) => {
         if (value === null) return;
         setLocale(value);
-        setCookie("locale", value);
-        window.dispatchEvent(new CustomEvent("locale-change", { detail: value })); // to trigger dev overlay
+        document.cookie = `locale=${value};path=/;max-age=31536000`;
+        window.dispatchEvent(new CustomEvent("locale-change", { detail: value }));
+        window.location.reload();
     };
 
     return (
         <Select value={locale} onValueChange={changeLocale}>
-            <SelectTrigger className={cn}>
+            <SelectTrigger className="size-9 w-auto border-0 p-0 justify-center hover:bg-muted rounded-lg">
                 <GlobeIcon className="size-4" />
                 <span className="sr-only">Change language</span>
             </SelectTrigger>

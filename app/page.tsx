@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import Image from "next/image";
 import Link from "next/link";
@@ -9,11 +9,13 @@ import {Button} from "@/app/ui/base/button";
 import { useSession } from "next-auth/react";
 import {useContext} from "react";
 import {ThemeContext} from "@/app/lib/theme/themeContext";
+import {useTranslations} from "next-intl";
 
 export default function Home() {
     const { data: session } = useSession();
     const isLoggedIn : boolean = !!session?.user;
     const { isDark } = useContext(ThemeContext);
+    const t = useTranslations("nav");
 
     return (
         <main className="flex min-h-screen flex-col p-6">
@@ -21,6 +23,8 @@ export default function Home() {
             <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
                 <AcmeLogo />
             </div>
+            {t("home")}
+
 
             {/* Main Content */}
             <div className="mt-4 flex grow flex-col gap-4 md:flex-row">

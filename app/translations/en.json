@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "login": "Log in",
+    "logout": "Sign out"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  }
+}
