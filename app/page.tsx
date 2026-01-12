@@ -6,7 +6,6 @@ import { ArrowRight } from "lucide-react";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent} from "./ui/base/card";
 import {Button} from "@/app/ui/base/button";
-import {ThemeToggle} from "@/app/ui/custom/themeToggle";
 import { useSession } from "next-auth/react";
 import {useContext} from "react";
 import {ThemeContext} from "@/app/lib/theme/themeContext";
