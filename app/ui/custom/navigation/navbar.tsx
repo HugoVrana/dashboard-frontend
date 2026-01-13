@@ -64,10 +64,9 @@ export function Navbar() {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => signOut()}
+                                onClick={() => signOut({ callbackUrl: "/" })}
                             >
                                 <LogOut className="size-4" />
-                                <span className="sr-only">{t("logout")}</span>
                             </Button>
                         </div>
                     ) : (

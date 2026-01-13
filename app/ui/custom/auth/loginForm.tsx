@@ -29,13 +29,13 @@ export default function LoginForm() {
         <CardTitle className="text-xl">{t("title")}</CardTitle>
 
         <div className="space-y-2">
-          <Label htmlFor="login-email">Email</Label>
+          <Label htmlFor="login-email">{t("email.label")}</Label>
           <div className="relative">
             <Input
                 id="login-email"
                 type="email"
                 name="email"
-                placeholder="Enter your email"
+                placeholder={t("email.placeholder")}
                 className="pl-10"
                 required
             />
@@ -44,13 +44,13 @@ export default function LoginForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="login-password">Password</Label>
+          <Label htmlFor="login-password">{t("password.label")}</Label>
           <div className="relative">
             <Input
                 id="login-password"
                 type="password"
                 name="password"
-                placeholder="Enter password"
+                placeholder={t("password.placeholder")}
                 className="pl-10"
                 required
                 minLength={6}
@@ -62,7 +62,7 @@ export default function LoginForm() {
         <Input type="hidden" name="redirectTo" value={callbackUrl} />
 
         <Button className="w-full" type={"submit"} disabled={loginPending}>
-          Log in
+            {t("login")}
           <ArrowRightIcon className="ml-2 h-4 w-4" />
         </Button>
 

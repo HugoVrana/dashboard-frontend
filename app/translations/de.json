@@ -1,29 +1,92 @@
 {
   "lang" :{
     "de" : "Deutsch",
-    "en" : "Englisch"
+    "en" : "Englisch",
+    "change" : "Sprache ändern"
   },
-  "nav": {
-    "home": "Startseite",
-    "dashboard": "Dashboard",
-    "login": "Anmelden",
-    "logout": "Abmelden"
+  "nav" : {
+    "home" : "Startseite",
+    "dashboard" : "Dashboard",
+    "login" : "Anmelden",
+    "logout" : "Abmelden"
   },
-  "auth": {
-    "email": "E-Mail",
-    "password": "Passwort",
-    "forgotPassword": "Passwort vergessen?",
-    "noAccount": "Noch kein Konto?",
-    "signUp": "Registrieren",
-    "unauthorized": {
-      "title": "403 Nicht autorisiert",
-      "description": "Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.",
-      "back": "Zurück",
-      "toDashboard": "Zum Dashboard",
-      "toHome": "Zur Startseite"
+  "auth" : {
+    "email" : "E-Mail",
+    "password" : "Passwort",
+    "forgotPassword" : "Passwort vergessen?",
+    "noAccount" : "Noch kein Konto?",
+    "signUp" : "Registrieren",
+    "unauthorized" : {
+      "title" : "403 Nicht autorisiert",
+      "description" : "Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.",
+      "back" : "Zurück",
+      "toDashboard" : "Zum Dashboard",
+      "toHome" : "Zur Startseite"
     },
-    "loginForm": {
-      "title": "Willkommen zurück"
+    "loginForm" : {
+      "title" : "Willkommen zurück",
+      "email" : {
+        "label" : "E-Mail",
+        "placeholder" : "Ihre E-Mail eingeben"
+      },
+      "password" : {
+        "label" : "Passwort",
+        "placeholder" : "Ihr Passwort eingeben"
+      },
+      "login" : "Anmelden"
+    },
+    "loginRegisterForm": {
+      "login" : "Anmelden",
+      "register" : "Registrieren",
+      "acmeReserved" : "Acme. Alle Rechte vorbehalten."
+    },
+    "registerForm" : {
+      "title" : "Registrieren Sie sich!",
+      "email" : {
+        "label" : "E-Mail",
+        "placeholder" : "Ihre E-Mail eingeben"
+      },
+      "password" : {
+        "label" : "Passwort",
+        "placeholder" : "Ihr Passwort eingeben"
+      },
+      "confirmPassword" : {
+        "label": "Password bestätigen",
+        "placeholder": "Ihr Passwort bestätigen"
+      },
+      "signUp" : "Registrieren"
+    },
+    "logoutButton" : "Abmelden"
+  },
+  "dashboard" : {
+    "overview" : {
+      "dashboard" : "Dashboard"
+    },
+    "controls" : {
+      "cards" : {
+        "amountPaidInvoices" : "Insbesamt Bezahlte Rechnungen",
+        "amountPendingInvoices" : "Insbesamt ausstehende Rechnungen",
+        "totalInvoices" : "Insgesamt Rechnungen",
+        "totalCustomers" : "Insgesamt Kunden"
+      },
+      "latestInvoices" : {
+        "title" : "Neueste Rechnungen",
+        "updatedNow" : "Aktualisiert jetzt"
+      },
+      "revenueChart" : {
+        "title" : "Umsatz-Trend",
+        "noData" : "Keine Daten vorhanden.",
+        "timeFrame" : "Letzte 12 Monate"
+      }
     }
+  },
+  "homepage" : {
+    "welcome" : "Willkomen bei Acme! ",
+    "example" : "Das ist ein Beispiel Page für",
+    "course" : "Next.js Lernkurs",
+    "vercel" : ", gehostet von Vercel.",
+    "dashboard" : "Zum Dashboard",
+    "login" : "Anmelden",
+    "imgAlt" : "Screenshot des Dashboard Projekts"
   }
 }

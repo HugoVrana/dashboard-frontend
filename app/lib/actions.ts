@@ -10,7 +10,7 @@ import {State} from "@/app/models/state";
 import {InvoiceCreateFormSchema} from "@/app/models/invoice/invoiceCreateFormSchema";
 import {InvoiceUpdateFormSchema} from "@/app/models/invoice/invoiceUpdateFormSchema";
 import {InvoiceDeleteFormSchema} from "@/app/models/invoice/InvoiceDeleteFormSchema";
-import {signIn, signOut} from '@/auth';
+import {signIn} from '@/auth';
 import {z} from "zod";
 import {RegisterRequest} from "@/app/models/auth/registerRequest";
 import {UserInfo} from "@/app/models/auth/userInfo";
@@ -121,7 +121,6 @@ export async function removeInvoice(url : string, prevState : State, formData : 
         console.log("Server Action reached");
         let res : number = await deleteInvoice(url, invoiceId);
         if (res == 0){
-
             throw new Error("Failed to delete invoice. Please try again.");
         }
 
@@ -253,9 +252,4 @@ export async function register(url: string, prevState: State | undefined, formDa
 
     // This line will never be reached because signIn with redirectTo will throw a redirect
     return { message: 'Registration successful' };
-}
-
-export async function logout(url: string, prevState: State | undefined, formData : FormData) {
-    // Just call signOut - the event handler will take care of backend logout
-    await signOut({ redirectTo: '/' });
 }

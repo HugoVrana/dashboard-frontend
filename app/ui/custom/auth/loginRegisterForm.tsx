@@ -6,9 +6,11 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent, CardHeader} from "../../base/card";
 import LoginForm from "@/app/ui/custom/auth/loginForm";
 import RegisterForm from "@/app/ui/custom/auth/registerForm";
+import {useTranslations} from "next-intl";
 
 export default function LoginRegisterCard() {
     const [pageState, setPageState] = useState<"login" | "register">("login");
+    const t = useTranslations("auth.loginRegisterForm");
 
     return (
         <Suspense>
@@ -35,7 +37,7 @@ export default function LoginRegisterCard() {
                                         : "text-muted-foreground hover:text-foreground"
                                 }`}
                             >
-                                Login
+                                {t('login')}
                             </Button>
                             <Button
                                 variant="outline"
@@ -47,7 +49,7 @@ export default function LoginRegisterCard() {
                                         : "text-muted-foreground hover:text-foreground"
                                 }`}
                             >
-                                Register
+                                {t('register')}
                             </Button>
                         </div>
                     </CardHeader>
@@ -61,7 +63,7 @@ export default function LoginRegisterCard() {
                     </CardContent>
                 </Card>
                 <p className="mt-4 text-center text-sm text-muted-foreground">
-                    &copy; {new Date().getFullYear()} Acme. All rights reserved.
+                    &copy; {new Date().getFullYear()} {t('acmeReserved')}
                 </p>
             </div>
         </Suspense>

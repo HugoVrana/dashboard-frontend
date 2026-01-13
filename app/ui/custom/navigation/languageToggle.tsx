@@ -35,7 +35,7 @@ export function LanguageToggle() {
         <Select value={locale} onValueChange={changeLocale}>
             <SelectTrigger className="size-9 w-auto border-0 p-0 justify-center hover:bg-muted rounded-lg">
                 <GlobeIcon className="size-4" />
-                <span className="sr-only">Change language</span>
+                <span className="sr-only">{t('change')}</span>
             </SelectTrigger>
             <SelectContent align="end">
                 <SelectItem value="en">

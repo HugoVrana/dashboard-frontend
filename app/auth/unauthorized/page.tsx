@@ -2,7 +2,6 @@ import Link from "next/link";
 import {ShieldAlert} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 
-
 type Props = {
     searchParams: Promise<{ from?: string }>;
 };
