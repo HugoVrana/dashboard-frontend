@@ -14,6 +14,7 @@ export default function Cards() {
 
     const [canViewInvoices, setCanViewInvoices] = useState(false);
     const [canViewCustomer, setCanViewCustomer] = useState(false);
+
     const [amountPaidInvoices, setAmountPaidInvoices] = useState<number | null>(null);
     const [amountPendingInvoices, setAmountPendingInvoices] = useState<number | null>(null);
     const [totalInvoices, setTotalInvoices] = useState<number | null>(null);
