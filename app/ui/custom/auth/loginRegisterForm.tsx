@@ -6,11 +6,11 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent, CardHeader} from "../../base/card";
 import LoginForm from "@/app/ui/custom/auth/loginForm";
 import RegisterForm from "@/app/ui/custom/auth/registerForm";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function LoginRegisterCard() {
     const [pageState, setPageState] = useState<"login" | "register">("login");
-    const t = useTranslations("auth.loginRegisterForm");
+    const t = useDebugTranslations("auth.loginRegisterForm");
 
     return (
         <Suspense>

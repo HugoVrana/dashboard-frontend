@@ -4,11 +4,11 @@ import {RefreshCcw} from "lucide-react";
 import {Avatar, AvatarImage, AvatarFallback} from "@/app/ui/base/avatar";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/app/ui/base/card";
 import {Label} from "@/app/ui/base/label";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function LatestInvoicesList(latestInvoicesProps: LatestInvoicesProps) {
 
-    const t = useTranslations("dashboard.controls.latestInvoices");
+    const t = useDebugTranslations("dashboard.controls.latestInvoices");
 
     if (latestInvoicesProps.invoices) {
         return (

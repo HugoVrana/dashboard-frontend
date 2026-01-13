@@ -3,6 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/app/lib/theme/themeContext";
 import { APIProvider } from "@/app/lib/devOverlay/apiContext";
+import { TranslationDebugProvider } from "@/app/lib/devOverlay/translationDebugContext";
 import { NextIntlClientProvider } from "next-intl";
 import {ProvidersProps} from "@/app/models/ui/providersProps";
 
@@ -12,9 +13,11 @@ export function Providers(p : ProvidersProps) {
         <SessionProvider basePath="/api/auth">
             <ThemeProvider>
                 <APIProvider id="api_provider">
-                    <NextIntlClientProvider messages={p.messages} locale={p.locale} timeZone={p.timeZone}>
-                        {p.children}
-                    </NextIntlClientProvider>
+                    <TranslationDebugProvider>
+                        <NextIntlClientProvider messages={p.messages} locale={p.locale} timeZone={p.timeZone}>
+                            {p.children}
+                        </NextIntlClientProvider>
+                    </TranslationDebugProvider>
                 </APIProvider>
             </ThemeProvider>
         </SessionProvider>

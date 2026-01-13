@@ -13,12 +13,12 @@ import {Button} from "@/app/ui/base/button";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {ThemeToggle} from "@/app/ui/custom/navigation/themeToggle";
 import {LanguageToggle} from "@/app/ui/custom/navigation/languageToggle";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export function Navbar() {
     const { data: session, status } = useSession();
     const isLoggedIn : boolean = !!session?.user;
-    const t = useTranslations("nav");
+    const t = useDebugTranslations("nav");
 
     return (
         <header className="bg-background">

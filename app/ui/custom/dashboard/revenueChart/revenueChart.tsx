@@ -9,7 +9,7 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {RevenueRead} from "@/app/models/revenue/revenueRead";
 import {getRevenue} from "@/app/lib/dataAccess/revenueClient";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 const chartConfig = {
     revenue: {
@@ -24,7 +24,7 @@ export default function RevenueChart() {
     const [canViewRevenue, setCanViewRevenue] = useState(false);
     const [revenue, setRevenue] = useState<RevenueRead[] | null>(null);
 
-    const t = useTranslations("dashboard.controls.revenueChart");
+    const t = useDebugTranslations("dashboard.controls.revenueChart");
 
     useEffect(() => {
         if (isLoading) return;

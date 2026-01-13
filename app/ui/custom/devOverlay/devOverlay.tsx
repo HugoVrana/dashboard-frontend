@@ -4,6 +4,7 @@ import { useState, useEffect, useContext } from "react"
 import { Settings, X } from "lucide-react"
 import APIConfigOverlay from "@/app/ui/custom/devOverlay/apiConfigOverlay";
 import UserOverlay from "@/app/ui/custom/devOverlay/userOverlay";
+import TranslationOverlay from "@/app/ui/custom/devOverlay/translationOverlay";
 import { ApiContext } from "@/app/lib/devOverlay/apiContext";
 import { ThemeContext } from "@/app/lib/theme/themeContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/ui/base/tabs";
@@ -62,22 +63,30 @@ export function DevOverlay() {
                     </CardHeader>
                     <CardContent>
                         <Tabs defaultValue="api" className="w-full">
-                            <TabsList className="grid w-full grid-cols-3 bg-gray-800">
+                            <TabsList className="grid w-full grid-cols-4 bg-gray-800">
                                 <TabsTrigger
                                     value="api"
                                     className="data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-400"
                                 >
-                                    API Config
+                                    API
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="user"
                                     className="data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-400"
                                 >
-                                    User Info
+                                    User
                                 </TabsTrigger>
-                                <TabsTrigger value="env"
-                                             className="data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-400">
-                                    Env Variables
+                                <TabsTrigger
+                                    value="i18n"
+                                    className="data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-400"
+                                >
+                                    i18n
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="env"
+                                    className="data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-400"
+                                >
+                                    Env
                                 </TabsTrigger>
                             </TabsList>
                             <TabsContent value="api" className="mt-4">
@@ -85,6 +94,9 @@ export function DevOverlay() {
                             </TabsContent>
                             <TabsContent value="user" className="mt-4">
                                 <UserOverlay />
+                            </TabsContent>
+                            <TabsContent value="i18n" className="mt-4">
+                                <TranslationOverlay />
                             </TabsContent>
                             <TabsContent value="env" className="mt-4">
                                 <EnvOverlay />

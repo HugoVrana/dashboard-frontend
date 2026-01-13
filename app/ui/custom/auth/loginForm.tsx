@@ -10,7 +10,7 @@ import {useActionState, useContext} from "react";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 import {useSearchParams} from "next/navigation";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function LoginForm() {
     const searchParams = useSearchParams();
@@ -22,7 +22,7 @@ export default function LoginForm() {
     const loginAction = login.bind(null, url);
     const [loginError, loginFormAction, loginPending] = useActionState(loginAction, undefined);
 
-    const t = useTranslations("auth.loginForm");
+    const t = useDebugTranslations("auth.loginForm");
 
   return(
       <form action={loginFormAction} className="space-y-4">
