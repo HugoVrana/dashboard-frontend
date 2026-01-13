@@ -2,7 +2,7 @@
 
 import {RevenueChartProps} from "@/app/models/ui/revenueChartProps";
 import {RevenueChartSkeleton} from "@/app/ui/custom/skeletons/revenueChartSkeleton";
-import RevenueChart from "@/app/ui/custom/dashboard/revenue/revenueChart/revenueChart";
+import RevenueChart from "@/app/ui/custom/dashboard/revenueChart/revenueChart";
 
 export default function RevenueChartWithPermission(chartProps : RevenueChartProps) {
     if (!chartProps.hasPermission) {

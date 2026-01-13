@@ -1,5 +1,6 @@
 import Cards from "@/app/ui/custom/dashboard/cards/cards";
-import RevenueChart from "@/app/ui/custom/dashboard/revenue/revenueChart/revenueChart";
+import RevenueChart from "@/app/ui/custom/dashboard/revenueChart/revenueChart";
+import LatestInvoices from "@/app/ui/custom/dashboard/latestInvoices/latestInvoices";
 
 export default function Page() {
  return (
@@ -11,7 +12,8 @@ export default function Page() {
              <Cards />
          </div>
          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-             <RevenueChart />
+             <RevenueChart/>
+             <LatestInvoices/>
          </div>
      </main>
  )
