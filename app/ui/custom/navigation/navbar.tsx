@@ -40,8 +40,8 @@ export function Navbar() {
 
                         {isLoggedIn && (
                             <NavigationMenuItem>
-                                <NavigationMenuLink>
-                                    <Link href="/dashboard">Dashboard</Link>
+                                <NavigationMenuLink href={"/dashboard"}>
+                                    Dashboard
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                         )}

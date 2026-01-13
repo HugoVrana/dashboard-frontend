@@ -3,12 +3,11 @@
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
 import {CustomerRead} from "@/app/models/customer/customerRead";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
-import {getAuthToken} from "@/app/lib/permission/permissionsClient";
 import {isCustomerRead, isCustomerReadList} from "@/app/typeValidators/customerValidator";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
-export async function getCustomers(isLocal : boolean) : Promise<CustomerRead[] | null> {
+export async function getCustomers(isLocal : boolean, authToken: string) : Promise<CustomerRead[] | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     grafanaClient.info("Fetching customers", {route: "GET /customers/"});
     const u : URL = new URL("/customers/", baseUrl);
@@ -16,7 +15,7 @@ export async function getCustomers(isLocal : boolean) : Promise<CustomerRead[] |
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             }
         });
 
@@ -52,7 +51,7 @@ export async function getCustomers(isLocal : boolean) : Promise<CustomerRead[] |
     }
 }
 
-export async function getCustomerCount(isLocal : boolean) : Promise<number | null> {
+export async function getCustomerCount(isLocal : boolean, authToken: string) : Promise<number | null> {
     grafanaClient.info("Fetching customer count", {route: "GET /customers/count"});
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     console.log("Fetching customer count from", baseUrl);
@@ -61,7 +60,7 @@ export async function getCustomerCount(isLocal : boolean) : Promise<number | nul
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             }
         });
 

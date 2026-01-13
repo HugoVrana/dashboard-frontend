@@ -1,7 +1,5 @@
 "use client"
 
-
-import {getAuthToken} from "@/app/lib/permission/permissionsClient";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 import {RevenueRead} from "@/app/models/revenue/revenueRead";
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
@@ -9,14 +7,14 @@ import {isRevenue} from "@/app/typeValidators/revenueValidator";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
-export async function getRevenue(isLocal: boolean) : Promise<RevenueRead[] | null> {
+export async function getRevenue(isLocal: boolean, authToken : string) : Promise<RevenueRead[] | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     const u = new URL("/revenues/", baseUrl);
     try {
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             },
         });
 

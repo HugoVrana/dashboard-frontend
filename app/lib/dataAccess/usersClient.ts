@@ -2,18 +2,18 @@
 
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
 import {UserRead} from "@/app/models/user/userRead";
-import {getAuthToken} from "@/app/lib/permission/permissionsClient";
 import {isUserRead, mapToUserRead} from "@/app/typeValidators/userValidator";
-
+import {usePermissions} from "@/app/lib/permission/permissionsClient";
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
 export async function getUserByEmail(url : string, email : string) : Promise<UserRead | null> {
+    const authToken : string = usePermissions().getAuthToken;
     const u : URL = new URL("/users/email/" + email, url);
     try {
         const res: Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             }
         });
         if (!res.ok) {

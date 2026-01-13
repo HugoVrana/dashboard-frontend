@@ -17,18 +17,18 @@ export default async function RootLayout({children,} : {children: React.ReactNod
 
     return (
         <html lang={locale} className={inter.variable} suppressHydrationWarning>
-        <head>
-            <title>Dashboard</title>
-            <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        </head>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers messages={messages} locale={locale} timeZone={timeZone}>
-            <Navbar />
-            {children}
-            <DevOverlay key="dev_overlay" />
-        </Providers>
-        <Analytics />
-        </body>
+            <head>
+                <title>Dashboard</title>
+                <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+            </head>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <Providers messages={messages} locale={locale} timeZone={timeZone}>
+                <Navbar />
+                {children}
+                <DevOverlay key="dev_overlay" />
+            </Providers>
+            <Analytics />
+            </body>
         </html>
     );
 }

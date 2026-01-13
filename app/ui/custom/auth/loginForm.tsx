@@ -3,7 +3,7 @@
 import {CardTitle} from "@/app/ui/base/card";
 import {Label} from "@/app/ui/base/label";
 import {Input} from "@/app/ui/base/input";
-import {ArrowRightIcon, AtSign, FileExclamationPointIcon, KeyIcon} from "lucide-react";
+import {ArrowRightIcon, AtSign, KeyIcon, ShieldAlert} from "lucide-react";
 import {Button} from "@/app/ui/base/button";
 import {login} from "@/app/lib/actions";
 import {useActionState, useContext} from "react";
@@ -18,8 +18,8 @@ export default function LoginForm() {
     const url : string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
     const callbackUrl : string = searchParams.get('callbackUrl') || '/dashboard';
 
-    const loginWithIsLocal: (prevState: any, formData: FormData) => Promise<any> = login.bind(null, url);
-    const [errorMessage, loginFormAction, isPending] = useActionState(loginWithIsLocal, undefined);
+    const loginAction = login.bind(null, url);
+    const [loginError, loginFormAction, loginPending] = useActionState(loginAction, undefined);
 
   return(
       <form action={loginFormAction} className="space-y-4">
@@ -58,15 +58,16 @@ export default function LoginForm() {
 
         <Input type="hidden" name="redirectTo" value={callbackUrl} />
 
-        <Button className="w-full" disabled={isPending}>
+        <Button className="w-full" type={"submit"} disabled={loginPending}>
           Log in
           <ArrowRightIcon className="ml-2 h-4 w-4" />
         </Button>
-        {errorMessage && (
-            <>
-                <FileExclamationPointIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
+
+        {loginError && (
+            <div className="flex items-center gap-2 text-destructive text-sm">
+                <ShieldAlert className="h-4 w-4" />
+                <span>{loginError.message}</span>
+            </div>
         )}
       </form>
   );

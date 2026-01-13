@@ -11,11 +11,10 @@ import {PageResponse} from "@/app/models/page/pageResponse";
 import {isPage} from "@/app/typeValidators/pageResponseValidator";
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
-import {getAuthToken} from "@/app/lib/permission/permissionsClient";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
-export async function getInvoiceAmount(isLocal: boolean, status?: string) : Promise<number | null> {
+export async function getInvoiceAmount(isLocal: boolean, authToken: string, status?: string) : Promise<number | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     let u : URL = new URL("/invoices/amount", baseUrl);
 
@@ -24,12 +23,11 @@ export async function getInvoiceAmount(isLocal: boolean, status?: string) : Prom
     }
 
     try {
-        console.log("TOKEN : " + await getAuthToken());
         console.log("Fetching invoice amount from", u.toString());
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             }
         });
 
@@ -60,7 +58,7 @@ export async function getInvoiceAmount(isLocal: boolean, status?: string) : Prom
     }
 }
 
-export async function getInvoiceCount(isLocal : boolean, status : string) : Promise<number | null> {
+export async function getInvoiceCount(isLocal : boolean, authToken: string, status : string) : Promise<number | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     let u : URL = new URL("/invoices/count", baseUrl);
 
@@ -69,7 +67,7 @@ export async function getInvoiceCount(isLocal : boolean, status : string) : Prom
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization: `Bearer ${await getAuthToken()}`
+                Authorization: `Bearer ${authToken}`
             }
         });
 
@@ -103,14 +101,14 @@ export async function getInvoiceCount(isLocal : boolean, status : string) : Prom
     }
 }
 
-export async function getLatestInvoices(isLocal : boolean): Promise<InvoiceRead[] | null> {
+export async function getLatestInvoices(isLocal : boolean, authToken: string): Promise<InvoiceRead[] | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     let u : URL = new URL("/invoices/latest", baseUrl);
     try {
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             }
         });
 
@@ -146,7 +144,7 @@ export async function getLatestInvoices(isLocal : boolean): Promise<InvoiceRead[
     }
 }
 
-export async function getFilteredInvoices(isLocal : boolean, searchTerm: string, page : number): Promise<PageResponse<InvoiceRead> | null> {
+export async function getFilteredInvoices(isLocal : boolean, authToken: string, searchTerm: string, page : number): Promise<PageResponse<InvoiceRead> | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     let u : URL = new URL("/invoices/search", baseUrl);
     try {
@@ -163,7 +161,7 @@ export async function getFilteredInvoices(isLocal : boolean, searchTerm: string,
             headers: {
                 Content_Type : "application/json",
                 Accept : "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             },
             body: JSON.stringify(pageRequest)
         });
@@ -209,7 +207,7 @@ export async function getFilteredInvoices(isLocal : boolean, searchTerm: string,
     }
 }
 
-export async function getInvoice(isLocal : boolean, id : string) : Promise<InvoiceRead | null> {
+export async function getInvoice(isLocal : boolean, authToken: string, id : string) : Promise<InvoiceRead | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     const u : URL = new URL("/invoices/" + id, baseUrl);
     try {
@@ -218,7 +216,7 @@ export async function getInvoice(isLocal : boolean, id : string) : Promise<Invoi
             headers: {
                 Content_Type : "application/json",
                 Accept : "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${authToken}`
             }
         });
 
