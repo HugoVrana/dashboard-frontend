@@ -4,22 +4,16 @@ import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/app/lib/theme/themeContext";
 import { APIProvider } from "@/app/lib/devOverlay/apiContext";
 import { NextIntlClientProvider } from "next-intl";
+import {ProvidersProps} from "@/app/models/ui/providersProps";
 
-type Props = {
-    children: React.ReactNode;
-    messages: any;
-    locale: string;
-    timeZone : string;
-};
-
-export function Providers({ children, messages, locale, timeZone }: Props) {
-    console.log("Rendering Providers with locale:", locale);
+export function Providers(p : ProvidersProps) {
+    console.log("Rendering Providers with locale:", p.locale);
     return (
-        <SessionProvider>
+        <SessionProvider basePath="/api/auth">
             <ThemeProvider>
                 <APIProvider id="api_provider">
-                    <NextIntlClientProvider messages={messages} locale={locale} timeZone={timeZone}>
-                        {children}
+                    <NextIntlClientProvider messages={p.messages} locale={p.locale} timeZone={p.timeZone}>
+                        {p.children}
                     </NextIntlClientProvider>
                 </APIProvider>
             </ThemeProvider>

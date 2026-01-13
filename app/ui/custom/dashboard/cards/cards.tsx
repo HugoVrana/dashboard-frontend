@@ -6,16 +6,15 @@ import {getCustomerCount} from "@/app/lib/dataAccess/customersClient";
 import {getInvoiceAmount, getInvoiceCount} from "@/app/lib/dataAccess/invoicesClient";
 import {CardsSkeleton} from "@/app/ui/custom/skeletons/cardsSkeleton";
 import CardWithPermission from "@/app/ui/custom/dashboard/cards/cardWithPermission";
-import {hasGrant} from "@/app/lib/permission/permissionsClient";
+import {usePermissions} from "@/app/lib/permission/permissionsClient";
 
 export default function Cards() {
     const { dashboardApiIsLocal } = useContext(ApiContext);
+    const {hasGrant, isLoading, getAuthToken} = usePermissions();
 
-    const canViewInvoices : boolean = hasGrant("dashboard-invoices-read");
-    const canViewCustomer : boolean = hasGrant("dashboard-customers-read");
-
-    const [amountPaidInvoices, setAmountPaidInvoices] =
-        useState<number | null>(null);
+    const [canViewInvoices, setCanViewInvoices] = useState(false);
+    const [canViewCustomer, setCanViewCustomer] = useState(false);
+    const [amountPaidInvoices, setAmountPaidInvoices] = useState<number | null>(null);
     const [amountPendingInvoices, setAmountPendingInvoices] = useState<number | null>(null);
     const [totalInvoices, setTotalInvoices] = useState<number | null>(null);
     const [customersCount, setCustomersCount] = useState<number | null>(null);
@@ -24,20 +23,28 @@ export default function Cards() {
     const skellyNoPermissionProps = {showShimmer : false};
 
     useEffect(() => {
+        if (isLoading) return;
+
+        const canViewInvoicesResult = hasGrant("dashboard-invoices-read");
+        const canViewCustomerResult = hasGrant("dashboard-customers-read");
+
+        setCanViewInvoices(canViewInvoicesResult);
+        setCanViewCustomer(canViewCustomerResult);
+
         async function loadData() {
             try {
-                if (canViewCustomer) {
-                    const customerCount = await getCustomerCount(dashboardApiIsLocal);
+                if (canViewCustomerResult) {
+                    const customerCount = await getCustomerCount(dashboardApiIsLocal, getAuthToken);
                     setCustomersCount(customerCount);
                 }
 
-                if (canViewInvoices) {
+                if (canViewInvoicesResult) {
                     const [paid, pending, count] = await Promise.all([
-                        getInvoiceAmount(dashboardApiIsLocal, "paid"),
-                        getInvoiceAmount(dashboardApiIsLocal, "pending"),
-                        getInvoiceCount(dashboardApiIsLocal, "")
+                        getInvoiceAmount(dashboardApiIsLocal, getAuthToken, "paid"),
+                        getInvoiceAmount(dashboardApiIsLocal, getAuthToken, "pending"),
+                        getInvoiceCount(dashboardApiIsLocal, getAuthToken, "")
                     ]);
-
+                    console.log("invoices", paid, pending, count);
                     setAmountPaidInvoices(paid);
                     setAmountPendingInvoices(pending);
                     setTotalInvoices(count);
@@ -48,7 +55,7 @@ export default function Cards() {
         }
 
         loadData();
-    }, [dashboardApiIsLocal, canViewInvoices, canViewCustomer]);
+    }, [dashboardApiIsLocal, isLoading, hasGrant, getAuthToken]);
 
     return (
         <Suspense fallback={<CardsSkeleton skeletonProps={skellyProps}/>}>
