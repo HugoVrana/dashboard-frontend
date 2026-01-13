@@ -1,10 +1,12 @@
+"use client"
+
 import Cards from "@/app/ui/custom/dashboard/cards/cards";
 import RevenueChart from "@/app/ui/custom/dashboard/revenueChart/revenueChart";
 import LatestInvoices from "@/app/ui/custom/dashboard/latestInvoices/latestInvoices";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function Page() {
-    const t = useTranslations("dashboard.overview");
+    const t = useDebugTranslations("dashboard.overview");
     return (
         <main className="p-6 pt-10">
             <h1 className={`mb-4 text-xl md:text-2xl`}>

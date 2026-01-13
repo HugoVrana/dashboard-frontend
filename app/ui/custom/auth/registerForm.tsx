@@ -10,7 +10,7 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {useSearchParams} from "next/navigation";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 import {register} from "@/app/lib/actions";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function RegisterForm() {
     const searchParams = useSearchParams();
@@ -22,7 +22,7 @@ export default function RegisterForm() {
     const registerAction = register.bind("url", url);
     const [registerError, registerFormAction, registerPending] = useActionState(registerAction, undefined);
 
-    const t = useTranslations("auth.registerForm");
+    const t = useDebugTranslations("auth.registerForm");
 
     return (
         <form action={registerFormAction} className="space-y-4">

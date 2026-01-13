@@ -9,13 +9,13 @@ import {Button} from "@/app/ui/base/button";
 import { useSession } from "next-auth/react";
 import {useContext} from "react";
 import {ThemeContext} from "@/app/lib/theme/themeContext";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function Home() {
     const { data: session } = useSession();
     const isLoggedIn : boolean = !!session?.user;
     const { isDark } = useContext(ThemeContext);
-    const t = useTranslations("homepage");
+    const t = useDebugTranslations("homepage");
 
     return (
         <main className="flex min-h-screen flex-col p-6">

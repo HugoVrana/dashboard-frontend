@@ -7,7 +7,7 @@ import {getInvoiceAmount, getInvoiceCount} from "@/app/lib/dataAccess/invoicesCl
 import {CardsSkeleton} from "@/app/ui/custom/skeletons/cardsSkeleton";
 import CardWithPermission from "@/app/ui/custom/dashboard/cards/cardWithPermission";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function Cards() {
     const { dashboardApiIsLocal } = useContext(ApiContext);
@@ -24,7 +24,7 @@ export default function Cards() {
     const skellyProps = {showShimmer : true};
     const skellyNoPermissionProps = {showShimmer : false};
 
-    const t = useTranslations("dashboard.controls.cards");
+    const t = useDebugTranslations("dashboard.controls.cards");
 
     useEffect(() => {
         if (isLoading) return;

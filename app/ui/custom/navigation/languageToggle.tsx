@@ -9,11 +9,11 @@ import {
 } from "@/app/ui/base/select";
 import { getCookie } from "@/app/lib/cookieUtil";
 import { GlobeIcon } from "lucide-react";
-import {useTranslations} from "next-intl";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export function LanguageToggle() {
     const [locale, setLocale] = useState("en");
-    const t = useTranslations("lang");
+    const t = useDebugTranslations("lang");
 
     useEffect(() => {
         async function fetchLocale() {
