@@ -1,0 +1,1 @@
+export type CardType = "invoices" | "customers" | "pending" | "collected";

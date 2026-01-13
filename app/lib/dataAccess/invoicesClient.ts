@@ -24,12 +24,12 @@ export async function getInvoiceAmount(isLocal: boolean, status?: string) : Prom
     }
 
     try {
-        console.log("TOKEN : " + await getAuthToken());
+        console.log("TOKEN : " + getAuthToken());
         console.log("Fetching invoice amount from", u.toString());
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
+                Authorization : `Bearer ${getAuthToken()}`
             }
         });
 
@@ -69,7 +69,7 @@ export async function getInvoiceCount(isLocal : boolean, status : string) : Prom
         const res : Response = await fetch(u.toString(), {
             headers: {
                 Accept: "application/json",
-                Authorization: `Bearer ${await getAuthToken()}`
+                Authorization: `Bearer ${getAuthToken()}`
             }
         });
 
