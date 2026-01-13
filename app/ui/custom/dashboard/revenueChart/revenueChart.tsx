@@ -9,6 +9,7 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {RevenueRead} from "@/app/models/revenue/revenueRead";
 import {getRevenue} from "@/app/lib/dataAccess/revenueClient";
+import {useTranslations} from "next-intl";
 
 const chartConfig = {
     revenue: {
@@ -22,6 +23,8 @@ export default function RevenueChart() {
     const {hasGrant, isLoading, getAuthToken} = usePermissions();
     const [canViewRevenue, setCanViewRevenue] = useState(false);
     const [revenue, setRevenue] = useState<RevenueRead[] | null>(null);
+
+    const t = useTranslations("dashboard.controls.revenueChart");
 
     useEffect(() => {
         if (isLoading) return;
@@ -49,10 +52,10 @@ export default function RevenueChart() {
             return (
                 <Card className="md:col-span-4">
                     <CardHeader>
-                        <CardTitle>Recent Revenue</CardTitle>
+                        <CardTitle>{t('title')}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={chartConfig} className="h-[350px] w-full">
+                        <ChartContainer config={chartConfig} className="h-87.5 w-full">
                             <BarChart data={revenue}>
                                 <XAxis
                                     dataKey="month"
@@ -76,12 +79,12 @@ export default function RevenueChart() {
                         </ChartContainer>
                         <CardDescription className="flex items-center gap-2 pt-4">
                             <Calendar className="h-4 w-4" />
-                            Last 12 months
+                            {t('timeFrame')}
                         </CardDescription>
                     </CardContent>
                 </Card>
             );
         }
     }
-    return ("no data available")
+    return (t('noData'))
 }

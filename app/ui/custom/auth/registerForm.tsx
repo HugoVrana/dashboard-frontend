@@ -10,6 +10,7 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {useSearchParams} from "next/navigation";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 import {register} from "@/app/lib/actions";
+import {useTranslations} from "next-intl";
 
 export default function RegisterForm() {
     const searchParams = useSearchParams();
@@ -21,18 +22,20 @@ export default function RegisterForm() {
     const registerAction = register.bind("url", url);
     const [registerError, registerFormAction, registerPending] = useActionState(registerAction, undefined);
 
+    const t = useTranslations("auth.registerForm");
+
     return (
         <form action={registerFormAction} className="space-y-4">
-            <CardTitle className="text-xl">Create an account</CardTitle>
+            <CardTitle className="text-xl">{t('title')}</CardTitle>
 
             <div className="space-y-2">
-                <Label htmlFor="register-email">Email</Label>
+                <Label htmlFor="register-email">{t('email.label')}</Label>
                 <div className="relative">
                     <Input
                         id="register-email"
                         type="email"
                         name="email"
-                        placeholder="Enter your email"
+                        placeholder={t('email.placeholder')}
                         className="pl-10"
                         required
                     />
@@ -41,13 +44,13 @@ export default function RegisterForm() {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="register-password">Password</Label>
+                <Label htmlFor="register-password">{t('password.label')}</Label>
                 <div className="relative">
                     <Input
                         id="register-password"
                         type="password"
                         name="password"
-                        placeholder="Enter password"
+                        placeholder={t('password.placeholder')}
                         className="pl-10"
                         required
                         minLength={6}
@@ -57,13 +60,13 @@ export default function RegisterForm() {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="confirm-password">{t('confirmPassword.label')}</Label>
                 <div className="relative">
                     <Input
                         id="confirm-password"
                         type="password"
                         name="confirmPassword"
-                        placeholder="Confirm password"
+                        placeholder={t('confirmPassword.placeholder')}
                         className="pl-10"
                         required
                         minLength={6}
@@ -75,7 +78,7 @@ export default function RegisterForm() {
             <Input className="hidden" name="redirectTo" value={callbackUrl} />
 
             <Button className="w-full" type={"submit"} disabled={registerPending}>
-                Sign up
+                {t('signUp')}
                 <ArrowRightIcon className="ml-2 h-4 w-4" />
             </Button>
 

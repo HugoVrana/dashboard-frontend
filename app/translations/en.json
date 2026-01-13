@@ -1,7 +1,8 @@
 {
   "lang" :{
     "de" : "German",
-    "en" : "English"
+    "en" : "English",
+    "change" : "Change language"
   },
   "nav": {
     "home": "Home",
@@ -14,12 +15,78 @@
     "password": "Password",
     "forgotPassword": "Forgot password?",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "unauthorized": {
+      "title": "403 Unauthorized",
+      "description": "You don't have permission to access this resource.",
+      "back": "Go Back",
+      "toDashboard": "Go to Dashboard",
+      "toHome": "Go to Homepage"
+    },
+    "loginForm": {
+      "title": "Welcome back!",
+      "email" : {
+        "label": "Email",
+        "placeholder": "Enter your email"
+      },
+      "password" : {
+        "label": "Password",
+        "placeholder": "Enter your password"
+      },
+      "login": "Log in"
+    },
+    "loginRegisterForm": {
+      "login": "Log in",
+      "register": "Register",
+      "acmeReserved" : "Acme. All rights reserved."
+    },
+    "registerForm": {
+      "title": "Create an account!",
+      "email" : {
+        "label": "Email",
+        "placeholder": "Enter your email"
+      },
+      "password" : {
+        "label": "Password",
+        "placeholder": "Enter your password"
+      },
+      "confirmPassword" : {
+        "label": "Confirm Password",
+        "placeholder": "Confirm your password"
+      },
+      "signUp": "Sign up"
+    },
+    "logoutButton" : "Sign out"
   },
-  "common": {
-    "loading": "Loading...",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete"
+  "dashboard" : {
+    "overview" : {
+      "dashboard": "Dashboard"
+    },
+    "controls" : {
+      "cards" : {
+        "amountPaidInvoices" : "Total Paid Invoices",
+        "amountPendingInvoices" : "Total Pending Invoices",
+        "totalInvoices" : "Total Invoices",
+        "totalCustomers" : "Total Customers"
+      },
+      "latestInvoices" : {
+        "title" : "Latest Invoices",
+        "updatedNow" : "Updated just now"
+      },
+      "revenueChart" : {
+        "title" : "Recent Revenue",
+        "noData" : "No data available",
+        "timeFrame" : "Last 12 months"
+      }
+    }
+  },
+  "homepage" : {
+    "welcome" : "Welcome to Acme! ",
+    "example" : "This is an example page for the",
+    "course" : "Next.js Learn Course",
+    "vercel" : ", brought to you by Vercel.",
+    "dashboard" : "Go to Dashboard",
+    "login" : "Log in",
+    "imgAlt" : "Screenshot of the dashboard project showing desktop version"
   }
 }

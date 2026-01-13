@@ -13,10 +13,12 @@ import {Button} from "@/app/ui/base/button";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {ThemeToggle} from "@/app/ui/custom/navigation/themeToggle";
 import {LanguageToggle} from "@/app/ui/custom/navigation/languageToggle";
+import {useTranslations} from "next-intl";
 
 export function Navbar() {
     const { data: session, status } = useSession();
     const isLoggedIn : boolean = !!session?.user;
+    const t = useTranslations("nav");
 
     return (
         <header className="bg-background">
@@ -34,14 +36,14 @@ export function Navbar() {
 
                         <NavigationMenuItem>
                             <NavigationMenuLink href={"/"}>
-                                Home
+                                {t("home")}
                             </NavigationMenuLink>
                         </NavigationMenuItem>
 
                         {isLoggedIn && (
                             <NavigationMenuItem>
                                 <NavigationMenuLink href={"/dashboard"}>
-                                    Dashboard
+                                    {t("dashboard")}
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                         )}
@@ -62,15 +64,14 @@ export function Navbar() {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => signOut()}
+                                onClick={() => signOut({ callbackUrl: "/" })}
                             >
                                 <LogOut className="size-4" />
-                                <span className="sr-only">Sign out</span>
                             </Button>
                         </div>
                     ) : (
                         <Button variant="default" size="sm">
-                            <Link href="/auth/login">Log in</Link>
+                            <Link href="/auth/login">{t("login")}</Link>
                         </Button>
                     )}
                 </div>

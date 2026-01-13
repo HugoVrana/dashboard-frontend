@@ -4,13 +4,17 @@ import {RefreshCcw} from "lucide-react";
 import {Avatar, AvatarImage, AvatarFallback} from "@/app/ui/base/avatar";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/app/ui/base/card";
 import {Label} from "@/app/ui/base/label";
+import {useTranslations} from "next-intl";
 
 export default function LatestInvoicesList(latestInvoicesProps: LatestInvoicesProps) {
+
+    const t = useTranslations("dashboard.controls.latestInvoices");
+
     if (latestInvoicesProps.invoices) {
         return (
             <Card className="md:col-span-4">
                 <CardHeader>
-                    <CardTitle>Latest Invoices</CardTitle>
+                    <CardTitle>{t('title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="px-6">
@@ -62,7 +66,7 @@ export default function LatestInvoicesList(latestInvoicesProps: LatestInvoicesPr
                     </div>
                     <CardDescription className="flex items-center gap-2 pt-4">
                         <RefreshCcw className="h-4 w-4" />
-                        Updated just now
+                        {t('updatedNow')}
                     </CardDescription>
                 </CardContent>
             </Card>

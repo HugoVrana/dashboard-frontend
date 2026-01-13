@@ -7,6 +7,7 @@ import {getInvoiceAmount, getInvoiceCount} from "@/app/lib/dataAccess/invoicesCl
 import {CardsSkeleton} from "@/app/ui/custom/skeletons/cardsSkeleton";
 import CardWithPermission from "@/app/ui/custom/dashboard/cards/cardWithPermission";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
+import {useTranslations} from "next-intl";
 
 export default function Cards() {
     const { dashboardApiIsLocal } = useContext(ApiContext);
@@ -22,6 +23,8 @@ export default function Cards() {
 
     const skellyProps = {showShimmer : true};
     const skellyNoPermissionProps = {showShimmer : false};
+
+    const t = useTranslations("dashboard.controls.cards");
 
     useEffect(() => {
         if (isLoading) return;
@@ -61,25 +64,25 @@ export default function Cards() {
     return (
         <Suspense fallback={<CardsSkeleton skeletonProps={skellyProps}/>}>
             <CardWithPermission hasPermission={canViewInvoices}
-                                title={"Total Paid Invoices"}
+                                title={t('amountPaidInvoices')}
                                 value={amountPaidInvoices?.toString() ?? "0"}
                                 type={"collected"}
                                 skeletonProps={skellyNoPermissionProps} />
 
             <CardWithPermission hasPermission={canViewInvoices}
-                                title={"Total Pending Invoices"}
+                                title={t('amountPendingInvoices')}
                                 value={amountPendingInvoices?.toString() ?? "0"}
                                 type={"pending"}
                                 skeletonProps={skellyNoPermissionProps} />
 
             <CardWithPermission hasPermission={canViewInvoices}
-                                title={"Total Invoices"}
+                                title={t('totalInvoices')}
                                 value={totalInvoices?.toString() ?? "0"}
                                 type={"invoices"}
                                 skeletonProps={skellyNoPermissionProps} />
 
             <CardWithPermission hasPermission={canViewCustomer}
-                                title={"Total Customers"}
+                                title={t('totalCustomers')}
                                 value={customersCount?.toString() ?? "0"}
                                 type={"customers"}
                                 skeletonProps={skellyNoPermissionProps} />
