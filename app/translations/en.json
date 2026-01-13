@@ -14,12 +14,16 @@
     "password": "Password",
     "forgotPassword": "Forgot password?",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign up"
-  },
-  "common": {
-    "loading": "Loading...",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete"
+    "signUp": "Sign up",
+    "unauthorized": {
+      "title": "403 Unauthorized",
+      "description": "You don't have permission to access this resource.",
+      "back": "Go Back",
+      "toDashboard": "Go to Dashboard",
+      "toHome": "Go to Homepage"
+    },
+    "loginForm": {
+      "title": "Welcome back!"
+    }
   }
 }

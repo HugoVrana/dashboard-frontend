@@ -14,12 +14,16 @@
     "password": "Passwort",
     "forgotPassword": "Passwort vergessen?",
     "noAccount": "Noch kein Konto?",
-    "signUp": "Registrieren"
-  },
-  "common": {
-    "loading": "Wird geladen...",
-    "save": "Speichern",
-    "cancel": "Abbrechen",
-    "delete": "Löschen"
+    "signUp": "Registrieren",
+    "unauthorized": {
+      "title": "403 Nicht autorisiert",
+      "description": "Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.",
+      "back": "Zurück",
+      "toDashboard": "Zum Dashboard",
+      "toHome": "Zur Startseite"
+    },
+    "loginForm": {
+      "title": "Willkommen zurück"
+    }
   }
 }
