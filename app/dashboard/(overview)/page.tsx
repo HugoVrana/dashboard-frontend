@@ -4,7 +4,7 @@ import LatestInvoices from "@/app/ui/custom/dashboard/latestInvoices/latestInvoi
 
 export default function Page() {
  return (
-     <main>
+     <main className="p-6 pt-10">
          <h1 className={`mb-4 text-xl md:text-2xl`}>
              Dashboard
          </h1>
