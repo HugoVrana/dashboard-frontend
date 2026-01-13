@@ -25,20 +25,20 @@ export default function Cards() {
     useEffect(() => {
         if (isLoading) return;
 
-        const canViewInvoicesResult = hasGrant("dashboard-invoices-read");
-        const canViewCustomerResult = hasGrant("dashboard-customers-read");
+        const invoices : boolean = hasGrant("dashboard-invoices-read");
+        const customer : boolean = hasGrant("dashboard-customers-read");
 
-        setCanViewInvoices(canViewInvoicesResult);
-        setCanViewCustomer(canViewCustomerResult);
+        setCanViewInvoices(invoices);
+        setCanViewCustomer(customer);
 
         async function loadData() {
             try {
-                if (canViewCustomerResult) {
+                if (canViewCustomer) {
                     const customerCount = await getCustomerCount(dashboardApiIsLocal, getAuthToken);
                     setCustomersCount(customerCount);
                 }
 
-                if (canViewInvoicesResult) {
+                if (canViewInvoices) {
                     const [paid, pending, count] = await Promise.all([
                         getInvoiceAmount(dashboardApiIsLocal, getAuthToken, "paid"),
                         getInvoiceAmount(dashboardApiIsLocal, getAuthToken, "pending"),
