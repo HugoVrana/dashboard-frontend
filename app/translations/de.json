@@ -8,7 +8,8 @@
     "home" : "Startseite",
     "dashboard" : "Dashboard",
     "login" : "Anmelden",
-    "logout" : "Abmelden"
+    "logout" : "Abmelden",
+    "invoices" : "Rechnungen"
   },
   "auth" : {
     "email" : "E-Mail",

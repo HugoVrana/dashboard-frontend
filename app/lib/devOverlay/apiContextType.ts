@@ -5,4 +5,5 @@ export type APIContextType = {
     dashboardToggleMode: () => void
     dashboardAuthApiUrl: string
     dashboardAuthToggleMode: () => void
+    isReady: boolean
 }
