@@ -12,7 +12,8 @@ export const ApiContext : Context<APIContextType> = createContext<APIContextType
     dashboardApiUrl: DASHBOARD_API_CONFIG.LOCAL_URL,
     dashboardAuthApiUrl : DASHBOARD_AUTH_API_CONFIG.LOCAL_URL,
     dashboardToggleMode: () => {},
-    dashboardAuthToggleMode: () => {}
+    dashboardAuthToggleMode: () => {},
+    isReady: false
 })
 
 export function APIProvider({children, id}: { children: ReactNode, id?: string }) {
@@ -20,10 +21,12 @@ export function APIProvider({children, id}: { children: ReactNode, id?: string }
     const [dashboardApiUrl, setDashboardApiUrl] = useState("");
     const [dashboardAuthApiIsLocal, setDashboardAuthApiIsLocal] = useState(true);
     const [dashboardAuthApiUrl, setDashboardAuthApiUrl] = useState("");
+    const [isReady, setIsReady] = useState(false);
 
     // Initialize dashboard auth API on mount
     useEffect(() => {
-        async function loadDashboardApiPreferences() {
+        async function loadPreferences() {
+            // Load dashboard API preferences
             if (process.env.NODE_ENV === "development") {
                 const saved = await getCookie("dev-dashboard-api-mode");
                 console.log("Dashboard API Cookie value:", saved);
@@ -40,9 +43,8 @@ export function APIProvider({children, id}: { children: ReactNode, id?: string }
                 setDashboardApiUrl(url)
                 console.log("Setting Dashboard API URL to:", url)
             }
-        }
 
-        async function loadDashboardAuthApiPreferences() {
+            // Load dashboard auth API preferences
             if (process.env.NODE_ENV === "development") {
                 const saved = await getCookie("dev-dashboard-auth-api-mode");
                 console.log("Dashboard Auth API Cookie value:", saved);
@@ -59,10 +61,13 @@ export function APIProvider({children, id}: { children: ReactNode, id?: string }
                 setDashboardAuthApiUrl(url)
                 console.log("Setting Dashboard Auth API URL to:", url)
             }
+
+            // Mark as ready after both preferences are loaded
+            setIsReady(true);
+            console.log("API Context is now ready");
         }
 
-        loadDashboardApiPreferences();
-        loadDashboardAuthApiPreferences();
+        loadPreferences();
     }, [])
 
     const dashboardToggleMode = async () => {
@@ -116,7 +121,8 @@ export function APIProvider({children, id}: { children: ReactNode, id?: string }
                 dashboardApiUrl,
                 dashboardAuthApiUrl,
                 dashboardToggleMode,
-                dashboardAuthToggleMode
+                dashboardAuthToggleMode,
+                isReady
             }}
         >
             {children}

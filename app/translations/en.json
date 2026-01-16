@@ -8,7 +8,8 @@
     "home": "Home",
     "dashboard": "Dashboard",
     "login": "Log in",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "invoices" : "Invoices"
   },
   "auth": {
     "email": "Email",
@@ -62,6 +63,10 @@
     "overview" : {
       "dashboard": "Dashboard"
     },
+    "invoices" : {
+      "title" : "Invoices",
+      "searchPlaceholder" : "Search invoices (InvoiceRead id and status are working)"
+    },
     "controls" : {
       "cards" : {
         "amountPaidInvoices" : "Total Paid Invoices",
@@ -77,6 +82,31 @@
         "title" : "Recent Revenue",
         "noData" : "No data available",
         "timeFrame" : "Last 12 months"
+      },
+      "invoiceButtons" : {
+        "createInvoice" : "Create Invoice",
+        "updateInvoice" : "Update Invoice",
+        "deleteInvoice" : "Delete Invoice"
+      },
+      "invoiceTable" : {
+        "noInvoices" : "No invoices found",
+        "noInvoicesQuery" : "No invoices found for the query:",
+        "invoiceNr" : "Invoice #",
+        "customer" : "Customer",
+        "email" : "Email",
+        "amount" : "Amount",
+        "date" : "Date",
+        "status" : "Status",
+        "actions" : "Actions",
+        "profileAlt" : "'s profile picture"
+      },
+      "status" : {
+        "pending" : "Pending",
+        "paid" : "Paid"
+      },
+      "pagination" : {
+        "previous" : "Previous",
+        "next" : "Next"
       }
     }
   },

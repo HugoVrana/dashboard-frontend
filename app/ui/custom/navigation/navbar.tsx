@@ -41,11 +41,18 @@ export function Navbar() {
                         </NavigationMenuItem>
 
                         {isLoggedIn && (
-                            <NavigationMenuItem>
-                                <NavigationMenuLink href={"/dashboard"}>
-                                    {t("dashboard")}
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
+                            <>
+                                <NavigationMenuItem>
+                                    <NavigationMenuLink href={"/dashboard"}>
+                                        {t("dashboard")}
+                                    </NavigationMenuLink>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <NavigationMenuLink href={"/dashboard/invoices"}>
+                                        {t("invoices")}
+                                    </NavigationMenuLink>
+                                </NavigationMenuItem>
+                            </>
                         )}
                     </NavigationMenuList>
                 </NavigationMenu>

@@ -8,7 +8,8 @@
     "home" : "Startseite",
     "dashboard" : "Dashboard",
     "login" : "Anmelden",
-    "logout" : "Abmelden"
+    "logout" : "Abmelden",
+    "invoices" : "Rechnungen"
   },
   "auth" : {
     "email" : "E-Mail",
@@ -62,6 +63,10 @@
     "overview" : {
       "dashboard" : "Dashboard"
     },
+    "invoices" : {
+      "title" : "Rechnungen",
+      "searchPlaceholder" : "Rechnungen suchen (Rechnung id und status sind funktionierend)"
+    },
     "controls" : {
       "cards" : {
         "amountPaidInvoices" : "Insbesamt Bezahlte Rechnungen",
@@ -77,6 +82,31 @@
         "title" : "Umsatz-Trend",
         "noData" : "Keine Daten vorhanden.",
         "timeFrame" : "Letzte 12 Monate"
+      },
+      "invoiceButtons" : {
+        "createInvoice" : "Rechnung erstellen",
+        "updateInvoice" : "Rechnung bearbeiten",
+        "deleteInvoice" : "Rechnung löschen"
+      },
+      "invoiceTable" : {
+        "noInvoices" : "Keine Rechnungen vorhanden.",
+        "noInvoicesQuery" : "Keine Rechunungen für diese Abfrage gefunden:",
+        "invoiceNr" : "Invoice #",
+        "customer" : "Kunde",
+        "email" : "E-Mail",
+        "amount" : "Betrag",
+        "date" : "Datum",
+        "status" : "Status",
+        "actions" : "Aktionen",
+        "profileAlt" : "Profilbild"
+      },
+      "status" : {
+        "pending" : "Ausstehend",
+        "paid" : "Bezahlt"
+      },
+      "pagination" : {
+        "previous" : "Vorherige Seite",
+        "next" : "Nächste Seite"
       }
     }
   },

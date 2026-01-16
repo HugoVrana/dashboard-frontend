@@ -67,7 +67,7 @@ export async function getCustomerCount(isLocal : boolean, authToken: string) : P
         if (!res.ok) {
             grafanaClient.error("HTTP error", {route: "GET /customers/count", status: res.status, statusText: res.statusText});
             console.error("HTTP error", res.status, res.statusText);
-            return Promise.resolve(0);
+            return Promise.resolve(null);
         }
 
         // Return null if no data returned
@@ -75,7 +75,7 @@ export async function getCustomerCount(isLocal : boolean, authToken: string) : P
         if (!text || text.trim() === '') {
             grafanaClient.error("Empty response body, returning empty page", {route: "GET /customers/count"});
             console.log("Empty response body, returning empty page");
-            return Promise.resolve(0);
+            return Promise.resolve(null);
         }
 
         const data : unknown = JSON.parse(text);
@@ -86,10 +86,10 @@ export async function getCustomerCount(isLocal : boolean, authToken: string) : P
 
         grafanaClient.error("Unexpected payload:", {route: "GET /customers/count", payload: data});
         console.error("Unexpected payload:", data);
-        return Promise.resolve(0);
+        return Promise.resolve(null);
     } catch (e) {
         grafanaClient.error("Fetch failed", {route: "GET /customers/count", error: e});
         console.error("Fetch failed:", e);
-        return Promise.resolve(0);
+        return Promise.resolve(null);
     }
 }

@@ -144,7 +144,7 @@ export async function getLatestInvoices(isLocal : boolean, authToken: string): P
     }
 }
 
-export async function getFilteredInvoices(isLocal : boolean, authToken: string, searchTerm: string, page : number): Promise<PageResponse<InvoiceRead> | null> {
+export async function getFilteredInvoices(isLocal : boolean, authToken: string, searchTerm: string, page : number) : Promise<PageResponse<InvoiceRead> | null> {
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     let u : URL = new URL("/invoices/search", baseUrl);
     try {
@@ -159,7 +159,7 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
         const res : Response = await fetch(u.toString(), {
             method: "POST",
             headers: {
-                Content_Type : "application/json",
+                "Content-Type" : "application/json",
                 Accept : "application/json",
                 Authorization : `Bearer ${authToken}`
             },
