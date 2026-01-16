@@ -7,7 +7,7 @@ import {Input} from "@/app/ui/base/input";
 
 export default function Search({ placeholder }: { placeholder: string }) {
     const searchParams = useSearchParams();
-    const pathname = usePathname();
+    const pathname : string = usePathname();
     const { replace } = useRouter();
 
     const handleSearch = useDebouncedCallback((term: string) => {
@@ -24,13 +24,13 @@ export default function Search({ placeholder }: { placeholder: string }) {
     }, 300)
 
     return (
-        <div className="relative flex flex-1 flex-shrink-0">
+        <div className="relative flex flex-1 shrink-0">
             <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
                 type="search"
                 placeholder={placeholder}
                 onChange={(e) => handleSearch(e.target.value)}
-                defaultValue={searchParams.get('query')?.toString()}
+                defaultValue={searchParams.get('query')?.toString() ?? ''}
                 className="pl-10"
             />
         </div>

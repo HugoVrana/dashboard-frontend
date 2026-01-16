@@ -11,12 +11,15 @@ import {
     PaginationItem,
     PaginationLink
 } from "@/app/ui/base/pagination";
+import {generatePagination} from "@/app/lib/utils";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function InvoicesPagination({ totalPages }: { totalPages: number }) {
+    const t = useDebugTranslations("dashboard.controls.pagination");
     const pathname: string = usePathname();
     const searchParams: ReadonlyURLSearchParams = useSearchParams();
     const currentPage: number = Number(searchParams.get('page')) || 1;
-    const allPages = generatePagination(currentPage, totalPages);
+    const allPages : (string | number)[] = generatePagination(currentPage, totalPages);
 
     const createPageURL = (pageNumber: number | string) => {
         const params = new URLSearchParams(searchParams);
@@ -31,18 +34,17 @@ export default function InvoicesPagination({ totalPages }: { totalPages: number 
                     <Button
                         variant="outline"
                         size="icon"
-                        asChild={currentPage > 1}
                         disabled={currentPage <= 1}
                     >
                         {currentPage > 1 ? (
                             <Link href={createPageURL(currentPage - 1)}>
                                 <ChevronLeft className="h-4 w-4" />
-                                <span className="sr-only">Previous page</span>
+                                <span className="sr-only">{t('previous')}</span>
                             </Link>
                         ) : (
                             <>
                                 <ChevronLeft className="h-4 w-4" />
-                                <span className="sr-only">Previous page</span>
+                                <span className="sr-only">{t('previous')}</span>
                             </>
                         )}
                     </Button>
@@ -67,18 +69,17 @@ export default function InvoicesPagination({ totalPages }: { totalPages: number 
                     <Button
                         variant="outline"
                         size="icon"
-                        asChild={currentPage < totalPages}
                         disabled={currentPage >= totalPages}
                     >
                         {currentPage < totalPages ? (
                             <Link href={createPageURL(currentPage + 1)}>
                                 <ChevronRight className="h-4 w-4" />
-                                <span className="sr-only">Next page</span>
+                                <span className="sr-only">{t('next')}</span>
                             </Link>
                         ) : (
                             <>
                                 <ChevronRight className="h-4 w-4" />
-                                <span className="sr-only">Next page</span>
+                                <span className="sr-only">{t('next')}</span>
                             </>
                         )}
                     </Button>
