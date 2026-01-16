@@ -22,7 +22,7 @@ export default function Page(props : InvoiceTableProps) {
     return (
         <main className={"p-6 pt-10"}>
             <h1>
-                Invoices
+                {t("title")}
             </h1>
             <div className="flex gap-6 items-center">
                 {(canViewInvoices && (

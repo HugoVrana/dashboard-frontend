@@ -1,3 +1,5 @@
+"use client"
+
 import {InvoiceTableProps} from "@/app/models/ui/invoiceTableProps";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {useContext, useEffect, useState} from "react";
@@ -12,9 +14,14 @@ import InvoiceStatus from "@/app/ui/custom/invoices/status";
 import {DeleteInvoice, UpdateInvoice} from "@/app/ui/custom/invoices/buttons";
 import {InvoiceSkeleton} from "@/app/ui/custom/skeletons/invoiceSkeleton";
 import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useSearchParams} from "next/navigation";
 
 export default function InvoicesTable (props : InvoiceTableProps) {
     const t = useDebugTranslations("dashboard.controls.invoiceTable");
+    const searchParams = useSearchParams();
+
+    const query = searchParams.get('query') ?? '';
+    const currentPage = Number(searchParams.get('page')) || 1;
 
     const {dashboardApiIsLocal, isReady: apiContextReady} = useContext(ApiContext);
     const {hasGrant, isLoading, getAuthToken} = usePermissions();
@@ -23,14 +30,26 @@ export default function InvoicesTable (props : InvoiceTableProps) {
     const [_isLoading, setLoading] = useState(true);
 
     useEffect(() => {
+
+        if (!apiContextReady || isLoading || !getAuthToken) {
+            return;
+        }
+
         async function loadData() {
             setLoading(true);
             try {
-                // You might need to pass currentPage to getFilteredInvoices if it supports pagination;
-                const invoices : PageResponse<InvoiceRead> | null = await getFilteredInvoices(dashboardApiIsLocal, getAuthToken, props.query ?? "", props.page ?? 1);
-                setInvoices(invoices);
+                let inv : PageResponse<InvoiceRead> | null = null;
+                if (query) {
+                    alert('Query not empty');
+                    inv = await getFilteredInvoices(dashboardApiIsLocal, getAuthToken, query, currentPage);
+                } else {
+                    alert('Query empty');
+                    inv = await getFilteredInvoices(dashboardApiIsLocal, getAuthToken, '', currentPage);
+                    alert(inv?.data.length.toString());
+                }
+                setInvoices(inv);
 
-                console.log("Loaded data: ", {invoices});
+                console.log("Loaded data: ", {inv});
             } catch (error){
                 console.error("Error loading data: ", error);
                 // Set invoices to empty array or null to show error state
@@ -41,10 +60,10 @@ export default function InvoicesTable (props : InvoiceTableProps) {
         }
 
         loadData();
-    }, [props.query, props.page, apiContextReady, dashboardApiIsLocal, isLoading, getAuthToken]);
+    }, [query, currentPage, apiContextReady, dashboardApiIsLocal, isLoading, getAuthToken]);
 
     // Loading state
-    if (isLoading) {
+    if (isLoading  || _isLoading) {
         return (
             <InvoiceSkeleton skeletonProps={ {showShimmer : true}} />
         );
@@ -56,7 +75,7 @@ export default function InvoicesTable (props : InvoiceTableProps) {
             <div className="mt-6 rounded-lg border">
                 <div className="flex justify-center items-center py-12">
                     <p className="text-muted-foreground">
-                        {props.query ? `${t('noInvoicesQuery')} "${props.query}"` : `${t('noInvoices')}`}
+                        {query ? `${t('noInvoicesQuery')} "${query}"` : `${t('noInvoices')}`}
                     </p>
                 </div>
             </div>

@@ -145,6 +145,7 @@ export async function getLatestInvoices(isLocal : boolean, authToken: string): P
 }
 
 export async function getFilteredInvoices(isLocal : boolean, authToken: string, searchTerm: string, page : number) : Promise<PageResponse<InvoiceRead> | null> {
+    alert('filtered invoices');
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     let u : URL = new URL("/invoices/search", baseUrl);
     try {
@@ -169,6 +170,8 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
         if (!res.ok) {
             grafanaClient.error("HTTP error", {route: "GET /invoices/search", status: res.status, statusText: res.statusText});
             console.error("HTTP error", res.status, res.statusText);
+            alert("!res.ok");
+            alert(res.status);
             return Promise.resolve(null);
         }
 
@@ -177,6 +180,7 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
         if (!text || text.trim() === '') {
             grafanaClient.error("Empty response body, returning empty page", {route: "GET /invoices/search"});
             console.log("Empty response body, returning empty page");
+            alert("!text || text.trim() === ''");
             return Promise.resolve(null);
         }
 
@@ -184,6 +188,7 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
         if (!isPage(data)){
             grafanaClient.error("Unexpected payload:", {route: "GET /invoices/search", payload: data});
             console.error("Unexpected payload:", data);
+            alert("!isPage(data)");
             return Promise.resolve(null);
         }
 
@@ -191,6 +196,7 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
         if (!result) {
             grafanaClient.error("Unexpected payload:", {route: "GET /invoices/search", payload: data});
             console.error("Unexpected payload:", data);
+            alert("!result");
             return Promise.resolve(null);
         }
         grafanaClient.info("Fetched filtered invoices", {
