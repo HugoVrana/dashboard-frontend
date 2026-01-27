@@ -35,7 +35,10 @@ export async function POST(request: NextRequest) : Promise<NextResponse> {
             );
         }
 
-        return NextResponse.json({ success: true }, { status: 200 });
+        return NextResponse.json(
+            { success: true },
+            { status: 200 }
+        );
     } catch (error) {
         console.error('Failed to send log to Loki:', error);
         return NextResponse.json(
