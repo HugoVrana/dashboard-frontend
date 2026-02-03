@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {LogCreate} from "@/app/models/log/logCreate";
 import {LokiStream, toLokiFormat} from "@/app/models/log/lokiStream";
+import {HttpStatusEnum} from "@/app/models/httpStatusEnum";
 
 export async function POST(request: NextRequest) : Promise<NextResponse> {
     try {
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) : Promise<NextResponse> {
         if (!lokiUrl || !lokiToken) {
             return NextResponse.json(
                 { error: 'Loki configuration missing' },
-                { status: 500 }
+                { status: HttpStatusEnum.INTERNAL_SERVER_ERROR }
             );
         }
 
@@ -35,12 +36,15 @@ export async function POST(request: NextRequest) : Promise<NextResponse> {
             );
         }
 
-        return NextResponse.json({ success: true }, { status: 200 });
+        return NextResponse.json(
+            { success: true },
+            { status: HttpStatusEnum.OK }
+        );
     } catch (error) {
         console.error('Failed to send log to Loki:', error);
         return NextResponse.json(
             { error: 'Internal server error' },
-            { status: 500 }
+            { status: HttpStatusEnum.INTERNAL_SERVER_ERROR }
         );
     }
 }
