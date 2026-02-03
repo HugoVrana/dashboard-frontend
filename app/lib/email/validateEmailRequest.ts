@@ -27,7 +27,7 @@ export function validateEmailRequest(
         };
     }
 
-    const email = mapToEmailSendRequest(body);
+    const email : EmailSendRequest | null = mapToEmailSendRequest(body);
     if (!email) {
         grafanaClient.error(`${routeName} : Failed to map request body ${JSON.stringify(body)}`);
         return {
