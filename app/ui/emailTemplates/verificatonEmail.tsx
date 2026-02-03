@@ -7,11 +7,7 @@ import {
     Button,
     Preview,
 } from '@react-email/components';
-
-interface VerificationEmailProps {
-    token: string;
-    locale?: 'en' | 'de';
-}
+import {VerificationEmailProps} from "@/app/models/mails/verificationEmailProps";
 
 const content = {
     en: {
@@ -28,10 +24,12 @@ const content = {
     },
 };
 
-export const VerificationEmail = ({ token, locale = 'en' }: VerificationEmailProps) => {
-    const t = content[locale];
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
+export const VerificationEmail = (props: VerificationEmailProps) => {
+    const t = content[props.locale];
 
+    const protocol : string = (props.url.includes("localhost") ? 'http' : 'https');
+    const verificationUrl = `${protocol}://${props.url}/api/auth/verify?token=${props.token}`;
+    console.log(verificationUrl);
     return (
         <Html>
             <Head />
@@ -48,6 +46,7 @@ export const VerificationEmail = ({ token, locale = 'en' }: VerificationEmailPro
         </Html>
     );
 };
+
 
 const main = {
     backgroundColor: '#f6f9fc',
@@ -80,4 +79,4 @@ const button = {
     textDecoration: 'none',
 };
 
-export default VerificationEmail;
+export default VerificationEmail; // this is here so react email can see it
