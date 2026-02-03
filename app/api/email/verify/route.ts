@@ -6,6 +6,7 @@ import {HttpStatusEnum} from "@/app/models/httpStatusEnum";
 import {VerificationEmail} from "@/app/ui/emailTemplates/verificatonEmail";
 import {headers} from "next/headers";
 import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
+import {ReadonlyHeaders} from "next/dist/server/web/spec-extension/adapters/headers";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 const grafanaClient = new GrafanaServerClient();
@@ -22,8 +23,7 @@ export async function POST(request : NextRequest) {
         }
 
         const body = await request.json();
-
-        if (!isEmailSendRequest(body)) {
+        if (!body || !isEmailSendRequest(body)) {
             grafanaClient.error(`api/email/verify : Request body is not valid ${body}`);
             return NextResponse.json(
                 { status : HttpStatusEnum.BAD_REQUEST },
@@ -32,7 +32,6 @@ export async function POST(request : NextRequest) {
         }
 
         const email : EmailSendRequest | null = mapToEmailSendRequest(body);
-
         if (!email) {
             grafanaClient.error(`api/email/verify : Request body is not valid ${body}`);
             return NextResponse.json(
@@ -45,7 +44,7 @@ export async function POST(request : NextRequest) {
             grafanaClient.error(`api/email/verify : Email is not valid for this endpoint ${email.emailType}`);
             return NextResponse.json(
                 { status : HttpStatusEnum.BAD_REQUEST },
-                {statusText : 'Payload is not a verification email.'}
+                { statusText : 'Payload is not a verification email.' }
             );
         }
 
@@ -53,12 +52,12 @@ export async function POST(request : NextRequest) {
             grafanaClient.error(`api/email/verify : Locale for email was not valid ${email.locale}`);
             return NextResponse.json(
                 { status : HttpStatusEnum.BAD_REQUEST },
-                {statusText : 'Only de or en locale allowed.'}
+                { statusText : 'Only de or en locale allowed.' }
             )
         }
 
-        const headersList = await headers();
-        const host = headersList.get('host') ?? 'nextjs-dashboard';
+        const headersList : ReadonlyHeaders = await headers();
+        const host : string = headersList.get('host') ?? 'nextjs-dashboard';
 
         const verificationEmail = VerificationEmail({
             locale: email.locale,
@@ -98,7 +97,7 @@ export async function POST(request : NextRequest) {
     }
     catch (error) {
         grafanaClient.error(`api/email/verify : Failed to send email id ${error}`);
-        console.error('Failed to verify email:', error);
+        console.error('Failed to send verify email:', error);
         return NextResponse.json(
             { error : 'Internal server error' },
             { status : HttpStatusEnum.INTERNAL_SERVER_ERROR }
