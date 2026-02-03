@@ -10,13 +10,13 @@ import {
 import {VerificationEmailProps} from "@/app/models/mails/verificationEmailProps";
 
 const content = {
-    en: {
+    'en' : {
         preview: 'Verify your email address',
         heading: 'Verify your email',
         body: 'Click the button below to verify your email address.',
         button: 'Verify Email',
     },
-    de: {
+    'de': {
         preview: 'Bestätigen Sie Ihre E-Mail-Adresse',
         heading: 'E-Mail bestätigen',
         body: 'Klicken Sie auf die Schaltfläche unten, um Ihre E-Mail-Adresse zu bestätigen.',
@@ -25,7 +25,7 @@ const content = {
 };
 
 export const VerificationEmail = (props: VerificationEmailProps) => {
-    const t = content[props.locale];
+    const t = content[props.locale as keyof typeof content] ?? content['en'];
 
     const protocol : string = (props.url.includes("localhost") ? 'http' : 'https');
     const verificationUrl = `${protocol}://${props.url}/api/auth/verify?token=${props.token}`;

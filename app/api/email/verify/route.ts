@@ -5,10 +5,10 @@ import {isEmailSendRequest, mapToEmailSendRequest} from "@/app/typeValidators/em
 import {HttpStatusEnum} from "@/app/models/httpStatusEnum";
 import {VerificationEmail} from "@/app/ui/emailTemplates/verificatonEmail";
 import {headers} from "next/headers";
-import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
+import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
-const grafanaClient = new GrafanaClient();
+const grafanaClient = new GrafanaServerClient();
 
 // this endpoint is called by the auth api - there was no better way to use resend
 export async function POST(request : NextRequest) {
