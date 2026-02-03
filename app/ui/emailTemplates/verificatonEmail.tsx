@@ -25,7 +25,7 @@ const content = {
 };
 
 export const VerificationEmail = (props: VerificationEmailProps) => {
-    const t = content[props.locale as keyof typeof content] ?? content['en'];
+    const t : any = content[props.locale as keyof typeof content] ?? content['en'];
 
     const protocol : string = (props.url.includes("localhost") ? 'http' : 'https');
     const verificationUrl = `${protocol}://${props.url}/api/auth/verify?token=${props.token}`;
