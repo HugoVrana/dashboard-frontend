@@ -41,6 +41,7 @@ export const VerificationEmail = (props: VerificationEmailProps) => {
                     <Button style={button} href={verificationUrl}>
                         {t.button}
                     </Button>
+                    <Text style={body}>{props.locale}</Text>
                 </Container>
             </Body>
         </Html>

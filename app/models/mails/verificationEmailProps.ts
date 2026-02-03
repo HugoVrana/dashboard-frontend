@@ -1,5 +1,5 @@
 export type VerificationEmailProps = {
     token: string;
-    locale: 'en' | 'de';
+    locale: string;
     url: string;
 }
