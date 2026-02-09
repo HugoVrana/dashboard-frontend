@@ -7,7 +7,7 @@ export function InvoicesTableSkeleton({skeletonProps} : {skeletonProps : Skeleto
     return (
         <div className={`${skeletonProps.showShimmer ? 'shimmer' : ''} mt-6 flow-root`}>
             <div className="inline-block min-w-full align-middle">
-                <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+                <div className="rounded-lg bg-muted p-2 md:pt-0">
                     <div className="md:hidden">
                         <InvoicesMobileSkeleton skeletonProps={skeletonProps} />
                         <InvoicesMobileSkeleton skeletonProps={skeletonProps} />
@@ -16,7 +16,7 @@ export function InvoicesTableSkeleton({skeletonProps} : {skeletonProps : Skeleto
                         <InvoicesMobileSkeleton skeletonProps={skeletonProps} />
                         <InvoicesMobileSkeleton skeletonProps={skeletonProps} />
                     </div>
-                    <table className="hidden min-w-full text-gray-900 md:table">
+                    <table className="hidden min-w-full text-foreground md:table">
                         <thead className="rounded-lg text-left text-sm font-normal">
                         <tr>
                             <th scope="col" className="px-3 py-5 font-medium">
@@ -45,7 +45,7 @@ export function InvoicesTableSkeleton({skeletonProps} : {skeletonProps : Skeleto
                             </th>
                         </tr>
                         </thead>
-                        <tbody className="bg-white">
+                        <tbody className="bg-card">
                         <TableRowSkeleton skeletonProps={skeletonProps} />
                         <TableRowSkeleton skeletonProps={skeletonProps} />
                         <TableRowSkeleton skeletonProps={skeletonProps} />
