@@ -7,15 +7,46 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent} from "./ui/base/card";
 import {Button} from "@/app/ui/base/button";
 import { useSession } from "next-auth/react";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {ThemeContext} from "@/app/lib/theme/themeContext";
 import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {ActivityClient} from "@/app/lib/websocket/activityClient";
+import {ApiContext} from "@/app/lib/devOverlay/apiContext";
+import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
+import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 
 export default function Home() {
     const { data: session } = useSession();
     const isLoggedIn : boolean = !!session?.user;
     const { isDark } = useContext(ThemeContext);
+    const {dashboardApiIsLocal, dashboardAuthApiIsLocal, isReady} = useContext(ApiContext);
+    const dashboardApiUrl : string = dashboardApiIsLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
+    const dashboardAuthApiUrl : string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
     const t = useDebugTranslations("homepage");
+
+    useEffect(() => {
+
+        if (!isReady) {
+            return;
+        }
+
+        const dataClient = new ActivityClient(`ws://${dashboardApiUrl}/ws`);
+        dataClient.subscribe('/topic/activity', (event) => {
+            console.log('Data activity event:', event);
+        });
+        dataClient.connect();
+
+        const authClient = new ActivityClient(`ws://${dashboardAuthApiUrl}/ws`);
+        authClient.subscribe('/topic/activity', (event) => {
+            console.log('Auth activity event:', event);
+        });
+        authClient.connect();
+
+        return () => {
+            dataClient.disconnect();
+            authClient.disconnect();
+        };
+    }, []);
 
     return (
         <main className="flex min-h-screen flex-col p-6">
