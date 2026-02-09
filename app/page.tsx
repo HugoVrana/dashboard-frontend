@@ -7,15 +7,28 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent} from "./ui/base/card";
 import {Button} from "@/app/ui/base/button";
 import { useSession } from "next-auth/react";
-import {useContext} from "react";
+import {useContext, useMemo} from "react";
 import {ThemeContext} from "@/app/lib/theme/themeContext";
 import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {ApiContext} from "@/app/lib/devOverlay/apiContext";
+import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
+import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
+import {ActivityFeed} from "@/app/ui/custom/activity/activityFeed";
+import { ActivitySource } from "./models/ui/activity/activitySource";
 
 export default function Home() {
     const { data: session } = useSession();
     const isLoggedIn : boolean = !!session?.user;
     const { isDark } = useContext(ThemeContext);
+    const {dashboardApiIsLocal, dashboardAuthApiIsLocal, isReady} = useContext(ApiContext);
+    const dashboardApiUrl : string = dashboardApiIsLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
+    const dashboardAuthApiUrl : string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
     const t = useDebugTranslations("homepage");
+
+    const activitySources: ActivitySource[] = useMemo(() => [
+        { name: "Data", brokerURL: `${dashboardApiUrl}/ws` },
+        { name: "Auth", brokerURL: `${dashboardAuthApiUrl}/ws` },
+    ], [dashboardApiUrl, dashboardAuthApiUrl]);
 
     return (
         <main className="flex min-h-screen flex-col p-6">
@@ -77,6 +90,13 @@ export default function Home() {
                     />
                 </div>
             </div>
+
+            {/* Activity Feed */}
+            {isReady && (
+                <div className="mt-4">
+                    <ActivityFeed sources={activitySources} />
+                </div>
+            )}
         </main>
     );
 }
