@@ -9,16 +9,18 @@ export interface ActivitySubscription {
 export class ActivityClient {
     private client: Client;
     private subscriptions: Map<string, ActivityCallback[]> = new Map();
+    private url: string;
 
-    constructor(brokerURL: string) {
+    constructor(url: string) {
+        this.url = url;
         this.client = new Client({
-            brokerURL,
+            brokerURL: url,
             onConnect: () => {
-                console.log(`Connected to WebSocket: ${brokerURL}`);
+                console.log(`Connected to WebSocket: ${url}`);
                 this.resubscribeAll();
             },
             onDisconnect: () => {
-                console.log(`Disconnected from WebSocket: ${brokerURL}`);
+                console.log(`Disconnected from WebSocket: ${url}`);
             },
             onStompError: (frame) => {
                 console.error('STOMP error:', frame.headers['message']);
