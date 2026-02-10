@@ -10,7 +10,7 @@ import {ProvidersProps} from "@/app/models/ui/providersProps";
 export function Providers(p : ProvidersProps) {
     console.log("Rendering Providers with locale:", p.locale);
     return (
-        <SessionProvider basePath="/api/auth">
+        <SessionProvider basePath="/api/auth" refetchOnWindowFocus={true} refetchWhenOffline={false}>
             <ThemeProvider>
                 <APIProvider id="api_provider">
                     <TranslationDebugProvider>

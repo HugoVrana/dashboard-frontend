@@ -3,29 +3,73 @@
 import {CardTitle} from "@/app/ui/base/card";
 import {Label} from "@/app/ui/base/label";
 import {Input} from "@/app/ui/base/input";
-import {ArrowRightIcon, AtSign, KeyIcon, ShieldAlert} from "lucide-react";
+import {ArrowRightIcon, AtSign, KeyIcon, Loader2, ShieldAlert} from "lucide-react";
 import {Button} from "@/app/ui/base/button";
-import {useActionState, useContext} from "react";
+import {FormEvent, useContext, useState} from "react";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {useSearchParams} from "next/navigation";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
-import {register} from "@/app/lib/actions";
+import {registerUser} from "@/app/lib/actions";
+import {signIn} from "next-auth/react";
 import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export default function RegisterForm() {
     const searchParams = useSearchParams();
     const { dashboardAuthApiIsLocal } = useContext(ApiContext);
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const url : string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
-    const callbackUrl : string = searchParams.get('callbackUrl') || '/dashboard';
-
-    const registerAction = register.bind("url", url);
-    const [registerError, registerFormAction, registerPending] = useActionState(registerAction, undefined);
+    const url: string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
+    const callbackUrl: string = searchParams.get('callbackUrl') || '/dashboard';
 
     const t = useDebugTranslations("auth.registerForm");
 
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError(null);
+        setIsLoading(true);
+
+        const formData = new FormData(e.currentTarget);
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const confirmPassword = formData.get('confirmPassword') as string;
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const result = await registerUser(url, email, password);
+
+            if (!result.success) {
+                setError(result.message);
+                setIsLoading(false);
+                return;
+            }
+
+            const signInResult = await signIn('credentials', {
+                email,
+                password,
+                url,
+                redirect: false,
+            });
+
+            if (signInResult?.error) {
+                setError('Registration successful but login failed. Please try logging in.');
+                setIsLoading(false);
+            } else {
+                window.location.href = callbackUrl;
+            }
+        } catch {
+            setError('Something went wrong.');
+            setIsLoading(false);
+        }
+    };
+
     return (
-        <form action={registerFormAction} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
             <CardTitle className="text-xl">{t('title')}</CardTitle>
 
             <div className="space-y-2">
@@ -75,17 +119,21 @@ export default function RegisterForm() {
                 </div>
             </div>
 
-            <Input className="hidden" name="redirectTo" value={callbackUrl} />
-
-            <Button className="w-full" type={"submit"} disabled={registerPending}>
-                {t('signUp')}
-                <ArrowRightIcon className="ml-2 h-4 w-4" />
+            <Button className="w-full" type="submit" disabled={isLoading}>
+                {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                    <>
+                        {t('signUp')}
+                        <ArrowRightIcon className="ml-2 h-4 w-4" />
+                    </>
+                )}
             </Button>
 
-            {registerError && (
+            {error && (
                 <div className="flex items-center gap-2 text-destructive text-sm">
                     <ShieldAlert className="h-4 w-4" />
-                    <span>{registerError.message}</span>
+                    <span>{error}</span>
                 </div>
             )}
         </form>
