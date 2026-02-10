@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { LogOut } from "lucide-react";
+import { LogOut, Loader2 } from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -17,8 +18,14 @@ import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export function Navbar() {
     const { data: session, status } = useSession();
-    const isLoggedIn : boolean = !!session?.user;
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const isLoggedIn: boolean = !!session?.user;
     const t = useDebugTranslations("nav");
+
+    const handleLogout = async () => {
+        setIsLoggingOut(true);
+        await signOut({ callbackUrl: "/" });
+    };
 
     return (
         <header className="bg-background">
@@ -71,9 +78,14 @@ export function Navbar() {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => signOut({ callbackUrl: "/" })}
+                                onClick={handleLogout}
+                                disabled={isLoggingOut}
                             >
-                                <LogOut className="size-4" />
+                                {isLoggingOut ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    <LogOut className="size-4" />
+                                )}
                             </Button>
                         </div>
                     ) : (
