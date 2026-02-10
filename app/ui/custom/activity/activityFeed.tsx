@@ -6,14 +6,16 @@ import { ActivityClient } from "@/app/lib/websocket/activityClient";
 import {ActivityEvent} from "@/app/models/ui/activity/activityEvent";
 import {ActivityFeedProps} from "@/app/models/ui/activity/activityFeedProps";
 import ActivityEventDisplay from "@/app/ui/custom/activity/activityEventDisplay";
+import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 
 export function ActivityFeed({
-    title = "Activity Feed",
     sources,
     maxItems = 20
 } : ActivityFeedProps) {
     const [events, setEvents] = useState<ActivityEvent[]>([]);
     const [connectionStatus, setConnectionStatus] = useState<Record<string, boolean>>({});
+
+    const t = useDebugTranslations("dashboard.controls.activityFeed");
 
     useEffect(() => {
         const clients: ActivityClient[] = [];
@@ -52,7 +54,7 @@ export function ActivityFeed({
         <Card className="w-full">
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{title}</CardTitle>
+                    <CardTitle className="text-lg">{t('title')}</CardTitle>
                     <div className="flex gap-2">
                         {sources.map((source) => (
                             <div key={source.name} className="flex items-center gap-1">
@@ -65,14 +67,15 @@ export function ActivityFeed({
             </CardHeader>
             <CardContent>
                 {events.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No activity yet...</p>
+                    <p className="text-sm text-muted-foreground">
+                        {t('noActivity')}
+                    </p>
                 ) : (
                     <ul className="space-y-2">
                         {events.map((event: ActivityEvent, index: number) => (
                             <ActivityEventDisplay
                                 key={event.id ?? `${event.source}-${index}`}
-                                activity={event}
-                            />
+                                activity={event}/>
                         ))}
                     </ul>
                 )}
