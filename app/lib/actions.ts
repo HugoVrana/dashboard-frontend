@@ -10,12 +10,9 @@ import {State} from "@/app/models/state";
 import {InvoiceCreateFormSchema} from "@/app/models/invoice/invoiceCreateFormSchema";
 import {InvoiceUpdateFormSchema} from "@/app/models/invoice/invoiceUpdateFormSchema";
 import {InvoiceDeleteFormSchema} from "@/app/models/invoice/InvoiceDeleteFormSchema";
-import {signIn} from '@/auth';
 import {z} from "zod";
 import {RegisterRequest} from "@/app/models/auth/registerRequest";
 import {UserInfo} from "@/app/models/auth/userInfo";
-import {AuthError} from "@auth/core/errors";
-import {isRedirectError} from "next/dist/client/components/redirect-error";
 import {deleteInvoice, postInvoice, putInvoice} from "@/app/lib/dataAccess/invoiceServerClient";
 import {createUser} from "@/app/lib/dataAccess/usersServerClient";
 
@@ -135,121 +132,34 @@ export async function removeInvoice(url : string, prevState : State, formData : 
     redirect("/dashboard/invoices");
 }
 
-export async function login(url: string, prevState: State | undefined, formData: FormData): Promise<State> {
-    console.log("Logging in user");
-
-    const validatedFields = z.object({
-        email: z.string().email(),
-        password: z.string().min(6),
-        redirectTo: z.string().optional()
-    }).safeParse({
-        email: formData.get('email'),
-        password: formData.get('password'),
-        redirectTo: formData.get('redirectTo')
-    });
-
-    if (!validatedFields.success) {
-        try{
-
-        }
-        catch (e) {}
-
-        return { message: 'Invalid form data. Please check your inputs.' };
-    }
-
-    const { email, password, redirectTo } = validatedFields.data;
-
-    try {
-        // Log successful login attempt
-
-
-        // signIn will throw a redirect on success, which we need to let through
-        await signIn('credentials', {
-            email,
-            password,
-            url,
-            redirectTo: redirectTo || '/dashboard',
-        });
-    } catch (error) {
-        if (error instanceof AuthError) {
-            switch (error.type) {
-                case 'CredentialsSignin':
-
-                    return { message: 'Invalid credentials.' };
-                default:
-
-                    return { message: 'Something went wrong.' };
-            }
-        }
-        // Only re-throw redirect errors, not everything
-        if (isRedirectError(error)) {
-            throw error;
-        }
-
-        // Log unexpected errors instead of re-throwing
-        return { message: 'Something went wrong.' };
-    }
-
-    // This line will never be reached because signIn with redirectTo will throw a redirect
-    return { message: 'Login successful' };
-}
-
-export async function register(url: string, prevState: State | undefined, formData: FormData): Promise<State> {
+export async function registerUser(url: string, email: string, password: string): Promise<{ success: boolean; message: string }> {
     console.log("Registering user");
 
-    // Validate the form data
     const validatedFields = z.object({
         email: z.string().email(),
         password: z.string().min(6)
-    }).safeParse({
-        email: formData.get('email'),
-        password: formData.get('password')
-    });
+    }).safeParse({ email, password });
 
     if (!validatedFields.success) {
-
-        return { message: 'Invalid form data. Please check your inputs.'};
+        return { success: false, message: 'Invalid form data. Please check your inputs.' };
     }
-
-    const { email, password } = validatedFields.data;
 
     try {
-        let registerRequest : RegisterRequest = {
-            email : email,
-            password : password,
-            roleId : "693950e2bf5065eaf5737136"
+        const registerRequest: RegisterRequest = {
+            email: validatedFields.data.email,
+            password: validatedFields.data.password,
+            roleId: "693950e2bf5065eaf5737136"
+        };
+
+        const res: UserInfo | null = await createUser(url, registerRequest);
+        if (!res?.id) {
+            console.error("Error registering user", res);
+            return { success: false, message: 'User not registered!' };
         }
 
-        let res : UserInfo | null = await createUser(url, registerRequest);
-        if (!res) {
-            console.error("Error registering an user", res);
-            return { message: 'User not registered!'};
-        }
-
-        if (!res.id) {
-            console.error("Error registering an user", res);
-            return { message: 'User not registered!'};
-        }
-
-        // Automatically sign in the user after successful registration
-        // signIn will throw a redirect on success, which we need to let through
-        await signIn('credentials', {
-            email,
-            password,
-            url,
-            redirectTo: '/dashboard',
-        });
+        return { success: true, message: 'Registration successful' };
     } catch (error) {
-        if (error instanceof AuthError) {
-            console.error("Registration error:", error);
-            return {
-                message: 'User registered but login failed. Please try logging in manually.',
-            };
-        }
-        // Re-throw to allow NextAuth redirects to work
-        throw error;
+        console.error("Registration error:", error);
+        return { success: false, message: 'Something went wrong during registration.' };
     }
-
-    // This line will never be reached because signIn with redirectTo will throw a redirect
-    return { message: 'Registration successful' };
 }
