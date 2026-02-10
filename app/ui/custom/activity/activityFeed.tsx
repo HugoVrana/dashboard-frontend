@@ -5,12 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card";
 import { ActivityClient } from "@/app/lib/websocket/activityClient";
 import {ActivityEvent} from "@/app/models/ui/activity/activityEvent";
 import {ActivityFeedProps} from "@/app/models/ui/activity/activityFeedProps";
+import ActivityEventDisplay from "@/app/ui/custom/activity/activityEventDisplay";
 
 export function ActivityFeed({
     title = "Activity Feed",
     sources,
     maxItems = 20
-}: ActivityFeedProps) {
+} : ActivityFeedProps) {
     const [events, setEvents] = useState<ActivityEvent[]>([]);
     const [connectionStatus, setConnectionStatus] = useState<Record<string, boolean>>({});
 
@@ -27,7 +28,7 @@ export function ActivityFeed({
                     timestamp: (event as ActivityEvent).timestamp || new Date().toISOString(),
                 };
                 
-                console.log("Enrichd event");
+                console.log("Enriched event");
                 console.log(enrichedEvent);
                 setEvents((prev) => {
                     const newEvents = [enrichedEvent, ...prev];
@@ -67,22 +68,11 @@ export function ActivityFeed({
                     <p className="text-sm text-muted-foreground">No activity yet...</p>
                 ) : (
                     <ul className="space-y-2">
-                        {events.map((event, index) => (
-                            <li
-                                key={event.id || `${event.source}-${index}`}
-                                className="text-sm p-2 rounded bg-secondary"
-                            >
-                                <span className="font-medium text-blue-500">[{event.source}]</span>
-                                {event.type && (
-                                    <span className="font-medium text-purple-500 ml-1">{event.type}</span>
-                                )}{" "}
-                                {event.message || JSON.stringify(event)}
-                                {event.timestamp && (
-                                    <span className="text-xs text-muted-foreground ml-2">
-                                        {new Date(event.timestamp).toLocaleTimeString()}
-                                    </span>
-                                )}
-                            </li>
+                        {events.map((event: ActivityEvent, index: number) => (
+                            <ActivityEventDisplay
+                                key={event.id ?? `${event.source}-${index}`}
+                                activity={event}
+                            />
                         ))}
                     </ul>
                 )}
