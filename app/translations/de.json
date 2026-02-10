@@ -107,6 +107,10 @@
       "pagination" : {
         "previous" : "Vorherige Seite",
         "next" : "Nächste Seite"
+      },
+      "activityFeed" : {
+        "title" : "Aktivität",
+        "noActivity" : "Soweit keine Aktivität"
       }
     }
   },
