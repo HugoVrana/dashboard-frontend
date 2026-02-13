@@ -55,7 +55,12 @@
         "label": "Password bestätigen",
         "placeholder": "Ihr Passwort bestätigen"
       },
-      "signUp" : "Registrieren"
+      "signUp" : "Registrieren",
+      "avatarUpload" : {
+        "upload" : "Hochladen",
+        "change" : "Ändern",
+        "delete" : "Löschen"
+      }
     },
     "logoutButton" : "Abmelden"
   },
