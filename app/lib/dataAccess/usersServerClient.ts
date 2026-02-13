@@ -109,3 +109,49 @@ export async function loginUserWithTokens(
          return false;
      }
  }
+
+export async function postUserProfilePicture(
+    serverUrl: string,
+    accessToken: string,
+    file: File
+): Promise<string | null> {
+    try {
+        const url = new URL("api/user/profilePicture", serverUrl);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res: Response = await fetch(url.toString(), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            body: formData
+        });
+
+        if (!res.ok) {
+            console.error("API error", res.status, res.statusText);
+            grafanaClient.error("API error", {
+                route: "POST /api/user/profilePicture",
+                status: res.status,
+                statusText: res.statusText
+            });
+            return null;
+        }
+
+        const publicUrl = await res.text();
+        grafanaClient.info("Profile picture uploaded", {
+            route: "POST /api/user/profilePicture",
+            publicUrl
+        });
+
+        return publicUrl;
+    } catch (e) {
+        console.error("Setting profile pic failed:", e);
+        grafanaClient.error("Setting profile pic failed", {
+            route: "POST /api/user/profilePicture",
+            error: e
+        });
+        return null;
+    }
+}

@@ -14,7 +14,8 @@ import {z} from "zod";
 import {RegisterRequest} from "@/app/models/auth/registerRequest";
 import {UserInfo} from "@/app/models/auth/userInfo";
 import {deleteInvoice, postInvoice, putInvoice} from "@/app/lib/dataAccess/invoiceServerClient";
-import {createUser} from "@/app/lib/dataAccess/usersServerClient";
+import {createUser, postUserProfilePicture} from "@/app/lib/dataAccess/usersServerClient";
+import {auth} from "@/auth";
 
 export async function createInvoice(url: string, prevState: State, formData: FormData) : Promise<State> {
     console.log("Creating invoice step 1");
@@ -132,8 +133,11 @@ export async function removeInvoice(url : string, prevState : State, formData : 
     redirect("/dashboard/invoices");
 }
 
-export async function registerUser(url: string, email: string, password: string): Promise<{ success: boolean; message: string }> {
+export async function registerUser(url: string, prevState: State, formData: FormData): Promise<{ success: boolean; message: string }> {
     console.log("Registering user");
+
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
     const validatedFields = z.object({
         email: z.string().email(),
@@ -151,8 +155,12 @@ export async function registerUser(url: string, email: string, password: string)
             roleId: "693950e2bf5065eaf5737136"
         };
 
-        const res: UserInfo | null = await createUser(url, registerRequest);
-        if (!res?.id) {
+        const res : UserInfo | null = await createUser(url, registerRequest);
+        if (!res) {
+            console.error("Error registering user");
+            return {success : false, message : 'User not registered!'};
+        }
+        if (!res.id) {
             console.error("Error registering user", res);
             return { success: false, message: 'User not registered!' };
         }
@@ -161,5 +169,47 @@ export async function registerUser(url: string, email: string, password: string)
     } catch (error) {
         console.error("Registration error:", error);
         return { success: false, message: 'Something went wrong during registration.' };
+    }
+}
+
+export async function setProfilePicture(formData: FormData): Promise<{ success: boolean; message: string; url?: string }> {
+    console.log("setProfilePicture: Starting upload");
+
+    const session = await auth();
+    console.log("setProfilePicture: Session retrieved:", session ? "yes" : "no");
+
+    if (!session) {
+        console.log("setProfilePicture: No session found");
+        return { success: false, message: 'Not authenticated - no session' };
+    }
+
+    if (!session.accessToken) {
+        console.log("setProfilePicture: No access token in session");
+        return { success: false, message: 'Not authenticated - no access token' };
+    }
+
+    if (!session.url) {
+        console.log("setProfilePicture: No URL in session");
+        return { success: false, message: 'Not authenticated - no URL' };
+    }
+
+    console.log("setProfilePicture: Session valid, URL:", session.url);
+
+    const file = formData.get('file') as File | null;
+    if (!file) {
+        return { success: false, message: 'No file provided' };
+    }
+
+    try {
+        const publicUrl = await postUserProfilePicture(session.url, session.accessToken, file);
+
+        if (!publicUrl) {
+            return { success: false, message: 'Failed to upload profile picture' };
+        }
+
+        return { success: true, message: 'Profile picture uploaded', url: publicUrl };
+    } catch (error) {
+        console.error("Profile picture upload error:", error);
+        return { success: false, message: 'Something went wrong during upload.' };
     }
 }
