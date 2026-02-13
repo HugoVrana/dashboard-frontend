@@ -6,19 +6,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
 import { Button } from "./button"
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+const DEFAULT_MAX_SIZE_BYTES = 1024 * 1024 // 1MB
 
 interface AvatarUploadLabels {
   upload?: string
   change?: string
   remove?: string
+  fileTooLarge?: string
+  invalidFileType?: string
 }
 
 interface AvatarUploadProps {
   value?: File | string | null
   onImageSelect?: (file: File | null) => void
+  onError?: (error: string) => void
   className?: string
   disabled?: boolean
   accept?: string
+  maxSizeBytes?: number
   size?: "default" | "sm" | "lg" | "xl"
   fallback?: React.ReactNode
   labels?: AvatarUploadLabels
@@ -28,14 +33,24 @@ const defaultLabels: Required<AvatarUploadLabels> = {
   upload: "Upload",
   change: "Change",
   remove: "Remove",
+  fileTooLarge: "File is too large",
+  invalidFileType: "Invalid file type",
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 function AvatarUpload({
   value,
   onImageSelect,
+  onError,
   className,
   disabled = false,
   accept = ACCEPTED_IMAGE_TYPES.join(","),
+  maxSizeBytes = DEFAULT_MAX_SIZE_BYTES,
   size = "xl",
   fallback,
   labels,
@@ -43,7 +58,29 @@ function AvatarUpload({
   const resolvedLabels = { ...defaultLabels, ...labels }
   const [isDragOver, setIsDragOver] = React.useState(false)
   const [preview, setPreview] = React.useState<string | null>(null)
+  const [error, setError] = React.useState<string | null>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const validateFile = (file: File): boolean => {
+    // Check file type
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      const errorMsg = resolvedLabels.invalidFileType
+      setError(errorMsg)
+      onError?.(errorMsg)
+      return false
+    }
+
+    // Check file size
+    if (file.size > maxSizeBytes) {
+      const errorMsg = `${resolvedLabels.fileTooLarge} (max ${formatFileSize(maxSizeBytes)})`
+      setError(errorMsg)
+      onError?.(errorMsg)
+      return false
+    }
+
+    setError(null)
+    return true
+  }
 
   React.useEffect(() => {
     if (value instanceof File) {
@@ -81,7 +118,7 @@ function AvatarUpload({
     const files = e.dataTransfer.files
     if (files.length > 0) {
       const file = files[0]
-      if (ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      if (validateFile(file)) {
         onImageSelect?.(file)
       }
     }
@@ -90,12 +127,16 @@ function AvatarUpload({
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files && files.length > 0) {
-      onImageSelect?.(files[0])
+      const file = files[0]
+      if (validateFile(file)) {
+        onImageSelect?.(file)
+      }
     }
   }
 
   const handleClear = () => {
     onImageSelect?.(null)
+    setError(null)
     if (inputRef.current) {
       inputRef.current.value = ""
     }
@@ -224,6 +265,16 @@ function AvatarUpload({
           </Button>
         )}
       </div>
+
+      {/* Error message */}
+      {error && (
+        <p
+          data-slot="avatar-upload-error"
+          className="text-sm text-destructive"
+        >
+          {error}
+        </p>
+      )}
     </div>
   )
 }

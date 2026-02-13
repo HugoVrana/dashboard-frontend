@@ -59,7 +59,9 @@
       "avatarUpload" : {
         "upload" : "Hochladen",
         "change" : "Ändern",
-        "delete" : "Löschen"
+        "delete" : "Löschen",
+        "fileTooLarge" : "Datei ist zu gross",
+        "invalidFileType" : "Ungültiger Dateityp"
       }
     },
     "logoutButton" : "Abmelden"
