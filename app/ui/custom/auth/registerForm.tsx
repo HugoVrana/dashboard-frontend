@@ -9,15 +9,17 @@ import {FormEvent, useContext, useState} from "react";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {useSearchParams} from "next/navigation";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
-import {registerUser} from "@/app/lib/actions";
-import {signIn} from "next-auth/react";
+import {registerUser, setProfilePicture} from "@/app/lib/actions";
+import {signIn, getSession} from "next-auth/react";
 import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {AvatarUpload} from "@/app/ui/base/avatar-upload";
 
 export default function RegisterForm() {
     const searchParams = useSearchParams();
     const { dashboardAuthApiIsLocal } = useContext(ApiContext);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [image, setImage] = useState<File | null>(null)
 
     const url: string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
     const callbackUrl: string = searchParams.get('callbackUrl') || '/dashboard';
@@ -41,7 +43,7 @@ export default function RegisterForm() {
         }
 
         try {
-            const result = await registerUser(url, email, password);
+            const result = await registerUser(url, { message: null }, formData);
 
             if (!result.success) {
                 setError(result.message);
@@ -59,9 +61,26 @@ export default function RegisterForm() {
             if (signInResult?.error) {
                 setError('Registration successful but login failed. Please try logging in.');
                 setIsLoading(false);
-            } else {
-                window.location.href = callbackUrl;
+                return;
             }
+
+            // Upload profile picture if selected
+            if (image) {
+                // Force session refresh to ensure cookies are propagated
+                const session = await getSession();
+                if (session) {
+                    const imageFormData = new FormData();
+                    imageFormData.append('file', image);
+                    const uploadResult = await setProfilePicture(imageFormData);
+                    if (!uploadResult.success) {
+                        console.warn('Profile picture upload failed:', uploadResult.message);
+                    }
+                } else {
+                    console.warn('Session not available for profile picture upload');
+                }
+            }
+
+            window.location.href = callbackUrl;
         } catch {
             setError('Something went wrong.');
             setIsLoading(false);
@@ -117,6 +136,22 @@ export default function RegisterForm() {
                     />
                     <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 </div>
+            </div>
+
+            <div className="flex justify-center">
+                <AvatarUpload
+                    value={image}
+                    onImageSelect={setImage}
+                    size="xl"
+                    maxSizeBytes={1024 * 1024} // 1MB - Next.js server action limit
+                    labels={{
+                        upload: t("avatarUpload.upload"),
+                        change: t("avatarUpload.change"),
+                        remove: t("avatarUpload.delete"),
+                        fileTooLarge: t("avatarUpload.fileTooLarge"),
+                        invalidFileType: t("avatarUpload.invalidFileType"),
+                    }}
+                />
             </div>
 
             <Button className="w-full" type="submit" disabled={isLoading}>

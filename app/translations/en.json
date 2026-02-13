@@ -55,7 +55,14 @@
         "label": "Confirm Password",
         "placeholder": "Confirm your password"
       },
-      "signUp": "Sign up"
+      "signUp": "Sign up",
+      "avatarUpload" : {
+        "upload" : "Upload",
+        "change" : "Change",
+        "delete" : "Delete",
+        "fileTooLarge" : "File is too large",
+        "invalidFileType" : "Invalid file type"
+      }
     },
     "logoutButton" : "Sign out"
   },
