@@ -15,6 +15,7 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {ThemeToggle} from "@/app/ui/custom/navigation/themeToggle";
 import {LanguageToggle} from "@/app/ui/custom/navigation/languageToggle";
 import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {Avatar, AvatarImage, AvatarFallback} from "@/app/ui/base/avatar";
 
 export function Navbar() {
     const { data: session, status } = useSession();
@@ -72,6 +73,14 @@ export function Navbar() {
                         <div className="h-9 w-20 animate-pulse rounded-lg bg-muted" />
                     ) : session?.user ? (
                         <div className="flex items-center gap-2">
+                            <Avatar size="sm">
+                                {session.user.image ? (
+                                    <AvatarImage src={session.user.image} alt={session.user.email ?? "User"} />
+                                ) : null}
+                                <AvatarFallback>
+                                    {session.user.email?.charAt(0).toUpperCase() ?? "U"}
+                                </AvatarFallback>
+                            </Avatar>
                             <span className="text-sm text-muted-foreground">
                                 {session.user.email}
                             </span>
