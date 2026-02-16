@@ -21,6 +21,7 @@ declare module "next-auth" {
         refreshToken: string;
         expiresIn: number;
         url: string;
+        imageUrl: string | null;
     }
 }
 
@@ -31,5 +32,6 @@ declare module "next-auth/jwt" {
         accessToken: string;
         refreshToken: string;
         expiresAt: number;
+        image: string | null;
     }
 }

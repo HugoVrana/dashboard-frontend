@@ -64,3 +64,11 @@ export function getUserRoles() : string[] {
     }
     return session.user.role?.flatMap((x : {name : string}) => x.name) ?? [];
 }
+
+export function getUserImageLink() : string {
+    const { data: session } = useSession();
+    if (!session) {
+        return "";
+    }
+    return session.user?.image;
+}

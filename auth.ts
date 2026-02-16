@@ -48,6 +48,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     accessToken: res.accessToken,
                     refreshToken: res.refreshToken,
                     expiresIn: res.expiresIn,
+                    imageUrl : res.user.profileImageUrl,
                     url: credentials.url.toString()
                 };
             },
@@ -72,6 +73,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.refreshToken = user.refreshToken;
                 token.expiresAt = Date.now() + (user.expiresIn * 1000);
                 token.url = user.url;
+                token.image = user.imageUrl;
             }
             return token;
         },
@@ -80,6 +82,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             session.user.id = token.id!.toString();
             session.user.email = token.email!;
             session.user.role = token.role as RoleRead[] || [];
+            session.user.image = token.image as string | null | undefined;
             session.accessToken = token.accessToken!.toString();
             session.refreshToken = token.refreshToken!.toString();
             session.expiresAt = token.expiresAt!;
