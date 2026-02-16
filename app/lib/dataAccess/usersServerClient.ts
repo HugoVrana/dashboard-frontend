@@ -4,6 +4,7 @@ import {isUserInfo, mapToUserInfo} from "@/app/typeValidators/userInfoValidator"
 import {LoginRequest} from "@/app/models/auth/loginRequest";
 import {AuthResponse} from "@/app/models/auth/authResponse";
 import {UserInfo} from "@/app/models/auth/userInfo";
+import {isAuthResponse, mapToAuthResponse} from "@/app/typeValidators/authResponseValidator";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 
@@ -83,7 +84,29 @@ export async function loginUserWithTokens(
             console.error("API error", res.status, res.statusText);
             return null;
         }
-        return await res.json();
+
+        const text : string = await res.text();
+        if (!text || text.trim() === '') {
+            grafanaClient.error("Empty response body, returning no user", {route: "POST /auth/login"});
+            console.log("Empty response body, returning null");
+            return Promise.resolve(null);
+        }
+
+        const data : unknown = JSON.parse(text);
+        if (!isAuthResponse(data)) {
+            grafanaClient.error("Unexpected payload:", {route: "POST /auth/login", payload: data});
+            console.error("Unexpected payload:", data);
+            return Promise.resolve(null);
+        }
+
+        const authResponse : AuthResponse | null = mapToAuthResponse(data);
+        if (!authResponse) {
+            grafanaClient.error("Unexpected payload:", {route: "POST /auth/login", payload: data});
+            console.error("Unexpected payload:", data);
+            return Promise.resolve(null);
+        }
+        return Promise.resolve(authResponse);
+
     } catch (e) {
         console.error("Post failed:", e);
         return null;
@@ -139,7 +162,7 @@ export async function postUserProfilePicture(
             return null;
         }
 
-        const publicUrl = await res.text();
+        const publicUrl : string = await res.text();
         grafanaClient.info("Profile picture uploaded", {
             route: "POST /api/user/profilePicture",
             publicUrl

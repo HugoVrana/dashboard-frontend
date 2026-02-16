@@ -1,4 +1,10 @@
-import {getAuthToken, getUserEmail, getUserGrants, getUserRoles} from "@/app/lib/permission/permissionsServerClient";
+import {
+    getAuthToken,
+    getUserEmail,
+    getUserGrants,
+    getUserImageLink,
+    getUserRoles
+} from "@/app/lib/permission/permissionsServerClient";
 import { ScrollArea } from "@/app/ui/base/scroll-area";
 import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
 import {Badge} from "@/app/ui/base/badge";
@@ -8,6 +14,7 @@ export default function UserOverlay() {
     const roles : string[] = getUserRoles();
     const grants : string[] = getUserGrants();
     const token : string = getAuthToken();
+    const image : string = getUserImageLink();
 
     return (
         <div className="space-y-4">
@@ -70,6 +77,17 @@ export default function UserOverlay() {
                             {token || "—"}
                         </p>
                     </ScrollArea>
+                </CardContent>
+            </Card>
+
+            <Card className={"bg-gray-800 border-gray-700"}>
+                <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Image</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {
+                        image
+                    }
                 </CardContent>
             </Card>
         </div>
