@@ -145,9 +145,12 @@ export async function getLatestInvoices(isLocal : boolean, authToken: string): P
 }
 
 export async function getFilteredInvoices(isLocal : boolean, authToken: string, searchTerm: string, page : number) : Promise<PageResponse<InvoiceRead> | null> {
-    alert('filtered invoices');
+    console.log("[getFilteredInvoices] Starting with params:", { isLocal, searchTerm, page, hasAuthToken: !!authToken });
+
     let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     let u : URL = new URL("/invoices/search", baseUrl);
+    console.log("[getFilteredInvoices] Request URL:", u.toString());
+
     try {
         let pageRequest : PageRequest = {
             order: "",
@@ -156,6 +159,7 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
             size: 15,
             sort: ""
         };
+        console.log("[getFilteredInvoices] Page request body:", JSON.stringify(pageRequest));
 
         const res : Response = await fetch(u.toString(), {
             method: "POST",
@@ -166,49 +170,54 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
             },
             body: JSON.stringify(pageRequest)
         });
+        console.log("[getFilteredInvoices] Response status:", res.status, res.statusText);
 
         if (!res.ok) {
-            grafanaClient.error("HTTP error", {route: "GET /invoices/search", status: res.status, statusText: res.statusText});
-            console.error("HTTP error", res.status, res.statusText);
-            alert("!res.ok");
-            alert(res.status);
+            grafanaClient.error("HTTP error", {route: "POST /invoices/search", status: res.status, statusText: res.statusText});
+            console.error("[getFilteredInvoices] HTTP error:", res.status, res.statusText);
             return Promise.resolve(null);
         }
 
         // Return null if no invoices returned
         const text : string = await res.text();
+        console.log("[getFilteredInvoices] Raw response text length:", text?.length ?? 0);
+        console.log("[getFilteredInvoices] Raw response text (first 500 chars):", text?.substring(0, 500));
+
         if (!text || text.trim() === '') {
-            grafanaClient.error("Empty response body, returning empty page", {route: "GET /invoices/search"});
-            console.log("Empty response body, returning empty page");
-            alert("!text || text.trim() === ''");
+            grafanaClient.error("Empty response body, returning empty page", {route: "POST /invoices/search"});
+            console.error("[getFilteredInvoices] Empty response body");
             return Promise.resolve(null);
         }
 
-        const data : unknown = await JSON.parse(text);
+        const data : unknown = JSON.parse(text);
+        console.log("[getFilteredInvoices] Parsed data keys:", data && typeof data === 'object' ? Object.keys(data) : typeof data);
+
         if (!isPage(data)){
-            grafanaClient.error("Unexpected payload:", {route: "GET /invoices/search", payload: data});
-            console.error("Unexpected payload:", data);
-            alert("!isPage(data)");
+            grafanaClient.error("Unexpected payload:", {route: "POST /invoices/search", payload: data});
+            console.error("[getFilteredInvoices] isPage check failed. Data:", JSON.stringify(data, null, 2));
             return Promise.resolve(null);
         }
 
         const result : PageResponse<InvoiceRead> | null  = mapToInvoiceReadPage(data);
+        console.log("[getFilteredInvoices] mapToInvoiceReadPage result:", result ? { dataLength: result.data.length, page: result.currentPage, totalPages: result.totalPages } : null);
+
         if (!result) {
-            grafanaClient.error("Unexpected payload:", {route: "GET /invoices/search", payload: data});
-            console.error("Unexpected payload:", data);
-            alert("!result");
+            grafanaClient.error("Unexpected payload:", {route: "POST /invoices/search", payload: data});
+            console.error("[getFilteredInvoices] mapToInvoiceReadPage returned null");
             return Promise.resolve(null);
         }
+
         grafanaClient.info("Fetched filtered invoices", {
-            route: "GET /invoices/latest",
+            route: "POST /invoices/search",
             body : {searchTerm : searchTerm , page : page},
             count: result.data.length
         });
-        console.log("Result:", result);
+        console.log("[getFilteredInvoices] Success! Result:", result);
         return Promise.resolve(result);
     } catch (e) {
-        grafanaClient.info("Fetch failed", {route: "GET /invoices/search", error: e});
-        console.log("Fetch failed:", e);
+        grafanaClient.error("Fetch failed", {route: "POST /invoices/search", error: e});
+        console.error("[getFilteredInvoices] Catch block - error:", e);
+        console.error("[getFilteredInvoices] Error stack:", e instanceof Error ? e.stack : 'No stack trace');
         return Promise.resolve(null);
     }
 }
