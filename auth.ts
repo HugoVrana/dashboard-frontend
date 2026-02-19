@@ -63,8 +63,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return baseUrl;
         },
         async jwt({ token, user } :  {token : JWT, user : User}) {
-            console.log("JWT callback - user:", user);
-            console.log("JWT callback - token:", token);
             if (user) {
                 token.id = user.id;
                 token.email = user.email;
@@ -78,7 +76,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return token;
         },
         async session({ session, token } : {session : Session, token : any}) {
-            console.log("Session callback - token:", token);
             session.user.id = token.id!.toString();
             session.user.email = token.email!;
             session.user.role = token.role as RoleRead[] || [];
@@ -87,23 +84,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             session.refreshToken = token.refreshToken!.toString();
             session.expiresAt = token.expiresAt!;
             session.url = token.url!.toString();
-            console.log("Session callback - session:", session);
             return session;
         }
     },
     events: {
         async signOut(message : any) {
-            console.log("SignOut event - message:", message);
             // For JWT strategy, the message contains { token }
             if ("token" in message && message.token) {
-                console.log("SignOut event - token:", message.token);
-
                 // Access your custom token properties
                 const url : string | undefined = message.token.url?.toString();
                 const accessToken : string | undefined = message.token.accessToken?.toString();
                 const refreshToken : string | undefined = message.token.refreshToken?.toString();
                 if (!url || !accessToken || !refreshToken) {
-                    console.error("SignOut event - Invalid token:", message.token);
                     return;
                 }
                 await logoutUserWithToken(url, accessToken, refreshToken);
