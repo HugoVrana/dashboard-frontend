@@ -2,8 +2,8 @@ import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
 import {RegisterRequest} from "@/app/models/auth/registerRequest";
 import {isUserInfo, mapToUserInfo} from "@/app/typeValidators/userInfoValidator";
 import {LoginRequest} from "@/app/models/auth/loginRequest";
-import {AuthResponse} from "@/app/models/auth/authResponse";
 import {UserInfo} from "@/app/models/auth/userInfo";
+import {AuthResponse} from "@/app/models/auth/authResponse";
 import {isAuthResponse, mapToAuthResponse} from "@/app/typeValidators/authResponseValidator";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();

@@ -2,9 +2,9 @@ import NextAuth, {User, Session} from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { LoginRequest } from "@/app/models/auth/loginRequest";
 import {RoleRead} from "@/app/models/auth/role";
-import {AuthResponse} from "@/app/models/auth/authResponse";
 import {JWT} from "next-auth/jwt";
 import {loginUserWithTokens, logoutUserWithToken} from "@/app/lib/dataAccess/usersServerClient";
+import { AuthResponse } from "@/app/models/auth/authResponse";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     session: {

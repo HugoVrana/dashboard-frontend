@@ -22,10 +22,10 @@ export function formatCurrency(amount: number, locale: string, currency?: string
 }
 
 export const formatDateToLocal = (
-    dateStr: string,
+    dateInput: string | Date,
     locale: string = 'en-US',
 ) => {
-  const date = new Date(dateStr);
+  const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
   const options: Intl.DateTimeFormatOptions = {
     day: 'numeric',
     month: 'short',
