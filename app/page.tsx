@@ -9,7 +9,7 @@ import {Button} from "@/app/ui/base/button";
 import { useSession } from "next-auth/react";
 import {useContext, useMemo} from "react";
 import {ThemeContext} from "@/app/lib/theme/themeContext";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";

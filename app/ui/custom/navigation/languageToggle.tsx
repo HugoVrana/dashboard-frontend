@@ -10,7 +10,7 @@ import {
 } from "@/app/ui/base/select";
 import { getCookie } from "@/app/lib/cookieUtil";
 import { GlobeIcon } from "lucide-react";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export function LanguageToggle() {
     const [locale, setLocale] = useState("en");

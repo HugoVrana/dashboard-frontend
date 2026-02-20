@@ -6,7 +6,7 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent, CardHeader} from "../../base/card";
 import LoginForm from "@/app/ui/custom/auth/loginForm";
 import RegisterForm from "@/app/ui/custom/auth/registerForm";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function LoginRegisterCard() {
     const [pageState, setPageState] = useState<"login" | "register">("login");

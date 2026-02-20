@@ -2,7 +2,7 @@ import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
 import {InvoiceCreate} from "@/app/models/invoice/invoiceCreate";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {getAuthToken} from "@/app/lib/permission/permissionsServerClient";
-import {isInvoiceRead, mapToInvoiceRead} from "@/app/typeValidators/invoiceValidator";
+import {isInvoiceRead, mapToInvoiceRead} from "@/app/lib/typeValidators/invoiceValidator";
 import {InvoiceUpdate} from "@/app/models/invoice/invoiceUpdate";
 import {create} from "node:domain";
 

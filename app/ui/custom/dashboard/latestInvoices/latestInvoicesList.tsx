@@ -4,7 +4,7 @@ import {RefreshCcw} from "lucide-react";
 import {Avatar, AvatarImage, AvatarFallback} from "@/app/ui/base/avatar";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/app/ui/base/card";
 import {Label} from "@/app/ui/base/label";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function LatestInvoicesList(latestInvoicesProps: LatestInvoicesProps) {
 

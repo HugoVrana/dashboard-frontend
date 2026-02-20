@@ -12,7 +12,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/app/ui/base/avatar";
 import InvoiceStatus from "@/app/ui/custom/invoices/status";
 import {DeleteInvoice, UpdateInvoice} from "@/app/ui/custom/invoices/buttons";
 import {InvoiceSkeleton} from "@/app/ui/custom/skeletons/invoiceSkeleton";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {useSearchParams} from "next/navigation";
 import {formatCurrency, formatDateToLocal} from "@/app/lib/utils";
 import {useLocale} from "next-intl";

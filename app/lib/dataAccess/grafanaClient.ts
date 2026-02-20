@@ -1,7 +1,7 @@
 'use client'
 
 import {LogCreate} from "@/app/models/log/logCreate";
-import {mapToLogCreate} from "@/app/typeValidators/logValidator";
+import {mapToLogCreate} from "@/app/lib/typeValidators/logValidator";
 
 export default class GrafanaClient {
     private readonly service : string;

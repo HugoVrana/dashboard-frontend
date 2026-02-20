@@ -1,10 +1,10 @@
 import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
 import {RegisterRequest} from "@/app/models/auth/registerRequest";
-import {isUserInfo, mapToUserInfo} from "@/app/typeValidators/userInfoValidator";
+import {isUserInfo, mapToUserInfo} from "@/app/lib/typeValidators/userInfoValidator";
 import {LoginRequest} from "@/app/models/auth/loginRequest";
 import {UserInfo} from "@/app/models/auth/userInfo";
 import {AuthResponse} from "@/app/models/auth/authResponse";
-import {isAuthResponse, mapToAuthResponse} from "@/app/typeValidators/authResponseValidator";
+import {isAuthResponse, mapToAuthResponse} from "@/app/lib/typeValidators/authResponseValidator";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 

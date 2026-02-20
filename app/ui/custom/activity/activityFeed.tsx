@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card";
-import { ActivityClient } from "@/app/lib/websocket/activityClient";
+import { ActivityClient } from "@/app/lib/dataAccess/websocket/activityClient";
 import {ActivityEvent} from "@/app/models/ui/activity/activityEvent";
 import {ActivityFeedProps} from "@/app/models/ui/activity/activityFeedProps";
 import ActivityEventDisplay from "@/app/ui/custom/activity/activityEventDisplay";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export function ActivityFeed({
     sources,

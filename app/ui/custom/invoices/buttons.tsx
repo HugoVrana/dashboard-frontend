@@ -6,7 +6,7 @@ import { State } from "@/app/models/state";
 import { Button } from "../../base/button";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export function CreateInvoice() {
     const t = useDebugTranslations("dashboard.controls.invoiceButtons");
