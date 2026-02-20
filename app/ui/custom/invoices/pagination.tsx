@@ -12,7 +12,7 @@ import {
     PaginationLink
 } from "@/app/ui/base/pagination";
 import {generatePagination} from "@/app/lib/utils";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function InvoicesPagination({ totalPages }: { totalPages: number }) {
     const t = useDebugTranslations("dashboard.controls.pagination");

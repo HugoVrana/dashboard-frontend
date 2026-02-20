@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import {CheckIcon, ClockIcon} from "lucide-react";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function InvoiceStatus({ status }: { status: string }) {
     const t = useDebugTranslations("dashboard.controls.status");

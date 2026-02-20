@@ -1,6 +1,6 @@
 "use client"
 
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {useState, useEffect} from "react";
 import {useSearchParams, useRouter} from "next/navigation";
 import Search from "@/app/ui/custom/invoices/search";

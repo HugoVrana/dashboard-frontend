@@ -14,7 +14,7 @@ import {Button} from "@/app/ui/base/button";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {ThemeToggle} from "@/app/ui/custom/navigation/themeToggle";
 import {LanguageToggle} from "@/app/ui/custom/navigation/languageToggle";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {Avatar, AvatarImage, AvatarFallback} from "@/app/ui/base/avatar";
 
 export function Navbar() {
