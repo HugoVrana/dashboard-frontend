@@ -15,7 +15,6 @@ function isValidUrl(str: string): boolean {
 }
 
 export async function getUserProfileImageUrl(isLocal : boolean, userId : string) : Promise<string | null> {
-    alert(`userid : ${userId}`)
     const baseUrl : string = isLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
     const u : URL = new URL(`api/user/${userId}/profilePicture`, baseUrl);
 
@@ -51,6 +50,6 @@ export async function getUserProfileImageUrl(isLocal : boolean, userId : string)
     catch (e) {
         grafanaClient.error("Fetch failed", {route: "GET /invoices/amount", error: e});
         console.error("Error processing response:", e);
-        return Promise.resolve(null);
+        return null;
     }
 }
