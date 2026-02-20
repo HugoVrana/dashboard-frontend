@@ -1,8 +1,11 @@
-import {UserInfo} from "./userInfo";
+import { z } from "zod";
+import { UserInfoSchema } from "./userInfo";
 
-export type AuthResponse = {
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    user : UserInfo | null;
-}
+export const AuthResponseSchema = z.object({
+    accessToken: z.string(),
+    refreshToken: z.string(),
+    expiresIn: z.number(),
+    user: UserInfoSchema.nullable(),
+});
+
+export type AuthResponse = z.infer<typeof AuthResponseSchema>;
