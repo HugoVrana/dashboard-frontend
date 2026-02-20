@@ -228,9 +228,8 @@ export async function getInvoice(isLocal : boolean, authToken: string, id : stri
     const u : URL = new URL("/invoices/" + id, baseUrl);
     try {
         const res : Response = await fetch(u.toString(), {
-            method: "POST",
+            method: "GET",
             headers: {
-                Content_Type : "application/json",
                 Accept : "application/json",
                 Authorization : `Bearer ${authToken}`
             }

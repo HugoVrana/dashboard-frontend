@@ -10,7 +10,7 @@ import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/app/ui/base/table";
 import {Avatar, AvatarFallback, AvatarImage} from "@/app/ui/base/avatar";
 import InvoiceStatus from "@/app/ui/custom/invoices/status";
-import {DeleteInvoice, UpdateInvoice} from "@/app/ui/custom/invoices/buttons";
+import {DeleteInvoice, UpdateInvoice, ViewInvoice} from "@/app/ui/custom/invoices/buttons";
 import {InvoiceSkeleton} from "@/app/ui/custom/skeletons/invoiceSkeleton";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {useSearchParams} from "next/navigation";
@@ -123,6 +123,7 @@ export default function InvoicesTable (props : InvoiceTableProps) {
                             </TableCell>
                             <TableCell>
                                 <div className="flex justify-end gap-2">
+                                    <ViewInvoice invoiceId={invoice.id} />
                                     {props.canEdit && <UpdateInvoice invoiceId={invoice.id} />}
                                     {props.canDelete && <DeleteInvoice invoiceId={invoice.id} />}
                                 </div>
