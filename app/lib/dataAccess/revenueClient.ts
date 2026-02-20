@@ -28,20 +28,21 @@ export async function getRevenue(isLocal: boolean, authToken : string) : Promise
         if (!text || text.trim() === '') {
             grafanaClient.error("Empty response body, returning empty page", {route: "GET /revenues/"});
             console.log("Empty response body, returning empty page");
-            return Promise.resolve(null);
+            return null;
         }
 
         const data : unknown = await JSON.parse(text);
         if (!Array.isArray(data)) {
             grafanaClient.error("Unexpected payload:", {route: "GET /revenues/", payload: data});
             console.error("Expected an array, got:", data);
-            return Promise.resolve(null);
+            return null;
         }
         grafanaClient.info("Fetched revenues", {route: "GET /revenues/"});
-        return Promise.resolve(data.filter(isRevenue) as RevenueRead[]);// Wait for the Promise to resolve
+        return data.filter(isRevenue);
+
     } catch (e) {
         grafanaClient.error("Fetch failed", {route: "GET /revenues/", error: e});
         console.error("Error processing response:", e);
-        return Promise.resolve(null);
+        return null;
     }
 }
