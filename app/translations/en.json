@@ -72,7 +72,26 @@
     },
     "invoices" : {
       "title" : "Invoices",
-      "searchPlaceholder" : "Search invoices (InvoiceRead id and status are working)"
+      "searchPlaceholder" : "Search invoices (InvoiceRead id and status are working)",
+      "actions" : {
+        "created" : "Invoice created",
+        "updated" : "Invoice edited",
+        "deleted" : "Invoice deleted"
+      },
+      "createForm" : {
+        "successMessage" : "Invoice created successfully!",
+        "errorMessage" : "Failed to create invoice. Please try again.",
+        "chooseCustomer" : "Choose customer",
+        "noCustomerPermission" : "You don't have permission to view customers",
+        "chooseAmount" : "Choose an amount",
+        "amountPlaceholder" : "Enter USD amount",
+        "setStatus" : "Set the invoice status",
+        "pending" : "Pending",
+        "paid" : "Paid",
+        "cancel" : "Cancel",
+        "creating" : "Creating...",
+        "createInvoice" : "Create Invoice"
+      }
     },
     "controls" : {
       "cards" : {

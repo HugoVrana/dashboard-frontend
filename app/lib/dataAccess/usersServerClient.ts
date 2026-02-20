@@ -55,7 +55,7 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
 
         grafanaClient.info("Created User", {route : "POST /api/auth/register", response : userinfo});
 
-        return Promise.resolve(userinfo);
+        return userinfo;
 
     } catch (e) {
         console.error("Post failed:", e);
