@@ -5,15 +5,35 @@ import { Badge } from "@/app/ui/base/badge"
 import { Button } from "@/app/ui/base/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card"
 import { Label } from "@/app/ui/base/label"
+import {useEffect, useState} from "react";
+import {getCookie} from "@/app/lib/cookieUtil";
 
 export default function TranslationOverlay() {
     const { showKeys, toggleShowKeys } = useTranslationDebug()
+    const [locale, setLocale] = useState("en");
+
+    useEffect(() => {
+        async function fetchLocale() {
+            const locale : string | undefined = await getCookie("locale");
+            setLocale(locale ?? "en");
+        }
+
+        fetchLocale();
+
+        // there is an event listener on language toggle to update the locale
+        const handleLocaleChange = (e: CustomEvent) => setLocale(e.detail);
+        window.addEventListener("locale-change", handleLocaleChange as EventListener);
+
+        return () => {
+            window.removeEventListener("locale-change", handleLocaleChange as EventListener);
+        };
+    }, []);
 
     return (
         <div className="space-y-4">
             <Card className="bg-gray-800 border-gray-700">
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-white">Translation Display</CardTitle>
+                    <CardTitle className="text-sm font-medium text-white">Translation</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                     <div className="flex gap-1 p-1 bg-gray-700 rounded-lg">
@@ -55,6 +75,14 @@ export default function TranslationOverlay() {
                                 : "Labels display translated text"}
                         </p>
                     </div>
+                </CardContent>
+            </Card>
+            <Card className="bg-gray-800 border-gray-700">
+                <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Language</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-xs text-gray-400 break-all">{locale}</p>
                 </CardContent>
             </Card>
         </div>
