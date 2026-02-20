@@ -8,8 +8,8 @@ import {isCustomerRead, isCustomerReadList} from "@/app/typeValidators/customerV
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
 export async function getCustomers(isLocal : boolean, authToken: string) : Promise<CustomerRead[] | null> {
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     grafanaClient.info("Fetching customers", {route: "GET /customers/"});
+    const baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     const u : URL = new URL("/customers/", baseUrl);
     try {
         const res : Response = await fetch(u.toString(), {
@@ -22,7 +22,7 @@ export async function getCustomers(isLocal : boolean, authToken: string) : Promi
         if (!res.ok) {
             grafanaClient.error("HTTP error", {route: "GET /customers/", status: res.status, statusText: res.statusText});
             console.error("HTTP error", res.status, res.statusText);
-            return Promise.resolve(null);
+            return null;
         }
 
         // Return null if no invoices returned
@@ -30,7 +30,7 @@ export async function getCustomers(isLocal : boolean, authToken: string) : Promi
         if (!text || text.trim() === '') {
             grafanaClient.error("Empty response body, returning empty page", {route: "GET /customers/"});
             console.log("Empty response body, returning empty page");
-            return Promise.resolve(null);
+            return null;
         }
 
         const data : unknown = JSON.parse(text);
@@ -38,24 +38,23 @@ export async function getCustomers(isLocal : boolean, authToken: string) : Promi
         if (!isCustomerReadList(data)) {
             grafanaClient.error("Unexpected payload:", {route: "GET /customers/", payload: data});
             console.error("Unexpected payload:", data);
-            return Promise.resolve(null);
+            return null;
         }
 
         grafanaClient.info("Fetched customers", {route: "GET /customers/"});
 
-        return Promise.resolve(data.filter(isCustomerRead) as CustomerRead[]);
+        return data.filter(isCustomerRead) as CustomerRead[];
     } catch (e) {
         grafanaClient.error("Fetch failed", {route: "GET /customers/", error: e});
         console.error("Fetch failed:", e);
-        return Promise.resolve(null);
+        return null;
     }
 }
 
 export async function getCustomerCount(isLocal : boolean, authToken: string) : Promise<number | null> {
     grafanaClient.info("Fetching customer count", {route: "GET /customers/count"});
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    console.log("Fetching customer count from", baseUrl);
-    let u : URL = new URL("/customers/count", baseUrl);
+    const baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
+    const u : URL = new URL("/customers/count", baseUrl);
     try {
         const res : Response = await fetch(u.toString(), {
             headers: {
@@ -67,7 +66,7 @@ export async function getCustomerCount(isLocal : boolean, authToken: string) : P
         if (!res.ok) {
             grafanaClient.error("HTTP error", {route: "GET /customers/count", status: res.status, statusText: res.statusText});
             console.error("HTTP error", res.status, res.statusText);
-            return Promise.resolve(null);
+            return null;
         }
 
         // Return null if no data returned
@@ -75,21 +74,21 @@ export async function getCustomerCount(isLocal : boolean, authToken: string) : P
         if (!text || text.trim() === '') {
             grafanaClient.error("Empty response body, returning empty page", {route: "GET /customers/count"});
             console.log("Empty response body, returning empty page");
-            return Promise.resolve(null);
+            return null;
         }
 
         const data : unknown = JSON.parse(text);
         if (typeof data === "number" && Number.isFinite(data)) {
             grafanaClient.info("Fetched customer count", {route: "GET /customers/count", count: data});
-            return Promise.resolve(data);
+            return data;
         }
 
         grafanaClient.error("Unexpected payload:", {route: "GET /customers/count", payload: data});
         console.error("Unexpected payload:", data);
-        return Promise.resolve(null);
+        return null;
     } catch (e) {
         grafanaClient.error("Fetch failed", {route: "GET /customers/count", error: e});
         console.error("Fetch failed:", e);
-        return Promise.resolve(null);
+        return null;
     }
 }

@@ -27,7 +27,7 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
         if (!res.ok) {
             console.error("API error", res.status, res.statusText);
             grafanaClient.error("API error", {route: "POST /api/auth/register", status: res.status, statusText: res.statusText});
-            return Promise.resolve(null);
+            return null;
         }
 
         const result  = await res.json();
@@ -37,7 +37,7 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
         if (!isUserInfo(result)) {
             grafanaClient.error("Unexpected payload:", {route: "POST /api/auth/register", payload: result});
             console.error("Unexpected payload:", result);
-            return Promise.resolve(null);
+            return null;
 
         }
 
@@ -45,7 +45,7 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
         if (!userinfo) {
             grafanaClient.error("Unexpected payload:", {route: "POST /api/auth/register", payload: result});
             console.error("Unexpected payload:", result);
-            return Promise.resolve(null);
+            return null;
         }
 
         if (!userinfo.id) {
@@ -60,7 +60,7 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
     } catch (e) {
         console.error("Post failed:", e);
         grafanaClient.error("Post failed", {route: "POST /api/auth/register", error: e});
-        return Promise.resolve(null);
+        return null;
     }
 }
 
@@ -89,23 +89,23 @@ export async function loginUserWithTokens(
         if (!text || text.trim() === '') {
             grafanaClient.error("Empty response body, returning no user", {route: "POST /auth/login"});
             console.log("Empty response body, returning null");
-            return Promise.resolve(null);
+            return null;
         }
 
         const data : unknown = JSON.parse(text);
         if (!isAuthResponse(data)) {
             grafanaClient.error("Unexpected payload:", {route: "POST /auth/login", payload: data});
             console.error("Unexpected payload:", data);
-            return Promise.resolve(null);
+            return null;
         }
 
         const authResponse : AuthResponse | null = mapToAuthResponse(data);
         if (!authResponse) {
             grafanaClient.error("Unexpected payload:", {route: "POST /auth/login", payload: data});
             console.error("Unexpected payload:", data);
-            return Promise.resolve(null);
+            return null;
         }
-        return Promise.resolve(authResponse);
+        return authResponse;
 
     } catch (e) {
         console.error("Post failed:", e);
