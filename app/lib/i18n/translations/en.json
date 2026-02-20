@@ -110,6 +110,7 @@
         "timeFrame" : "Last 12 months"
       },
       "invoiceButtons" : {
+        "viewInvoice" : "View Invoice",
         "createInvoice" : "Create Invoice",
         "updateInvoice" : "Update Invoice",
         "deleteInvoice" : "Delete Invoice"
@@ -125,6 +126,16 @@
         "status" : "Status",
         "actions" : "Actions",
         "profileAlt" : "'s profile picture"
+      },
+      "invoiceDetail" : {
+        "title" : "Invoice",
+        "customer" : "Customer",
+        "paymentDetails" : "Payment Details",
+        "amount" : "Amount",
+        "invoiceId" : "Invoice ID",
+        "date" : "Date",
+        "unknownCustomer" : "Unknown Customer",
+        "backToInvoices" : "Back to Invoices"
       },
       "status" : {
         "pending" : "Pending",

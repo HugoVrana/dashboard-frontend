@@ -1,4 +1,4 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import {Eye, Pencil, Plus, Trash2} from 'lucide-react';
 import Link from 'next/link';
 import { removeInvoice } from "@/app/lib/actions";
 import { useActionState, useContext } from "react";
@@ -14,6 +14,18 @@ export function CreateInvoice() {
         <Button>
             <Link href="/dashboard/invoices/create/" className="hidden md:inline-flex items-center gap-2">
                 {t('createInvoice')} <Plus className="h-5 w-5" />
+            </Link>
+        </Button>
+    );
+}
+
+export function ViewInvoice({ invoiceId } : {invoiceId : string}) {
+    const t = useDebugTranslations("dashboard.controls.invoiceButtons");
+    return (
+        <Button variant="outline" size="icon">
+            <Link href={`/dashboard/invoices/${invoiceId}`}>
+                <Eye className="h-4 w-4" />
+                <span className="sr-only">{t('viewInvoice')}</span>
             </Link>
         </Button>
     );
