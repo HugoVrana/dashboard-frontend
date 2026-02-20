@@ -9,16 +9,18 @@ import {getFilteredInvoices} from "@/app/lib/dataAccess/invoicesClient";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/app/ui/base/table";
 import {Avatar, AvatarFallback, AvatarImage} from "@/app/ui/base/avatar";
-import {formatCurrency, formatDateToLocal} from "@/app/lib/utils";
 import InvoiceStatus from "@/app/ui/custom/invoices/status";
 import {DeleteInvoice, UpdateInvoice} from "@/app/ui/custom/invoices/buttons";
 import {InvoiceSkeleton} from "@/app/ui/custom/skeletons/invoiceSkeleton";
 import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 import {useSearchParams} from "next/navigation";
+import {formatCurrency, formatDateToLocal} from "@/app/lib/utils";
+import {useLocale} from "next-intl";
 
 export default function InvoicesTable (props : InvoiceTableProps) {
     const t = useDebugTranslations("dashboard.controls.invoiceTable");
     const searchParams = useSearchParams();
+    const locale : string = useLocale();
 
     const query = searchParams.get('query') ?? '';
     const currentPage = Number(searchParams.get('page')) || 1;
@@ -40,15 +42,11 @@ export default function InvoicesTable (props : InvoiceTableProps) {
             try {
                 let inv : PageResponse<InvoiceRead> | null = null;
                 if (query) {
-                    alert('Query not empty');
                     inv = await getFilteredInvoices(dashboardApiIsLocal, getAuthToken, query, currentPage);
                 } else {
-                    alert('Query empty');
                     inv = await getFilteredInvoices(dashboardApiIsLocal, getAuthToken, '', currentPage);
-                    alert(inv?.data.length.toString());
                 }
                 setInvoices(inv);
-
                 console.log("Loaded data: ", {inv});
             } catch (error){
                 console.error("Error loading data: ", error);
@@ -118,8 +116,8 @@ export default function InvoicesTable (props : InvoiceTableProps) {
                                 </div>
                             </TableCell>
                             <TableCell>{invoice.customer?.email}</TableCell>
-                            <TableCell>{formatCurrency(invoice.amount)}</TableCell>
-                            <TableCell>{formatDateToLocal(invoice.date)}</TableCell>
+                            <TableCell>{formatCurrency(invoice.amount, locale)}</TableCell>
+                            <TableCell>{formatDateToLocal(invoice.date, locale)}</TableCell>
                             <TableCell>
                                 <InvoiceStatus status={invoice.status} />
                             </TableCell>
