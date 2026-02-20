@@ -131,9 +131,9 @@ export async function getLatestInvoices(isLocal : boolean, authToken: string): P
         const data : unknown = await JSON.parse(text);
         if (Array.isArray(data)) {
             grafanaClient.info("Fetched latest invoices", {route: "GET /invoices/latest", count: data.length});
-            return Promise.resolve(data
+            return data
                 .map(mapToInvoiceRead)
-                .filter(isInvoiceRead) as InvoiceRead[]);
+                .filter(isInvoiceRead) as InvoiceRead[];
         } else {
             grafanaClient.error("Unexpected payload:", {route: "GET /invoices/latest", payload: data});
             console.error("Unexpected payload:", data);

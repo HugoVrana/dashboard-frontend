@@ -9,12 +9,12 @@ import { ScrollArea } from "@/app/ui/base/scroll-area";
 import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
 import {Badge} from "@/app/ui/base/badge";
 
-export default function UserOverlay() {
-    const userEmail : string = getUserEmail();
-    const roles : string[] = getUserRoles();
-    const grants : string[] = getUserGrants();
-    const token : string = getAuthToken();
-    const image : string = getUserImageLink();
+export default async function UserOverlay() {
+    const userEmail : string = await getUserEmail();
+    const roles : string[] = await getUserRoles();
+    const grants : string[] = await getUserGrants();
+    const token : string = await getAuthToken();
+    const image : string = await getUserImageLink();
 
     return (
         <div className="space-y-4">

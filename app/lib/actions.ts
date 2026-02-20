@@ -58,7 +58,7 @@ export async function createInvoice(url: string, prevState: State, formData: For
         }
     }
     revalidatePath('/dashboard/invoices');
-    redirect('/dashboard/invoices');
+    redirect('/dashboard/invoices?created=true');
 }
 
 export async function updateInvoice(url : string, prevState : State, formData : FormData) : Promise<State> {

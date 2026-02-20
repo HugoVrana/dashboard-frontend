@@ -4,6 +4,7 @@ import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {PageResponse} from "@/app/models/page/pageResponse";
 import {InvoiceUpdate} from "@/app/models/invoice/invoiceUpdate";
 import {InvoiceCreate} from "@/app/models/invoice/invoiceCreate";
+import {z} from "zod";
 
 
 export function mapToInvoiceRead(x: unknown): InvoiceRead | null {
@@ -102,3 +103,17 @@ export function isInvoiceUpdate(x: unknown): x is InvoiceUpdate {
         typeof o.status === "string"
     );
 }
+
+export const InvoiceCreateFormSchema = z.object({
+    customer_id: z.string({
+        invalid_type_error: 'Please select a customer.',
+    }),
+    amount: z.coerce
+        .number()
+        .gt(0, {
+            message: 'Please enter an amount greater than $0.'
+        }),
+    status: z.enum(['pending', 'paid'], {
+        invalid_type_error: 'Please select an invoice status.',
+    })
+});
