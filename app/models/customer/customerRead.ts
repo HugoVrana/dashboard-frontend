@@ -1,6 +1,10 @@
-export type CustomerRead = {
-    id: string;
-    name: string;
-    email: string;
-    image_url: string;
-}
+import { z } from "zod";
+
+export const CustomerReadSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    email: z.string().email().optional(),
+    image_url: z.string().optional(),
+});
+
+export type CustomerRead = z.infer<typeof CustomerReadSchema>;

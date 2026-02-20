@@ -1,17 +1,10 @@
-import {RevenueRead} from "@/app/models/revenue/revenueRead";
+import { RevenueReadSchema, type RevenueRead } from "@/app/models/revenue/revenueRead";
 
-export function isRevenue(x: any): x is RevenueRead {
-    return x && typeof x === "object"
-        && typeof x.month === "string"
-        && typeof x.revenue === "number"; // if you keep it as ISO string
+export function isRevenue(x: unknown): x is RevenueRead {
+    return RevenueReadSchema.safeParse(x).success;
 }
 
-export function mapToRevenueRead(x: any): RevenueRead | null {
-    if (isRevenue(x)) {
-        return {
-            month: x.month,
-            revenue: x.revenue
-        }
-    }
-    return null;
+export function mapToRevenueRead(x: unknown): RevenueRead | null {
+    const result = RevenueReadSchema.safeParse(x);
+    return result.success ? result.data : null;
 }
