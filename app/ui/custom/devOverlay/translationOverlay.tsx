@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslationDebug } from "@/app/lib/devOverlay/translationDebugContext"
+import { useTranslationDebug } from "@/app/lib/i18n/translationDebugContext"
 import { Badge } from "@/app/ui/base/badge"
 import { Button } from "@/app/ui/base/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card"

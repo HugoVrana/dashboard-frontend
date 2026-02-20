@@ -1,6 +1,6 @@
 // Simple logger that works in both server and client environments
 import {LogCreate} from "@/app/models/log/logCreate";
-import {mapToLogCreate} from "@/app/typeValidators/logValidator";
+import {mapToLogCreate} from "@/app/lib/typeValidators/logValidator";
 
 export default class GrafanaServerClient {
     private readonly service: string;

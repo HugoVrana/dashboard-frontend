@@ -17,7 +17,7 @@ import {CustomerDropdown} from "@/app/ui/custom/customer/customerDropDown";
 import {FieldSet, FieldLegend, Field, FieldLabel} from "@/app/ui/base/field";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {getCustomers} from "@/app/lib/dataAccess/customersClient";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function CreateInvoiceForm({customerReadPermission}: { customerReadPermission: boolean; }) {
     const t = useDebugTranslations("dashboard.invoices.createForm");

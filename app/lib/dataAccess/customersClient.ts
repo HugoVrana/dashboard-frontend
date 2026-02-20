@@ -3,7 +3,7 @@
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
 import {CustomerRead} from "@/app/models/customer/customerRead";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
-import {isCustomerRead, isCustomerReadList} from "@/app/typeValidators/customerValidator";
+import {isCustomerRead, isCustomerReadList} from "@/app/lib/typeValidators/customerValidator";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 

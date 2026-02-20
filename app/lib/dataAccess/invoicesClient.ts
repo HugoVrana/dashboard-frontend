@@ -2,13 +2,12 @@
 
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {
-    isInvoiceRead,
+    isInvoiceRead, isInvoiceReadPage,
     mapToInvoiceRead,
     mapToInvoiceReadPage
-} from "@/app/typeValidators/invoiceValidator";
+} from "@/app/lib/typeValidators/invoiceValidator";
 import {PageRequest} from "@/app/models/page/pageRequest";
 import {PageResponse} from "@/app/models/page/pageResponse";
-import {isPage} from "@/app/typeValidators/pageResponseValidator";
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 
@@ -133,7 +132,7 @@ export async function getLatestInvoices(isLocal : boolean, authToken: string): P
             grafanaClient.info("Fetched latest invoices", {route: "GET /invoices/latest", count: data.length});
             return data
                 .map(mapToInvoiceRead)
-                .filter(isInvoiceRead) as InvoiceRead[];
+                .filter((x): x is InvoiceRead => x !== null);
         } else {
             grafanaClient.error("Unexpected payload:", {route: "GET /invoices/latest", payload: data});
             console.error("Unexpected payload:", data);
@@ -194,7 +193,7 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
         const data : unknown = JSON.parse(text);
         console.log("[getFilteredInvoices] Parsed data keys:", data && typeof data === 'object' ? Object.keys(data) : typeof data);
 
-        if (!isPage(data)){
+        if (!isInvoiceReadPage(data)){
             grafanaClient.error("Unexpected payload:", {route: "POST /invoices/search", payload: data});
             console.error("[getFilteredInvoices] isPage check failed. Data:", JSON.stringify(data, null, 2));
             return null;

@@ -3,7 +3,7 @@
 import Cards from "@/app/ui/custom/dashboard/cards/cards";
 import RevenueChart from "@/app/ui/custom/dashboard/revenueChart/revenueChart";
 import LatestInvoices from "@/app/ui/custom/dashboard/latestInvoices/latestInvoices";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function Page() {
     const t = useDebugTranslations("dashboard.overview");

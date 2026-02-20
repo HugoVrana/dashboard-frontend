@@ -7,7 +7,7 @@ import {getInvoiceAmount, getInvoiceCount} from "@/app/lib/dataAccess/invoicesCl
 import {CardsSkeleton} from "@/app/ui/custom/skeletons/cardsSkeleton";
 import CardWithPermission from "@/app/ui/custom/dashboard/cards/cardWithPermission";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function Cards() {
     const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);

@@ -10,7 +10,7 @@ import {FormEvent, useContext, useState} from "react";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 import {useSearchParams} from "next/navigation";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function LoginForm() {
     const searchParams = useSearchParams();

@@ -33,6 +33,10 @@ export function mapToInvoiceUpdate(x: unknown): InvoiceUpdate | null {
     return result.success ? result.data : null;
 }
 
+export function isInvoiceReadPage(x : unknown) : x is PageResponse<InvoiceRead> {
+    return InvoiceReadPageSchema.safeParse(x).success;
+}
+
 export function mapToInvoiceReadPage(x: unknown): PageResponse<InvoiceRead> | null {
     const result = InvoiceReadPageSchema.safeParse(x);
     return result.success ? result.data : null;

@@ -9,7 +9,7 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {RevenueRead} from "@/app/models/revenue/revenueRead";
 import {getRevenue} from "@/app/lib/dataAccess/revenueClient";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {RevenueChartSkeleton} from "@/app/ui/custom/skeletons/revenueChartSkeleton";
 
 const chartConfig = {

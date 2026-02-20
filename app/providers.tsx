@@ -3,7 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/app/lib/theme/themeContext";
 import { APIProvider } from "@/app/lib/devOverlay/apiContext";
-import { TranslationDebugProvider } from "@/app/lib/devOverlay/translationDebugContext";
+import { TranslationDebugProvider } from "@/app/lib/i18n/translationDebugContext";
 import { NextIntlClientProvider } from "next-intl";
 import {ProvidersProps} from "@/app/models/ui/providersProps";
 

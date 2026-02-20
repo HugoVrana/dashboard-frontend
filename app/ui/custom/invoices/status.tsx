@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import {CheckIcon, ClockIcon} from "lucide-react";
-import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function InvoiceStatus({ status }: { status: string }) {
     const t = useDebugTranslations("dashboard.controls.status");
@@ -14,16 +14,16 @@ export default function InvoiceStatus({ status }: { status: string }) {
           },
         )}
       >
-        {status === 'PENDING' && (
+        {status.toUpperCase() === 'PENDING' && (
             <>
                 {t('pending')}
                 <ClockIcon className="ml-1 w-4 text-gray-500" />
             </>
         )}
-          {status === 'PAID' && (
+          {status.toUpperCase() === 'PAID' && (
               <>
                   {t('paid')}
-                  <CheckIcon className="ml-1 w-4 text-white" />
+                  <CheckIcon className="ml-1 w-4 text-green-400" />
               </>
           )}
       </span>
