@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
     Select,
     SelectTrigger,
@@ -14,6 +15,7 @@ import {useDebugTranslations} from "@/app/lib/devOverlay/useDebugTranslations";
 export function LanguageToggle() {
     const [locale, setLocale] = useState("en");
     const t = useDebugTranslations("lang");
+    const router = useRouter();
 
     useEffect(() => {
         async function fetchLocale() {
@@ -28,7 +30,7 @@ export function LanguageToggle() {
         setLocale(value);
         document.cookie = `locale=${value};path=/;max-age=31536000`;
         window.dispatchEvent(new CustomEvent("locale-change", { detail: value }));
-        window.location.reload();
+        router.refresh();
     };
 
     return (

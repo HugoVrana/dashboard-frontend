@@ -6,12 +6,20 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const formatCurrency = (amount: number) => {
-  return amount.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
+const currencyMap: Record<string, string> = {
+  'en': 'USD',
+  'en-US': 'USD',
+  'de': 'EUR',
+  'de-DE': 'EUR',
 };
+
+export function formatCurrency(amount: number, locale: string, currency?: string) {
+  const resolvedCurrency = currency ?? currencyMap[locale] ?? 'USD';
+  return amount.toLocaleString(locale, {
+    style: 'currency',
+    currency: resolvedCurrency,
+  });
+}
 
 export const formatDateToLocal = (
     dateStr: string,
