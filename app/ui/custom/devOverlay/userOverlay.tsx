@@ -1,20 +1,27 @@
-import {
-    getAuthToken,
-    getUserEmail,
-    getUserGrants,
-    getUserImageLink,
-    getUserRoles
-} from "@/app/lib/permission/permissionsServerClient";
-import { ScrollArea } from "@/app/ui/base/scroll-area";
-import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
-import {Badge} from "@/app/ui/base/badge";
+"use client";
 
-export default async function UserOverlay() {
-    const userEmail : string = await getUserEmail();
-    const roles : string[] = await getUserRoles();
-    const grants : string[] = await getUserGrants();
-    const token : string = await getAuthToken();
-    const image : string = await getUserImageLink();
+import { usePermissions } from "@/app/lib/permission/permissionsClient";
+import { ScrollArea } from "@/app/ui/base/scroll-area";
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card";
+import { Badge } from "@/app/ui/base/badge";
+import { Skeleton } from "@/app/ui/base/skeleton";
+
+export default function UserOverlay() {
+    const { userEmail, userRoles, userGrants, getAuthToken, session, isLoading } = usePermissions();
+
+    if (isLoading) {
+        return (
+            <div className="space-y-4">
+                <Card className="bg-gray-800 border-gray-700">
+                    <CardContent className="p-4">
+                        <Skeleton className="h-4 w-full bg-gray-700" />
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    const image = session?.user?.image ?? "";
 
     return (
         <div className="space-y-4">
@@ -34,9 +41,9 @@ export default async function UserOverlay() {
                     <CardTitle className="text-sm font-medium text-white">Roles</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {roles.length > 0 ? (
+                    {userRoles.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
-                            {roles.map((role) => (
+                            {userRoles.map((role : any) => (
                                 <Badge key={role} variant="secondary" className="bg-gray-700 text-gray-300">
                                     {role}
                                 </Badge>
@@ -53,9 +60,9 @@ export default async function UserOverlay() {
                     <CardTitle className="text-sm font-medium text-white">Grants</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {grants.length > 0 ? (
+                    {userGrants.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
-                            {grants.map((grant) => (
+                            {userGrants.map((grant : any) => (
                                 <Badge key={grant} variant="secondary" className="bg-gray-700 text-gray-300">
                                     {grant}
                                 </Badge>
@@ -74,7 +81,7 @@ export default async function UserOverlay() {
                 <CardContent>
                     <ScrollArea className="h-20">
                         <p className="text-xs text-gray-400 font-mono break-all">
-                            {token || "—"}
+                            {getAuthToken || "—"}
                         </p>
                     </ScrollArea>
                 </CardContent>

@@ -110,6 +110,7 @@
         "timeFrame" : "Letzte 12 Monate"
       },
       "invoiceButtons" : {
+        "viewInvoice" : "Rechnung anschauen",
         "createInvoice" : "Rechnung erstellen",
         "updateInvoice" : "Rechnung bearbeiten",
         "deleteInvoice" : "Rechnung löschen"
@@ -125,6 +126,16 @@
         "status" : "Status",
         "actions" : "Aktionen",
         "profileAlt" : "Profilbild"
+      },
+      "invoiceDetail" : {
+        "title" : "Rechnung",
+        "customer" : "Kunde",
+        "paymentDetails" : "Zahlungsdetails",
+        "amount" : "Betrag",
+        "invoiceId" : "Rechnungsnummer",
+        "date" : "Datum",
+        "unknownCustomer" : "Unbekannter Kunde",
+        "backToInvoices" : "Zurück zu Rechnungen"
       },
       "status" : {
         "pending" : "Ausstehend",
