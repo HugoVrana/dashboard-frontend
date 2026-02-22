@@ -98,7 +98,7 @@
       "invoiceButtons" : {
         "viewInvoice" : "Rechnung anschauen",
         "createInvoice" : "Rechnung erstellen",
-        "updateInvoice" : "Rechnung bearbeiten",
+        "editInvoice" : "Rechnung bearbeiten",
         "deleteInvoice" : "Rechnung löschen"
       },
       "invoiceTable" : {
