@@ -110,6 +110,8 @@ export default function InvoiceEditForm({ invoice }: { invoice: InvoiceRead }) {
             )}
 
             <form action={formAction}>
+                <input type={"hidden"} name={"id"} value={invoice.id}/>
+
                 <div className="grid gap-6 md:grid-cols-2">
                     {/* Customer Card */}
                     <Card>
@@ -124,7 +126,7 @@ export default function InvoiceEditForm({ invoice }: { invoice: InvoiceRead }) {
                                 <Skeleton className="h-10 w-full" />
                             ) : (
                                 <>
-                                    <input type="hidden" name="customer_id" value={selectedCustomerId} />
+                                    <input type="hidden" name="customerId" value={selectedCustomerId} />
                                     <CustomerDropdown
                                         customers={customers}
                                         value={selectedCustomerId}

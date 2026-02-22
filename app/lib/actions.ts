@@ -1,6 +1,6 @@
 "use server"
 
-import {mapToInvoiceCreate, mapToInvoiceUpdate} from "@/app/lib/typeValidators/invoiceValidator";
+import {isInvoiceUpdate, mapToInvoiceCreate, mapToInvoiceUpdate} from "@/app/lib/typeValidators/invoiceValidator";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {InvoiceCreate} from "@/app/models/invoice/invoiceCreate";
 import {InvoiceUpdate} from "@/app/models/invoice/invoiceUpdate";
@@ -64,8 +64,8 @@ export async function createInvoice(url: string, prevState: State, formData: For
 export async function updateInvoice(url : string, prevState : State, formData : FormData) : Promise<State> {
 
     const validatedFields= InvoiceUpdateFormSchema.safeParse({
-        invoice_id : formData.get('invoiceId'),
-        customer_id: formData.get('customer_id'),
+        id : formData.get('id'),
+        customerId: formData.get('customerId'),
         amount: formData.get('amount'),
         status: formData.get('status')
     });
@@ -83,7 +83,7 @@ export async function updateInvoice(url : string, prevState : State, formData : 
 
     try {
         console.log("Server Action reached");
-        let res : InvoiceRead | null = await putInvoice(url + "/" + invoiceUpdate.invoice_id, invoiceUpdate);
+        let res : InvoiceRead | null = await putInvoice(url, invoiceUpdate);
         if (res?.id == null){
             throw new Error("Failed to create invoice. Please try again.");
         }
