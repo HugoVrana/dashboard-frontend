@@ -98,7 +98,7 @@
       "invoiceButtons" : {
         "viewInvoice" : "View Invoice",
         "createInvoice" : "Create Invoice",
-        "updateInvoice" : "Update Invoice",
+        "editInvoice" : "Update Invoice",
         "deleteInvoice" : "Delete Invoice"
       },
       "invoiceTable" : {
