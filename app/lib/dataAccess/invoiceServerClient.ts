@@ -58,7 +58,7 @@ export async function postInvoice(serverUrl : string, invoice : InvoiceCreate): 
 
 export async function putInvoice(serverUrl : string, invoice : InvoiceUpdate): Promise<InvoiceRead | null> {
     try {
-        const url = new URL("/invoices/" + invoice.invoice_id, serverUrl);
+        const url = new URL("/invoices/" + invoice.id, serverUrl);
         const res : Response = await fetch(url.toString(), {
             method: "PUT",
             body: JSON.stringify(invoice),

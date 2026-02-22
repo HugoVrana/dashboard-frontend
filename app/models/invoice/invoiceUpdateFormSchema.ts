@@ -3,10 +3,10 @@ import {InvoiceStatusSchema} from "@/app/models/invoice/invoiceStatus";
 
 // Form schema with coercion and validation messages
 export const InvoiceUpdateFormSchema = z.object({
-    invoice_id: z.string({
+    id: z.string({
         invalid_type_error: 'Please define an invoice ID.',
     }),
-    customer_id: z.string({
+    customerId: z.string({
         invalid_type_error: 'Please select a customer.',
     }),
     amount: z.coerce

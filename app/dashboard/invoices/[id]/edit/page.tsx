@@ -1,28 +1,29 @@
-"use client";
+"use client"
 
-import { use, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ApiContext } from "@/app/lib/devOverlay/apiContext";
-import { usePermissions } from "@/app/lib/permission/permissionsClient";
-import { getInvoice } from "@/app/lib/dataAccess/invoicesClient";
-import { InvoiceRead } from "@/app/models/invoice/invoiceRead";
-import InvoiceDetail from "@/app/ui/custom/invoices/views/InvoiceDetail";
+import {use, useContext, useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
+import {ApiContext} from "@/app/lib/devOverlay/apiContext";
+import {usePermissions} from "@/app/lib/permission/permissionsClient";
+import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
+import {getInvoice} from "@/app/lib/dataAccess/invoicesClient";
+import {Card, CardContent} from "@/app/ui/base/card";
 import { Button } from "@/app/ui/base/button";
-import { Skeleton } from "@/app/ui/base/skeleton";
-import { Card, CardContent } from "@/app/ui/base/card";
-import { ArrowLeft, AlertCircle } from "lucide-react";
-import { useDebugTranslations } from "@/app/lib/i18n/useDebugTranslations";
+import {AlertCircle, ArrowLeft} from "lucide-react";
 import DetailSkeleton from "@/app/ui/custom/invoices/detailSkeleton";
+import InvoiceEditForm from "@/app/ui/custom/invoices/views/invoiceEditForm";
 
 export default function Page(props: { params: Promise<{ id: string }> }) {
+    console.log("edit page");
     const params = use(props.params);
+    console.log(params.id);
     const router = useRouter();
     const t = useDebugTranslations("dashboard.controls.invoiceDetail");
 
     const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
     const { isLoading: permissionsLoading, getAuthToken } = usePermissions();
 
-    const [invoice, setInvoice] = useState<InvoiceRead | null>(null);
+    const [invoice, setinvoice] = useState<InvoiceRead | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -46,7 +47,8 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
             try {
                 const data = await getInvoice(dashboardApiIsLocal, getAuthToken, params.id);
                 if (data) {
-                    setInvoice(data);
+                    setinvoice(data);
+                    console.log("invoice found")
                 } else {
                     setError("Invoice not found");
                 }
@@ -61,9 +63,10 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
         loadInvoice();
     }, [params.id, apiContextReady, dashboardApiIsLocal, permissionsLoading, getAuthToken]);
 
+
     // Loading state
     if (permissionsLoading || isLoading) {
-        return <DetailSkeleton/>;
+        <DetailSkeleton/>
     }
 
     // Error state
@@ -100,7 +103,7 @@ export default function Page(props: { params: Promise<{ id: string }> }) {
                 <ArrowLeft className="h-4 w-4" />
                 {t("backToInvoices")}
             </Button>
-            <InvoiceDetail invoice={invoice} />
+            <InvoiceEditForm invoice={invoice} />
         </div>
     );
 }

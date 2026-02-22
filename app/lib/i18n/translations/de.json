@@ -77,20 +77,6 @@
         "created" : "Rechnung erstellt",
         "updated" : "Rechnung angepasst",
         "deleted" : "Rechnung gelöscht"
-      },
-      "createForm" : {
-        "successMessage" : "Rechnung erfolgreich erstellt!",
-        "errorMessage" : "Rechnung konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
-        "chooseCustomer" : "Kunde auswählen",
-        "noCustomerPermission" : "Sie haben keine Berechtigung, Kunden anzuzeigen",
-        "chooseAmount" : "Betrag auswählen",
-        "amountPlaceholder" : "USD-Betrag eingeben",
-        "setStatus" : "Rechnungsstatus festlegen",
-        "pending" : "Ausstehend",
-        "paid" : "Bezahlt",
-        "cancel" : "Abbrechen",
-        "creating" : "Erstellen...",
-        "createInvoice" : "Rechnung erstellen"
       }
     },
     "controls" : {
@@ -148,6 +134,39 @@
       "activityFeed" : {
         "title" : "Aktivität",
         "noActivity" : "Soweit keine Aktivität"
+      },
+      "invoice" : {
+        "views": {
+          "createForm" : {
+            "successMessage" : "Rechnung erfolgreich erstellt!",
+            "errorMessage" : "Rechnung konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+            "chooseCustomer" : "Kunde auswählen",
+            "noCustomerPermission" : "Sie haben keine Berechtigung, Kunden anzuzeigen",
+            "chooseAmount" : "Betrag auswählen",
+            "amountPlaceholder" : "USD-Betrag eingeben",
+            "setStatus" : "Rechnungsstatus festlegen",
+            "pending" : "Ausstehend",
+            "paid" : "Bezahlt",
+            "cancel" : "Abbrechen",
+            "creating" : "Erstellen...",
+            "createInvoice" : "Rechnung erstellen"
+          },
+          "editForm" : {
+            "title" : "Rechnung bearbeiten",
+            "successMessage" : "Rechnung erfolgreich aktualisiert!",
+            "errorMessage" : "Rechnung konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut.",
+            "customer" : "Kunde",
+            "amount" : "Betrag",
+            "amountPlaceholder" : "USD-Betrag eingeben",
+            "status" : "Status",
+            "pending" : "Ausstehend",
+            "paid" : "Bezahlt",
+            "date" : "Datum",
+            "cancel" : "Abbrechen",
+            "saving" : "Speichern...",
+            "saveChanges" : "Änderungen speichern"
+          }
+        }
       }
     }
   },
