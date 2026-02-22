@@ -77,20 +77,6 @@
         "created" : "Invoice created",
         "updated" : "Invoice edited",
         "deleted" : "Invoice deleted"
-      },
-      "createForm" : {
-        "successMessage" : "Invoice created successfully!",
-        "errorMessage" : "Failed to create invoice. Please try again.",
-        "chooseCustomer" : "Choose customer",
-        "noCustomerPermission" : "You don't have permission to view customers",
-        "chooseAmount" : "Choose an amount",
-        "amountPlaceholder" : "Enter USD amount",
-        "setStatus" : "Set the invoice status",
-        "pending" : "Pending",
-        "paid" : "Paid",
-        "cancel" : "Cancel",
-        "creating" : "Creating...",
-        "createInvoice" : "Create Invoice"
       }
     },
     "controls" : {
@@ -148,6 +134,39 @@
       "activityFeed" : {
         "title" : "Activity",
         "noActivity" : "No Activity yet..."
+      },
+      "invoice" : {
+        "views" : {
+          "createForm" : {
+            "successMessage" : "Invoice created successfully!",
+            "errorMessage" : "Failed to create invoice. Please try again.",
+            "chooseCustomer" : "Choose customer",
+            "noCustomerPermission" : "You don't have permission to view customers",
+            "chooseAmount" : "Choose an amount",
+            "amountPlaceholder" : "Enter USD amount",
+            "setStatus" : "Set the invoice status",
+            "pending" : "Pending",
+            "paid" : "Paid",
+            "cancel" : "Cancel",
+            "creating" : "Creating...",
+            "createInvoice" : "Create Invoice"
+          },
+          "editForm" : {
+            "title" : "Edit Invoice",
+            "successMessage" : "Invoice updated successfully!",
+            "errorMessage" : "Failed to update invoice. Please try again.",
+            "customer" : "Customer",
+            "amount" : "Amount",
+            "amountPlaceholder" : "Enter USD amount",
+            "status" : "Status",
+            "pending" : "Pending",
+            "paid" : "Paid",
+            "date" : "Date",
+            "cancel" : "Cancel",
+            "saving" : "Saving...",
+            "saveChanges" : "Save Changes"
+          }
+        }
       }
     }
   },

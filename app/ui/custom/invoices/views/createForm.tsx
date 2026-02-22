@@ -20,7 +20,7 @@ import {getCustomers} from "@/app/lib/dataAccess/customersClient";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export default function CreateInvoiceForm({customerReadPermission}: { customerReadPermission: boolean; }) {
-    const t = useDebugTranslations("dashboard.invoices.createForm");
+    const t = useDebugTranslations("dashboard.controls.invoice.views.createForm");
 
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const {dashboardApiIsLocal, isReady: apiContextReady} = useContext(ApiContext);
