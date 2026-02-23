@@ -157,10 +157,9 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
             order: "",
             page: page,
             search: searchTerm,
-            size: 15,
+            size: 10,
             sort: ""
         };
-        console.log("[getFilteredInvoices] Page request body:", JSON.stringify(pageRequest));
 
         const res : Response = await fetch(u.toString(), {
             method: "POST",

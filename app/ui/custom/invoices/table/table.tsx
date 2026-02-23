@@ -16,6 +16,7 @@ import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {useSearchParams} from "next/navigation";
 import {formatCurrency, formatDateToLocal} from "@/app/lib/utils";
 import {useLocale} from "next-intl";
+import InvoicesPagination from "@/app/ui/custom/invoices/pagination";
 
 export default function InvoicesTable (props : InvoiceTableProps) {
     const t = useDebugTranslations("dashboard.controls.invoiceTable");
@@ -82,56 +83,61 @@ export default function InvoicesTable (props : InvoiceTableProps) {
 
     // Data table
     return (
-        <div className="mt-6 rounded-lg border">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>{t('invoiceNr')}</TableHead>
-                        <TableHead>{t('customer')}</TableHead>
-                        <TableHead>{t('email')}</TableHead>
-                        <TableHead>{t('amount')}</TableHead>
-                        <TableHead>{t('date')}</TableHead>
-                        <TableHead>{t('status')}</TableHead>
-                        <TableHead>{t('actions')}</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {invoices.data.map((invoice: InvoiceRead) => (
-                        <TableRow key={invoice.id}>
-                            <TableCell className="font-medium">{invoice.id}</TableCell>
-                            <TableCell>
-                                <div className="flex items-center gap-2">
-                                    {invoice.customer && (
-                                        <Avatar className="h-7 w-7">
-                                            <AvatarImage
-                                                src={invoice.customer.image_url}
-                                                alt={`${invoice.customer.name}`}
-                                            />
-                                            <AvatarFallback>
-                                                {invoice.customer.name?.charAt(0)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                    )}
-                                    <span>{invoice.customer?.name}</span>
-                                </div>
-                            </TableCell>
-                            <TableCell>{invoice.customer?.email}</TableCell>
-                            <TableCell>{formatCurrency(invoice.amount, locale)}</TableCell>
-                            <TableCell>{formatDateToLocal(invoice.date, locale)}</TableCell>
-                            <TableCell>
-                                <InvoiceStatus status={invoice.status} />
-                            </TableCell>
-                            <TableCell>
-                                <div className="flex justify-end gap-2">
-                                    <ViewInvoice invoiceId={invoice.id} />
-                                    {props.canEdit && <UpdateInvoice invoiceId={invoice.id} />}
-                                    {props.canDelete && <DeleteInvoice invoiceId={invoice.id} />}
-                                </div>
-                            </TableCell>
+        <div>
+            <div className="mt-6 rounded-lg border">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>{t('invoiceNr')}</TableHead>
+                            <TableHead>{t('customer')}</TableHead>
+                            <TableHead>{t('email')}</TableHead>
+                            <TableHead>{t('amount')}</TableHead>
+                            <TableHead>{t('date')}</TableHead>
+                            <TableHead>{t('status')}</TableHead>
+                            <TableHead>{t('actions')}</TableHead>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+                    <TableBody>
+                        {invoices.data.map((invoice: InvoiceRead) => (
+                            <TableRow key={invoice.id}>
+                                <TableCell className="font-medium">{invoice.id}</TableCell>
+                                <TableCell>
+                                    <div className="flex items-center gap-2">
+                                        {invoice.customer && (
+                                            <Avatar className="h-7 w-7">
+                                                <AvatarImage
+                                                    src={invoice.customer.image_url}
+                                                    alt={`${invoice.customer.name}`}
+                                                />
+                                                <AvatarFallback>
+                                                    {invoice.customer.name?.charAt(0)}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        )}
+                                        <span>{invoice.customer?.name}</span>
+                                    </div>
+                                </TableCell>
+                                <TableCell>{invoice.customer?.email}</TableCell>
+                                <TableCell>{formatCurrency(invoice.amount, locale)}</TableCell>
+                                <TableCell>{formatDateToLocal(invoice.date, locale)}</TableCell>
+                                <TableCell>
+                                    <InvoiceStatus status={invoice.status} />
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex justify-end gap-2">
+                                        <ViewInvoice invoiceId={invoice.id} />
+                                        {props.canEdit && <UpdateInvoice invoiceId={invoice.id} />}
+                                        {props.canDelete && <DeleteInvoice invoiceId={invoice.id} />}
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+            <div className={"mt-5 flex w-full justify-center"}>
+                <InvoicesPagination totalPages={invoices.totalPages} />
+            </div>
         </div>
     );
 }
