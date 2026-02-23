@@ -92,9 +92,9 @@ export default function UserOverlay() {
                     <CardTitle className="text-sm font-medium text-white">Image</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {
-                        image
-                    }
+                    <p className="text-xs text-gray-400 font-mono break-all">
+                        {image || "—"}
+                    </p>
                 </CardContent>
             </Card>
         </div>
