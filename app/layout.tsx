@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -5,10 +6,19 @@ import { geistMono, geistSans } from "@/app/ui/fonts";
 import { themeInitScript } from "@/app/ui/custom/navigation/themeSwitchFix";
 import { Navbar } from "@/app/ui/custom/navigation/navbar";
 import { DevOverlay } from "@/app/ui/custom/devOverlay/devOverlay";
-import { Providers } from "./providers";
+import { Providers } from "./ui/custom/providers";
 import {getLocale, getMessages, getTimeZone} from "next-intl/server";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+
+export const metadata: Metadata = {
+    title: {
+        template: '%s | Acme Dashboard',
+        default: 'Acme Dashboard',
+    },
+    description: 'The official Next.js Learn Dashboard built with App Router.',
+    metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
+};
 
 export default async function RootLayout({children,} : {children: React.ReactNode;}) {
     const locale : string = await getLocale();

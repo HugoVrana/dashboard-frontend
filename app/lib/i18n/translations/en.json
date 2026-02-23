@@ -18,11 +18,21 @@
     "noAccount": "Don't have an account?",
     "signUp": "Sign up",
     "unauthorized": {
+      "meta" : {
+        "title" : "Unauthorized",
+        "description" : "Not authorized for this data"
+      },
       "title": "403 Unauthorized",
       "description": "You don't have permission to access this resource.",
       "back": "Go Back",
       "toDashboard": "Go to Dashboard",
       "toHome": "Go to Homepage"
+    },
+    "login": {
+      "meta": {
+        "title": "Login",
+        "description": "Login to the dashboard"
+      }
     },
     "loginForm": {
       "title": "Welcome back!",
@@ -68,9 +78,35 @@
   },
   "dashboard" : {
     "overview" : {
+      "meta": {
+        "title": "Dashboard",
+        "description": "Overview of your dashboard"
+      },
       "dashboard": "Dashboard"
     },
     "invoices" : {
+      "meta": {
+        "title": "Invoices",
+        "description": "Manage your invoices"
+      },
+      "create": {
+        "meta": {
+          "title": "Create Invoice",
+          "description": "Create a new invoice"
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Invoice Details",
+          "description": "View invoice details"
+        }
+      },
+      "edit": {
+        "meta": {
+          "title": "Edit Invoice",
+          "description": "Edit an existing invoice"
+        }
+      },
       "title" : "Invoices",
       "searchPlaceholder" : "Search invoices (InvoiceRead id and status are working)",
       "actions" : {
@@ -171,6 +207,10 @@
     }
   },
   "homepage" : {
+    "meta": {
+      "title": "Home",
+      "description": "Welcome to the Acme Dashboard"
+    },
     "welcome" : "Welcome to Acme! ",
     "example" : "This is an example page for the",
     "course" : "Next.js Learn Course",
