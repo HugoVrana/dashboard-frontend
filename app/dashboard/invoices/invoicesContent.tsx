@@ -88,9 +88,6 @@ export default function InvoicesContent() {
                 ))}
             </div>
             <TableWithPermission />
-            <div className={"mt-5 flex w-full justify-center"}>
-                <InvoicesPagination totalPages={totalPages} />
-            </div>
         </main>
     )
 }
