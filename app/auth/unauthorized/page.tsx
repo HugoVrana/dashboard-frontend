@@ -1,10 +1,19 @@
 import Link from "next/link";
 import {ShieldAlert} from "lucide-react";
 import {getTranslations} from "next-intl/server";
+import {Metadata} from "next";
 
 type Props = {
     searchParams: Promise<{ from?: string }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("auth.unauthorized.meta");
+    return {
+        title: t("title"),
+        description: t("description"),
+    };
+}
 
 export default async function Unauthorized({ searchParams } : Props) {
     const {from} = await searchParams;

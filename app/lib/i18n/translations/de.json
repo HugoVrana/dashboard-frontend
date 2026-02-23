@@ -18,11 +18,21 @@
     "noAccount" : "Noch kein Konto?",
     "signUp" : "Registrieren",
     "unauthorized" : {
+      "meta" : {
+        "title" : "Nicht berechtig",
+        "description" : "Nicht berechtigt für diese Daten"
+      },
       "title" : "403 Nicht autorisiert",
       "description" : "Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.",
       "back" : "Zurück",
       "toDashboard" : "Zum Dashboard",
       "toHome" : "Zur Startseite"
+    },
+    "login": {
+      "meta": {
+        "title": "Anmelden",
+        "description": "Melden Sie sich beim Dashboard an"
+      }
     },
     "loginForm" : {
       "title" : "Willkommen zurück",
@@ -68,9 +78,35 @@
   },
   "dashboard" : {
     "overview" : {
+      "meta": {
+        "title": "Dashboard",
+        "description": "Übersicht Ihres Dashboards"
+      },
       "dashboard" : "Dashboard"
     },
     "invoices" : {
+      "meta": {
+        "title": "Rechnungen",
+        "description": "Verwalten Sie Ihre Rechnungen"
+      },
+      "create": {
+        "meta": {
+          "title": "Rechnung erstellen",
+          "description": "Neue Rechnung erstellen"
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Rechnungsdetails",
+          "description": "Rechnungsdetails anzeigen"
+        }
+      },
+      "edit": {
+        "meta": {
+          "title": "Rechnung bearbeiten",
+          "description": "Bestehende Rechnung bearbeiten"
+        }
+      },
       "title" : "Rechnungen",
       "searchPlaceholder" : "Rechnungen suchen (Rechnung id und status sind funktionierend)",
       "actions" : {
@@ -171,6 +207,10 @@
     }
   },
   "homepage" : {
+    "meta": {
+      "title": "Startseite",
+      "description": "Willkommen beim Acme Dashboard"
+    },
     "welcome" : "Willkomen bei Acme! ",
     "example" : "Das ist ein Beispiel Page für",
     "course" : "Next.js Lernkurs",
