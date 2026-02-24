@@ -8,6 +8,7 @@ import { Navbar } from "@/app/ui/custom/navigation/navbar";
 import { DevOverlay } from "@/app/ui/custom/devOverlay/devOverlay";
 import { Providers } from "./ui/custom/providers";
 import {getLocale, getMessages, getTimeZone} from "next-intl/server";
+import {SpeedInsights} from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -38,6 +39,7 @@ export default async function RootLayout({children,} : {children: React.ReactNod
                 <DevOverlay key="dev_overlay" />
             </Providers>
             <Analytics />
+            <SpeedInsights/>
             </body>
         </html>
     );
