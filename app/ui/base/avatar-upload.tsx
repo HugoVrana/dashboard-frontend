@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "@/app/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
-import { Button } from "./button"
+import {cn} from "@/app/lib/utils"
+import {Avatar, AvatarFallback, AvatarImage} from "./avatar"
+import {Button} from "./button"
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"]
 const DEFAULT_MAX_SIZE_BYTES = 1024 * 1024 // 1MB

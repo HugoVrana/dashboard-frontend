@@ -1,7 +1,7 @@
 import {LatestInvoicesProps} from "@/app/models/ui/latestInvoicesProps";
 import {clsx} from "clsx";
 import {RefreshCcw} from "lucide-react";
-import {Avatar, AvatarImage, AvatarFallback} from "@/app/ui/base/avatar";
+import {Avatar, AvatarFallback, AvatarImage} from "@/app/ui/base/avatar";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/app/ui/base/card";
 import {Label} from "@/app/ui/base/label";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";

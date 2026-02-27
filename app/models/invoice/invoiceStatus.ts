@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 
 // Transform to lowercase before validating (handles "PENDING", "Pending", "pending")
 export const InvoiceStatusSchema = z

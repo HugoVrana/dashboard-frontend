@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { LogOut, Loader2 } from "lucide-react";
+import {signOut, useSession} from "next-auth/react";
+import {Loader2, LogOut} from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -15,7 +15,7 @@ import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {ThemeToggle} from "@/app/ui/custom/navigation/themeToggle";
 import {LanguageToggle} from "@/app/ui/custom/navigation/languageToggle";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
-import {Avatar, AvatarImage, AvatarFallback} from "@/app/ui/base/avatar";
+import {Avatar, AvatarFallback, AvatarImage} from "@/app/ui/base/avatar";
 
 export function Navbar() {
     const { data: session, status } = useSession();

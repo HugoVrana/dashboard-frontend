@@ -8,7 +8,7 @@ import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {getInvoice} from "@/app/lib/dataAccess/invoicesClient";
 import {Card, CardContent} from "@/app/ui/base/card";
-import { Button } from "@/app/ui/base/button";
+import {Button} from "@/app/ui/base/button";
 import {AlertCircle, ArrowLeft} from "lucide-react";
 import DetailSkeleton from "@/app/ui/custom/invoices/detailSkeleton";
 import InvoiceEditForm from "@/app/ui/custom/invoices/views/invoiceEditForm";

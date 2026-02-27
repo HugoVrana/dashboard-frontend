@@ -1,12 +1,12 @@
-import type { Metadata } from 'next';
-import { Inter } from "next/font/google";
+import type {Metadata} from 'next';
+import {Inter} from "next/font/google";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
-import { geistMono, geistSans } from "@/app/ui/fonts";
-import { themeInitScript } from "@/app/ui/custom/navigation/themeSwitchFix";
-import { Navbar } from "@/app/ui/custom/navigation/navbar";
-import { DevOverlay } from "@/app/ui/custom/devOverlay/devOverlay";
-import { Providers } from "./ui/custom/providers";
+import {Analytics} from "@vercel/analytics/next";
+import {geistMono, geistSans} from "@/app/ui/fonts";
+import {themeInitScript} from "@/app/ui/custom/navigation/themeSwitchFix";
+import {Navbar} from "@/app/ui/custom/navigation/navbar";
+import {DevOverlay} from "@/app/ui/custom/devOverlay/devOverlay";
+import {Providers} from "./ui/custom/providers";
 import {getLocale, getMessages, getTimeZone} from "next-intl/server";
 import {SpeedInsights} from "@vercel/speed-insights/next";
 

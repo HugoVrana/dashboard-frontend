@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 
 export const RevenueReadSchema = z.object({
     month: z.string(),

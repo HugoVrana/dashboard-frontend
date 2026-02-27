@@ -1,4 +1,4 @@
-import { RoleReadSchema, type RoleRead } from "@/app/models/auth/role";
+import {type RoleRead, RoleReadSchema} from "@/app/models/auth/role";
 
 export function isRole(x: unknown): x is RoleRead {
     return RoleReadSchema.safeParse(x).success;

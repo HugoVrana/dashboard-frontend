@@ -1,14 +1,14 @@
 "use client";
 
-import { InvoiceRead } from "@/app/models/invoice/invoiceRead";
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/app/ui/base/avatar";
-import { Separator } from "@/app/ui/base/separator";
+import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
+import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
+import {Avatar, AvatarFallback, AvatarImage} from "@/app/ui/base/avatar";
+import {Separator} from "@/app/ui/base/separator";
 import InvoiceStatus from "@/app/ui/custom/invoices/status";
-import { formatCurrency, formatDateToLocal } from "@/app/lib/utils";
-import { useDebugTranslations } from "@/app/lib/i18n/useDebugTranslations";
-import { useLocale } from "next-intl";
-import { FileText, Mail, Calendar, CreditCard, Hash } from "lucide-react";
+import {formatCurrency, formatDateToLocal} from "@/app/lib/utils";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
+import {useLocale} from "next-intl";
+import {Calendar, CreditCard, FileText, Hash, Mail} from "lucide-react";
 
 interface InvoiceDetailProps {
     invoice: InvoiceRead;

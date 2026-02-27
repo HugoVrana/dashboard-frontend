@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 import {InvoiceStatusSchema} from "@/app/models/invoice/invoiceStatus";
 
 // Schema for API requests

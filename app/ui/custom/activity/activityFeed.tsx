@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card";
-import { ActivityClient } from "@/app/lib/dataAccess/websocket/activityClient";
+import {useEffect, useState} from "react";
+import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
+import {ActivityClient} from "@/app/lib/dataAccess/websocket/activityClient";
 import {ActivityEvent} from "@/app/models/ui/activity/activityEvent";
 import {ActivityFeedProps} from "@/app/models/ui/activity/activityFeedProps";
 import ActivityEventDisplay from "@/app/ui/custom/activity/activityEventDisplay";

@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { CustomerReadSchema } from "../customer/customerRead";
-import { InvoiceStatusSchema } from "./invoiceStatus";
+import {z} from "zod";
+import {CustomerReadSchema} from "../customer/customerRead";
+import {InvoiceStatusSchema} from "./invoiceStatus";
 
 export const InvoiceReadSchema = z.object({
     id: z.union([z.string(), z.number()]).transform(String),

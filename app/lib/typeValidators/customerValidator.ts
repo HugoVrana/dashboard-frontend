@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { CustomerReadSchema, type CustomerRead } from "@/app/models/customer/customerRead";
+import {z} from "zod";
+import {type CustomerRead, CustomerReadSchema} from "@/app/models/customer/customerRead";
 
 export function isCustomerRead(x: unknown): x is CustomerRead {
     return CustomerReadSchema.safeParse(x).success;

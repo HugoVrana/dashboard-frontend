@@ -1,9 +1,9 @@
 import {Eye, Pencil, Plus, Trash2} from 'lucide-react';
 import Link from 'next/link';
-import { removeInvoice } from "@/app/lib/actions";
-import { useActionState, useContext } from "react";
-import { State } from "@/app/models/state";
-import { Button } from "../../base/button";
+import {removeInvoice} from "@/app/lib/actions";
+import {useActionState, useContext} from "react";
+import {State} from "@/app/models/state";
+import {Button} from "../../base/button";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";

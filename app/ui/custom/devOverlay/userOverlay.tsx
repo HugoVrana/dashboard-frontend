@@ -1,10 +1,10 @@
 "use client";
 
-import { usePermissions } from "@/app/lib/permission/permissionsClient";
-import { ScrollArea } from "@/app/ui/base/scroll-area";
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card";
-import { Badge } from "@/app/ui/base/badge";
-import { Skeleton } from "@/app/ui/base/skeleton";
+import {usePermissions} from "@/app/lib/permission/permissionsClient";
+import {ScrollArea} from "@/app/ui/base/scroll-area";
+import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card";
+import {Badge} from "@/app/ui/base/badge";
+import {Skeleton} from "@/app/ui/base/skeleton";
 
 export default function UserOverlay() {
     const { userEmail, userRoles, userGrants, getAuthToken, session, isLoading } = usePermissions();

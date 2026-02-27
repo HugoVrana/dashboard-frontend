@@ -1,8 +1,8 @@
 "use client"
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import {ChevronLeft, ChevronRight} from 'lucide-react';
 import Link from 'next/link';
-import { ReadonlyURLSearchParams, usePathname, useSearchParams } from 'next/navigation';
+import {ReadonlyURLSearchParams, usePathname, useSearchParams} from 'next/navigation';
 import {Button} from "@/app/ui/base/button";
 import {
     Pagination,

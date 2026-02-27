@@ -1,16 +1,16 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ApiContext } from "@/app/lib/devOverlay/apiContext";
-import { usePermissions } from "@/app/lib/permission/permissionsClient";
-import { getInvoice } from "@/app/lib/dataAccess/invoicesClient";
-import { InvoiceRead } from "@/app/models/invoice/invoiceRead";
+import {useContext, useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
+import {ApiContext} from "@/app/lib/devOverlay/apiContext";
+import {usePermissions} from "@/app/lib/permission/permissionsClient";
+import {getInvoice} from "@/app/lib/dataAccess/invoicesClient";
+import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import InvoiceDetail from "@/app/ui/custom/invoices/views/InvoiceDetail";
-import { Button } from "@/app/ui/base/button";
-import { Card, CardContent } from "@/app/ui/base/card";
-import { ArrowLeft, AlertCircle } from "lucide-react";
-import { useDebugTranslations } from "@/app/lib/i18n/useDebugTranslations";
+import {Button} from "@/app/ui/base/button";
+import {Card, CardContent} from "@/app/ui/base/card";
+import {AlertCircle, ArrowLeft} from "lucide-react";
+import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import DetailSkeleton from "@/app/ui/custom/invoices/detailSkeleton";
 import {InvoiceDetailContentProps} from "@/app/models/ui/invoiceDetailContentProps";
 

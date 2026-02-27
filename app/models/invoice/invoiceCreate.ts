@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { InvoiceStatusSchema } from "./invoiceStatus";
+import {z} from "zod";
+import {InvoiceStatusSchema} from "./invoiceStatus";
 
 export const InvoiceCreateSchema = z.object({
     customer_id: z.string(),

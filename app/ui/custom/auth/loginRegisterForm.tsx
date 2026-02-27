@@ -1,7 +1,7 @@
 "use client"
 
-import { Suspense, useState } from "react";
-import { Button } from "@/app/ui/base/button";
+import {Suspense, useState} from "react";
+import {Button} from "@/app/ui/base/button";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent, CardHeader} from "../../base/card";
 import LoginForm from "@/app/ui/custom/auth/loginForm";

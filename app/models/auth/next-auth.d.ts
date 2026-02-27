@@ -1,4 +1,4 @@
-import { DefaultSession } from "@/next-auth";
+import {DefaultSession} from "@/next-auth";
 import {Role} from "./role";
 
 declare module "next-auth" {

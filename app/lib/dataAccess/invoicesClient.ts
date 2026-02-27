@@ -2,7 +2,8 @@
 
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {
-    isInvoiceRead, isInvoiceReadPage,
+    isInvoiceRead,
+    isInvoiceReadPage,
     mapToInvoiceRead,
     mapToInvoiceReadPage
 } from "@/app/lib/typeValidators/invoiceValidator";

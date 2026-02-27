@@ -1,4 +1,4 @@
-import { RevenueReadSchema, type RevenueRead } from "@/app/models/revenue/revenueRead";
+import {type RevenueRead, RevenueReadSchema} from "@/app/models/revenue/revenueRead";
 
 export function isRevenue(x: unknown): x is RevenueRead {
     return RevenueReadSchema.safeParse(x).success;
