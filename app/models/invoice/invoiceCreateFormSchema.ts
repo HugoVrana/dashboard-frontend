@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { InvoiceStatusSchema } from "./invoiceStatus";
+import {z} from "zod";
+import {InvoiceStatusSchema} from "./invoiceStatus";
 
 // Form schema with coercion and validation messages
 export const InvoiceCreateFormSchema = z.object({

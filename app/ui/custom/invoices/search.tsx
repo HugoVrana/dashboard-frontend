@@ -1,9 +1,9 @@
 "use client"
 
-import { Search as SearchIcon } from 'lucide-react';
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useDebouncedCallback } from "use-debounce";
-import { useState, useEffect } from "react";
+import {Search as SearchIcon} from 'lucide-react';
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import {useDebouncedCallback} from "use-debounce";
+import {useEffect, useState} from "react";
 import {Input} from "@/app/ui/base/input";
 
 export default function Search({ placeholder }: { placeholder: string }) {

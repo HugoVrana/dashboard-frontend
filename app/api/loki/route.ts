@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 import {LogCreate} from "@/app/models/log/logCreate";
 import {LokiStream, toLokiFormat} from "@/app/models/log/lokiStream";
 import {HttpStatusEnum} from "@/app/models/httpStatusEnum";

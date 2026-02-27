@@ -1,7 +1,7 @@
 "use client"
 
-import { createContext, useState, useEffect, type ReactNode, useContext } from "react"
-import { setCookie, getCookie } from "@/app/lib/cookieUtil"
+import {createContext, type ReactNode, useContext, useEffect, useState} from "react"
+import {getCookie, setCookie} from "@/app/lib/cookieUtil"
 
 export type TranslationDebugContextType = {
     showKeys: boolean

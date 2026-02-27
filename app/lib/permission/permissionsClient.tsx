@@ -1,7 +1,7 @@
 "use client"
 
-import { useSession } from "next-auth/react";
-import { useMemo } from "react";
+import {useSession} from "next-auth/react";
+import {useMemo} from "react";
 
 export function usePermissions() {
     const { data: session, status } = useSession();

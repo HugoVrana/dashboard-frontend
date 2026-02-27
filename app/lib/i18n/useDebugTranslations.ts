@@ -1,7 +1,7 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-import { useTranslationDebug } from "@/app/lib/i18n/translationDebugContext"
+import {useTranslations} from "next-intl"
+import {useTranslationDebug} from "@/app/lib/i18n/translationDebugContext"
 
 export function useDebugTranslations(namespace?: string) {
     const t = useTranslations(namespace)

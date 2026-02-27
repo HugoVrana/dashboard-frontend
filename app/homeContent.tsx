@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import {ArrowRight} from "lucide-react";
 import AcmeLogo from "@/app/ui/custom/acmeLogo";
 import {Card, CardContent} from "./ui/base/card";
 import {Button} from "@/app/ui/base/button";
-import { useSession } from "next-auth/react";
+import {useSession} from "next-auth/react";
 import {useContext, useMemo} from "react";
 import {ThemeContext} from "@/app/lib/theme/themeContext";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
@@ -14,7 +14,7 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 import {ActivityFeed} from "@/app/ui/custom/activity/activityFeed";
-import { ActivitySource } from "./models/ui/activity/activitySource";
+import {ActivitySource} from "./models/ui/activity/activitySource";
 
 export default function HomeContent() {
     const { data: session } = useSession();

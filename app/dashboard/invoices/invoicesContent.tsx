@@ -1,11 +1,10 @@
 "use client"
 
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
-import {useState, useEffect} from "react";
-import {useSearchParams, useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
 import Search from "@/app/ui/custom/invoices/search";
 import {CreateInvoice} from "@/app/ui/custom/invoices/buttons";
-import InvoicesPagination from "@/app/ui/custom/invoices/pagination";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import TableWithPermission from "@/app/ui/custom/invoices/table/tableWithPermission";
 import {Card, CardContent} from "@/app/ui/base/card";
@@ -17,7 +16,6 @@ export default function InvoicesContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const [totalPages, setTotalPages] = useState(0);
     const [showBanner, setShowBanner] = useState<string | null>(null);
 
     const canViewInvoices : boolean = hasGrant("dashboard-invoices-read");

@@ -1,6 +1,6 @@
 "use server"
 
-import {isInvoiceUpdate, mapToInvoiceCreate, mapToInvoiceUpdate} from "@/app/lib/typeValidators/invoiceValidator";
+import {mapToInvoiceCreate, mapToInvoiceUpdate} from "@/app/lib/typeValidators/invoiceValidator";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {InvoiceCreate} from "@/app/models/invoice/invoiceCreate";
 import {InvoiceUpdate} from "@/app/models/invoice/invoiceUpdate";

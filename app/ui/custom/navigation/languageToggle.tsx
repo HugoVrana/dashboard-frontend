@@ -1,15 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-    Select,
-    SelectTrigger,
-    SelectContent,
-    SelectItem,
-} from "@/app/ui/base/select";
-import { getCookie } from "@/app/lib/cookieUtil";
-import { GlobeIcon } from "lucide-react";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
+import {Select, SelectContent, SelectItem, SelectTrigger,} from "@/app/ui/base/select";
+import {getCookie} from "@/app/lib/cookieUtil";
+import {GlobeIcon} from "lucide-react";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 
 export function LanguageToggle() {

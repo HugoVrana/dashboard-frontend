@@ -1,4 +1,4 @@
-import { type LogCreate } from "@/app/models/log/logCreate";
+import {type LogCreate} from "@/app/models/log/logCreate";
 
 export function mapToLogCreate(
     level: string,

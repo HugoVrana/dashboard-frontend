@@ -1,5 +1,5 @@
-import { auth } from "@/auth";
-import { NextResponse } from "next/server";
+import {auth} from "@/auth";
+import {NextResponse} from "next/server";
 
 // makes sure that only logged in users can access the dashboard
 export default auth((req) => {

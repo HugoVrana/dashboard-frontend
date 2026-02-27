@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { type PageResponse } from "@/app/models/page/pageResponse";
+import {z} from "zod";
+import {type PageResponse} from "@/app/models/page/pageResponse";
 
 // Base page schema for validation
 const PageResponseSchema = z.object({

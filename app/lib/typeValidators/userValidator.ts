@@ -1,5 +1,5 @@
-import { UserReadSchema, type UserRead } from "@/app/models/user/userRead";
-import { createPageSchema, type PageResponse } from "@/app/models/page/pageResponse";
+import {type UserRead, UserReadSchema} from "@/app/models/user/userRead";
+import {createPageSchema, type PageResponse} from "@/app/models/page/pageResponse";
 
 // Page schema for users
 const UserReadPageSchema = createPageSchema(UserReadSchema);

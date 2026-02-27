@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { RoleReadSchema } from "./role";
+import {z} from "zod";
+import {RoleReadSchema} from "./role";
 
 export const UserInfoSchema = z.object({
     id: z.string(),

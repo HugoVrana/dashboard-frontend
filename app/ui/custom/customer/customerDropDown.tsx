@@ -1,12 +1,7 @@
 "use client"
 
 import {CustomerRead} from "@/app/models/customer/customerRead";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-} from "@/app/ui/base/select";
+import {Select, SelectContent, SelectItem, SelectTrigger,} from "@/app/ui/base/select";
 
 export interface CustomerDropdownProps {
     customers: CustomerRead[];

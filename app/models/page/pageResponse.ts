@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 
 // Generic page schema factory
 export function createPageSchema<T extends z.ZodTypeAny>(itemSchema: T) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useState, useEffect, type ReactNode, type Context } from "react"
+import {type Context, createContext, type ReactNode, useEffect, useState} from "react"
 
 export type ThemeContextType = {
     isDark: boolean

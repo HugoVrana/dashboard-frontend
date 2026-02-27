@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { Select as SelectPrimitive } from "@base-ui/react/select"
+import {Select as SelectPrimitive} from "@base-ui/react/select"
 
-import { cn } from "@/app/lib/utils"
-import { ChevronsUpDown, Check, ChevronUp, ChevronDown } from "lucide-react"
+import {cn} from "@/app/lib/utils"
+import {Check, ChevronDown, ChevronsUpDown, ChevronUp} from "lucide-react"
 
 const Select = SelectPrimitive.Root
 

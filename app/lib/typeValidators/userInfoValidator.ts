@@ -1,4 +1,4 @@
-import { UserInfoSchema, type UserInfo } from "@/app/models/auth/userInfo";
+import {type UserInfo, UserInfoSchema} from "@/app/models/auth/userInfo";
 
 export function isUserInfo(x: unknown): x is UserInfo {
     return UserInfoSchema.safeParse(x).success;

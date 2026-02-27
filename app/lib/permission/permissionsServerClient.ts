@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import {auth} from "@/auth";
 
 export async function hasGrant(grantName: string): Promise<boolean> {
     const session = await auth();

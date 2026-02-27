@@ -1,10 +1,10 @@
 "use client"
 
-import { useTranslationDebug } from "@/app/lib/i18n/translationDebugContext"
-import { Badge } from "@/app/ui/base/badge"
-import { Button } from "@/app/ui/base/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/ui/base/card"
-import { Label } from "@/app/ui/base/label"
+import {useTranslationDebug} from "@/app/lib/i18n/translationDebugContext"
+import {Badge} from "@/app/ui/base/badge"
+import {Button} from "@/app/ui/base/button"
+import {Card, CardContent, CardHeader, CardTitle} from "@/app/ui/base/card"
+import {Label} from "@/app/ui/base/label"
 import {useEffect, useState} from "react";
 import {getCookie} from "@/app/lib/cookieUtil";
 

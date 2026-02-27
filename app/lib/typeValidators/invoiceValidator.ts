@@ -1,7 +1,7 @@
-import { InvoiceReadSchema, type InvoiceRead } from "@/app/models/invoice/invoiceRead";
-import { InvoiceCreateSchema, type InvoiceCreate } from "@/app/models/invoice/invoiceCreate";
-import { InvoiceUpdateSchema, type InvoiceUpdate } from "@/app/models/invoice/invoiceUpdate";
-import { createPageSchema, type PageResponse } from "@/app/models/page/pageResponse";
+import {type InvoiceRead, InvoiceReadSchema} from "@/app/models/invoice/invoiceRead";
+import {type InvoiceCreate, InvoiceCreateSchema} from "@/app/models/invoice/invoiceCreate";
+import {type InvoiceUpdate, InvoiceUpdateSchema} from "@/app/models/invoice/invoiceUpdate";
+import {createPageSchema, type PageResponse} from "@/app/models/page/pageResponse";
 
 // Page schema for invoices
 const InvoiceReadPageSchema = createPageSchema(InvoiceReadSchema);

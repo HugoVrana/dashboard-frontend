@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "@/app/lib/utils"
-import { Button } from "./button"
-import { ImageUploadProps } from "@/app/models/ui/imageUploadProps"
+import {cn} from "@/app/lib/utils"
+import {Button} from "./button"
+import {ImageUploadProps} from "@/app/models/ui/imageUploadProps"
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"]
 

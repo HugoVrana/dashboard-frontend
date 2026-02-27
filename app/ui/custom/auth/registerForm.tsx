@@ -10,7 +10,7 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {useSearchParams} from "next/navigation";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 import {registerUser, setProfilePicture} from "@/app/lib/actions";
-import {signIn, getSession} from "next-auth/react";
+import {getSession, signIn} from "next-auth/react";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {AvatarUpload} from "@/app/ui/base/avatar-upload";
 
