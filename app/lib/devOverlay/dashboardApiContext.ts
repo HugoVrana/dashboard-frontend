@@ -1,6 +1,6 @@
 export const DASHBOARD_API_CONFIG = {
     LOCAL_URL: "http://localhost:8080",
-    CLOUD_URL: "https://spring-dashboard-1.onrender.com",
+    CLOUD_URL: "https://dashboard-spring-data.onrender.com",
 } as const
 
 export function getDashboardLocalUrl() : string {

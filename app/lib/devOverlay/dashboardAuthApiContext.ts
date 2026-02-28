@@ -1,6 +1,6 @@
 export const DASHBOARD_AUTH_API_CONFIG = {
     LOCAL_URL: "http://localhost:8081",
-    CLOUD_URL: "https://spring-dashboard-oauth.onrender.com",
+    CLOUD_URL: "https://dashboard-spring-oauth.onrender.com",
 } as const
 
 export function getDashboardAuthLocalUrl() : string {
