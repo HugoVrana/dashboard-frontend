@@ -5,6 +5,7 @@ import {LoginRequest} from "@/app/models/auth/loginRequest";
 import {UserInfo} from "@/app/models/auth/userInfo";
 import {AuthResponse} from "@/app/models/auth/authResponse";
 import {isAuthResponse, mapToAuthResponse} from "@/app/lib/typeValidators/authResponseValidator";
+import {TotpSetupResponse, TotpSetupResponseSchema} from "@/app/models/auth/totpSetupResponse";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 
@@ -176,5 +177,100 @@ export async function postUserProfilePicture(
             error: e
         });
         return null;
+    }
+}
+
+export async function setupTotp(
+    serverUrl: string,
+    accessToken: string
+): Promise<TotpSetupResponse | null> {
+    try {
+        const url = new URL("api/auth/2fa/setup", serverUrl);
+
+        const res: Response = await fetch(url.toString(), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        if (!res.ok) {
+            console.error("API error", res.status, res.statusText);
+            grafanaClient.error("API error", {
+                route: "POST /api/auth/setupTotp",
+                status: res.status,
+                statusText: res.statusText
+            });
+            return null;
+        }
+
+        const text: string = await res.text();
+        if (!text || text.trim() === '') {
+            grafanaClient.error("Empty response body", {route: "POST /api/auth/setupTotp"});
+            console.log("Empty response body, returning null");
+            return null;
+        }
+
+        const data: unknown = JSON.parse(text);
+        const parsed = TotpSetupResponseSchema.safeParse(data);
+
+        if (!parsed.success) {
+            grafanaClient.error("Unexpected payload:", {
+                route: "POST /api/auth/setupTotp",
+                payload: data,
+                error: parsed.error
+            });
+            console.error("Unexpected payload:", data);
+            return null;
+        }
+
+        grafanaClient.info("TOTP setup successful", {route: "POST /api/auth/setupTotp"});
+        return parsed.data;
+    } catch (e) {
+        console.error("TOTP setup failed:", e);
+        grafanaClient.error("TOTP setup failed", {
+            route: "POST /api/auth/setupTotp",
+            error: e
+        });
+        return null;
+    }
+}
+
+export async function verifyTotp(
+    serverUrl: string,
+    accessToken: string,
+    code: string
+): Promise<boolean> {
+    try {
+        const url = new URL("api/auth/2fa/verify", serverUrl);
+
+        const res: Response = await fetch(url.toString(), {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ code })
+        });
+
+        if (!res.ok) {
+            console.error("TOTP verification failed", res.status, res.statusText);
+            grafanaClient.error("TOTP verification failed", {
+                route: "POST /api/auth/2fa/verify",
+                status: res.status,
+                statusText: res.statusText
+            });
+            return false;
+        }
+
+        grafanaClient.info("TOTP verified successfully", {route: "POST /api/auth/2fa/verify"});
+        return true;
+    } catch (e) {
+        console.error("TOTP verification error:", e);
+        grafanaClient.error("TOTP verification error", {
+            route: "POST /api/auth/2fa/verify",
+            error: e
+        });
+        return false;
     }
 }

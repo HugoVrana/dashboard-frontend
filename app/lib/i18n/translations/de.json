@@ -74,7 +74,22 @@
         "invalidFileType" : "Ungültiger Dateityp"
       }
     },
-    "logoutButton" : "Abmelden"
+    "logoutButton" : "Abmelden",
+    "totpSetup": {
+      "title": "Zwei-Faktor-Authentifizierung einrichten",
+      "titleLoading": "Zwei-Faktor-Authentifizierung wird eingerichtet",
+      "titleError": "Zwei-Faktor-Authentifizierung",
+      "description": "Scannen Sie den QR-Code mit Ihrer Authenticator-App (Google Authenticator, Authy, etc.)",
+      "secretLabel": "Oder geben Sie dieses Geheimnis manuell ein:",
+      "codeLabel": "Geben Sie den 6-stelligen Code aus Ihrer App ein",
+      "codePlaceholder": "000000",
+      "codeError": "Bitte geben Sie einen 6-stelligen Code ein",
+      "verifyButton": "Verifizieren",
+      "verifySuccess": "Code erfolgreich verifiziert",
+      "skipButton": "Vorerst überspringen",
+      "continueButton": "Weiter",
+      "continueWithout2FA": "Ohne 2FA fortfahren"
+    }
   },
   "dashboard" : {
     "overview" : {

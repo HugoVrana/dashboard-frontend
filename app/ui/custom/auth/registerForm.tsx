@@ -13,18 +13,30 @@ import {registerUser, setProfilePicture} from "@/app/lib/actions";
 import {getSession, signIn} from "next-auth/react";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {AvatarUpload} from "@/app/ui/base/avatar-upload";
+import TotpSetupStep from "@/app/ui/custom/auth/totpSetupStep";
+
+type RegistrationStep = 'form' | 'totp';
 
 export default function RegisterForm() {
     const searchParams = useSearchParams();
     const { dashboardAuthApiIsLocal } = useContext(ApiContext);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [image, setImage] = useState<File | null>(null)
+    const [image, setImage] = useState<File | null>(null);
+    const [step, setStep] = useState<RegistrationStep>('form');
 
     const url: string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
     const callbackUrl: string = searchParams.get('callbackUrl') || '/dashboard';
 
     const t = useDebugTranslations("auth.registerForm");
+
+    const handleTotpComplete = () => {
+        window.location.href = callbackUrl;
+    };
+
+    const handleTotpSkip = () => {
+        window.location.href = callbackUrl;
+    };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -80,12 +92,18 @@ export default function RegisterForm() {
                 }
             }
 
-            window.location.href = callbackUrl;
+            // Move to TOTP setup step
+            setIsLoading(false);
+            setStep('totp');
         } catch {
             setError('Something went wrong.');
             setIsLoading(false);
         }
     };
+
+    if (step === 'totp') {
+        return <TotpSetupStep onComplete={handleTotpComplete} onSkip={handleTotpSkip} />;
+    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">

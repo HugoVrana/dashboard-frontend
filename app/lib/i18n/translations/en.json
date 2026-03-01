@@ -74,7 +74,22 @@
         "invalidFileType" : "Invalid file type"
       }
     },
-    "logoutButton" : "Sign out"
+    "logoutButton" : "Sign out",
+    "totpSetup": {
+      "title": "Set Up Two-Factor Authentication",
+      "titleLoading": "Setting up Two-Factor Authentication",
+      "titleError": "Two-Factor Authentication",
+      "description": "Scan the QR code below with your authenticator app (Google Authenticator, Authy, etc.)",
+      "secretLabel": "Or enter this secret manually:",
+      "codeLabel": "Enter the 6-digit code from your app",
+      "codePlaceholder": "000000",
+      "codeError": "Please enter a 6-digit code",
+      "verifyButton": "Verify",
+      "verifySuccess": "Code verified successfully",
+      "skipButton": "Skip for now",
+      "continueButton": "Continue",
+      "continueWithout2FA": "Continue without 2FA"
+    }
   },
   "dashboard" : {
     "overview" : {
