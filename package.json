@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@auth/core": "^0.41.1",
-    "@base-ui/react": "^1.0.0",
+    "@hugovrana/dashboard-frontend-shared": "^2.0.0",
     "@react-email/components": "^1.0.6",
     "@react-email/render": "^2.0.4",
     "@stomp/stompjs": "^7.3.0",

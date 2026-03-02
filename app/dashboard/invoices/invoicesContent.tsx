@@ -3,12 +3,13 @@
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {useEffect, useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
-import Search from "@/app/ui/custom/invoices/search";
-import {CreateInvoice} from "@/app/ui/custom/invoices/buttons";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
-import TableWithPermission from "@/app/ui/custom/invoices/table/tableWithPermission";
-import {Card, CardContent} from "@/app/ui/base/card";
 import {CheckCircle, X} from "lucide-react";
+import { Card } from "@hugovrana/dashboard-frontend-shared/components";
+import {CardContent} from "@hugovrana/dashboard-frontend-shared";
+import Search from "@/app/ui/invoices/search";
+import {CreateInvoice} from "@/app/ui/invoices/buttons";
+import TableWithPermission from "@/app/ui/invoices/table/tableWithPermission";
 
 export default function InvoicesContent() {
     const t = useDebugTranslations("dashboard.invoices");

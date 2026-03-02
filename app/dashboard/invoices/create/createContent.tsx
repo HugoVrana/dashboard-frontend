@@ -1,7 +1,7 @@
 "use client"
 
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
-import CreateInvoiceForm from "@/app/ui/custom/invoices/views/createForm";
+import CreateInvoiceForm from "@/app/ui/invoices/views/createForm";
 
 export default function CreateContent(){
     const { hasGrant } = usePermissions();

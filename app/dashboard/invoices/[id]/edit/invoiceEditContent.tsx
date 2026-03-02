@@ -7,12 +7,12 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {getInvoice} from "@/app/lib/dataAccess/invoicesClient";
-import {Card, CardContent} from "@/app/ui/base/card";
-import {Button} from "@/app/ui/base/button";
 import {AlertCircle, ArrowLeft} from "lucide-react";
-import DetailSkeleton from "@/app/ui/custom/invoices/detailSkeleton";
-import InvoiceEditForm from "@/app/ui/custom/invoices/views/invoiceEditForm";
 import {InvoiceEditContentProps} from "@/app/models/ui/invoiceEditContentProps";
+import DetailSkeleton from "@/app/ui/invoices/detailSkeleton";
+import {Button, Card} from "@hugovrana/dashboard-frontend-shared/components";
+import {CardContent} from "@hugovrana/dashboard-frontend-shared";
+import InvoiceEditForm from "@/app/ui/invoices/views/invoiceEditForm";
 
 export default function InvoiceEditContent({ id }: InvoiceEditContentProps) {
     const router = useRouter();
