@@ -6,13 +6,13 @@ import {ApiContext} from "@/app/lib/devOverlay/apiContext";
 import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {getInvoice} from "@/app/lib/dataAccess/invoicesClient";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
-import InvoiceDetail from "@/app/ui/custom/invoices/views/InvoiceDetail";
-import {Button} from "@/app/ui/base/button";
-import {Card, CardContent} from "@/app/ui/base/card";
 import {AlertCircle, ArrowLeft} from "lucide-react";
 import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
-import DetailSkeleton from "@/app/ui/custom/invoices/detailSkeleton";
 import {InvoiceDetailContentProps} from "@/app/models/ui/invoiceDetailContentProps";
+import DetailSkeleton from "@/app/ui/invoices/detailSkeleton";
+import {Button, Card} from "@hugovrana/dashboard-frontend-shared/components";
+import {CardContent} from "@hugovrana/dashboard-frontend-shared";
+import InvoiceDetail from "@/app/ui/invoices/views/InvoiceDetail";
 
 export default function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
     const router = useRouter();

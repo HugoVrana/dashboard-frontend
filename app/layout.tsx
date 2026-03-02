@@ -3,12 +3,12 @@ import {Inter} from "next/font/google";
 import "./globals.css";
 import {Analytics} from "@vercel/analytics/next";
 import {geistMono, geistSans} from "@/app/ui/fonts";
-import {themeInitScript} from "@/app/ui/custom/navigation/themeSwitchFix";
-import {Navbar} from "@/app/ui/custom/navigation/navbar";
-import {DevOverlay} from "@/app/ui/custom/devOverlay/devOverlay";
-import {Providers} from "./ui/custom/providers";
 import {getLocale, getMessages, getTimeZone} from "next-intl/server";
 import {SpeedInsights} from "@vercel/speed-insights/next";
+import {themeInitScript} from "@/app/ui/navigation/themeSwitchFix";
+import {Providers} from "@/app/ui/providers";
+import {Navbar} from "@/app/ui/navigation/navbar";
+import {DevOverlay} from "@/app/ui/devOverlay/devOverlay";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
