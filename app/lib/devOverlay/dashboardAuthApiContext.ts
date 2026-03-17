@@ -14,3 +14,11 @@ export function getDashboardAuthRenderUrl() : string {
     console.log("Getting render url: " + url);
     return url;
 }
+
+function getAuthApiVersion() : string {
+    return process.env.NEXT_PUBLIC_DASHBOARD_AUTH_API_VERSION ?? "v1";
+}
+
+export function buildAuthApiUrl(serverUrl: string, path: string) : URL {
+    return new URL(`api/${getAuthApiVersion()}/${path}`, serverUrl);
+}

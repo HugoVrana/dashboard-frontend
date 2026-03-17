@@ -1,5 +1,6 @@
 import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
 import {RegisterRequest} from "@/app/models/auth/registerRequest";
+import {buildAuthApiUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 import {isUserInfo, mapToUserInfo} from "@/app/lib/typeValidators/userInfoValidator";
 import {LoginRequest} from "@/app/models/auth/loginRequest";
 import {UserInfo} from "@/app/models/auth/userInfo";
@@ -11,7 +12,7 @@ const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 
 export async function createUser(serverUrl : string, registerRequest : RegisterRequest) : Promise<UserInfo | null> {
     try {
-        const url = new URL("api/auth/register", serverUrl);
+        const url = buildAuthApiUrl(serverUrl, "auth/register");
 
         registerRequest.roleId = "6939575c98f5fc7bd2216a79";
 
@@ -70,7 +71,7 @@ export async function loginUserWithTokens(
     loginRequest: LoginRequest
 ): Promise<AuthResponse | null> {
     try {
-        const url = new URL("api/auth/login", serverUrl);
+        const url = buildAuthApiUrl(serverUrl, "auth/login");
 
         const res : Response = await fetch(url.toString(), {
             method : "POST",
@@ -120,7 +121,7 @@ export async function loginUserWithTokens(
      refreshToken: string
  ): Promise<boolean> {
      try {
-         const url = new URL("api/auth/logout", serverUrl);
+         const url = buildAuthApiUrl(serverUrl, "auth/logout");
          const res: Response = await fetch(url.toString(), {
              method: "POST",
              headers: {
@@ -140,7 +141,7 @@ export async function postUserProfilePicture(
     file: File
 ): Promise<string | null> {
     try {
-        const url = new URL("api/user/profilePicture", serverUrl);
+        const url = buildAuthApiUrl(serverUrl, "user/profilePicture");
 
         const formData = new FormData();
         formData.append("file", file);
@@ -185,7 +186,7 @@ export async function setupTotp(
     accessToken: string
 ): Promise<TotpSetupResponse | null> {
     try {
-        const url = new URL("api/auth/2fa/setup", serverUrl);
+        const url = buildAuthApiUrl(serverUrl, "auth/2fa/setup");
 
         const res: Response = await fetch(url.toString(), {
             method: "POST",
@@ -242,7 +243,7 @@ export async function verifyTotp(
     code: string
 ): Promise<boolean> {
     try {
-        const url = new URL("api/auth/2fa/verify", serverUrl);
+        const url = buildAuthApiUrl(serverUrl, "auth/2fa/verify");
 
         const res: Response = await fetch(url.toString(), {
             method: "POST",

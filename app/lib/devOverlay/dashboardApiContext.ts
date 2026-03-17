@@ -14,3 +14,16 @@ export function getDashboardRenderUrl() : string {
     console.log("Getting render url: " + url);
     return url;
 }
+
+function getDataApiVersion() : string {
+    return process.env.NEXT_PUBLIC_DASHBOARD_API_VERSION ?? "v1";
+}
+
+export function buildDataApiUrl(isLocal: boolean, path: string) : URL {
+    const base = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
+    return new URL(`/api/${getDataApiVersion()}${path}`, base);
+}
+
+export function buildDataApiUrlFromBase(serverUrl: string, path: string) : URL {
+    return new URL(`/api/${getDataApiVersion()}${path}`, serverUrl);
+}

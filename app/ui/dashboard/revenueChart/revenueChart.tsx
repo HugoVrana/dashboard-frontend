@@ -28,7 +28,7 @@ const chartConfig = {
 export default function RevenueChart() {
     const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
     const {hasGrant, isLoading, getAuthToken} = usePermissions();
-    const [canViewRevenue, setCanViewRevenue] = useState(false);
+    const canViewRevenue : boolean = hasGrant("dashboard-revenue-read");
     const [revenue, setRevenue] = useState<RevenueRead[] | null>(null);
     const [dataLoading, setDataLoading] = useState(true);
 
@@ -38,21 +38,14 @@ export default function RevenueChart() {
     const t = useDebugTranslations("dashboard.controls.revenueChart");
 
     useEffect(() => {
-        if (!apiContextReady || isLoading || !getAuthToken) return;
-
-        const revenueRead : boolean = hasGrant("dashboard-revenue-read");
-
-        setCanViewRevenue(revenueRead);
+        if (!apiContextReady || isLoading || !getAuthToken || !canViewRevenue) return;
 
         async function loadData() {
             setDataLoading(true);
             try {
-                if (revenueRead) {
-                    const revenue : RevenueRead[] |null = await getRevenue(dashboardApiIsLocal, getAuthToken);
-                    // Only update state if we got valid data
-                    if (revenue !== null) {
-                        setRevenue(revenue);
-                    }
+                const revenue : RevenueRead[] | null = await getRevenue(dashboardApiIsLocal, getAuthToken);
+                if (revenue !== null) {
+                    setRevenue(revenue);
                 }
             } catch (error) {
                 console.error("Failed to load data:", error);
@@ -62,14 +55,14 @@ export default function RevenueChart() {
         }
 
         loadData();
-    },  [apiContextReady, dashboardApiIsLocal, isLoading, getAuthToken, hasGrant]);
-
-    if (dataLoading) {
-        return <RevenueChartSkeleton skeletonProps={skellyProps} />;
-    }
+    },  [apiContextReady, dashboardApiIsLocal, isLoading, getAuthToken, canViewRevenue]);
 
     if (!canViewRevenue) {
         return <RevenueChartSkeleton skeletonProps={skellyNoPermissionProps} />;
+    }
+
+    if (dataLoading) {
+        return <RevenueChartSkeleton skeletonProps={skellyProps} />;
     }
 
     if (!revenue || revenue.length === 0) {

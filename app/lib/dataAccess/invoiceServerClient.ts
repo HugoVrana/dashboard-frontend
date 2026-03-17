@@ -1,4 +1,5 @@
 import GrafanaServerClient from "@/app/lib/dataAccess/grafanaServerClient";
+import {buildDataApiUrlFromBase} from "@/app/lib/devOverlay/dashboardApiContext";
 import {InvoiceCreate} from "@/app/models/invoice/invoiceCreate";
 import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
 import {getAuthToken} from "@/app/lib/permission/permissionsServerClient";
@@ -9,7 +10,7 @@ const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 
 export async function postInvoice(serverUrl : string, invoice : InvoiceCreate): Promise<InvoiceRead | null> {
     try {
-        const url = new URL("/invoices", serverUrl);
+        const url = buildDataApiUrlFromBase(serverUrl, "/invoices");
 
         const res : Response = await fetch(url.toString(), {
             method: "POST",
@@ -57,7 +58,7 @@ export async function postInvoice(serverUrl : string, invoice : InvoiceCreate): 
 
 export async function putInvoice(serverUrl : string, invoice : InvoiceUpdate): Promise<InvoiceRead | null> {
     try {
-        const url = new URL("/invoices/" + invoice.id, serverUrl);
+        const url = buildDataApiUrlFromBase(serverUrl, "/invoices/" + invoice.id);
         const res : Response = await fetch(url.toString(), {
             method: "PUT",
             body: JSON.stringify(invoice),
@@ -105,7 +106,7 @@ export async function putInvoice(serverUrl : string, invoice : InvoiceUpdate): P
 
 export async function deleteInvoice(serverUrl : string, id : string) : Promise<number> {
     try {
-        const url = new URL("/invoices/" + id, serverUrl);
+        const url = buildDataApiUrlFromBase(serverUrl, "/invoices/" + id);
 
         const res : Response = await fetch(url.toString(), {
             method: "DELETE",

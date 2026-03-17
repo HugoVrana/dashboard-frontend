@@ -9,10 +9,8 @@ export interface ActivitySubscription {
 export class ActivityClient {
     private client: Client;
     private subscriptions: Map<string, ActivityCallback[]> = new Map();
-    private url: string;
 
     constructor(url: string) {
-        this.url = url;
         this.client = new Client({
             brokerURL: url,
             onConnect: () => {
