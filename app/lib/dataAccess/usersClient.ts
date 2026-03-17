@@ -1,7 +1,7 @@
 "use client"
 
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
-import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
+import {buildAuthApiUrl, getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
@@ -16,7 +16,7 @@ function isValidUrl(str: string): boolean {
 
 export async function getUserProfileImageUrl(isLocal : boolean, userId : string) : Promise<string | null> {
     const baseUrl : string = isLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
-    const u : URL = new URL(`api/user/${userId}/profilePicture`, baseUrl);
+    const u : URL = buildAuthApiUrl(baseUrl, `user/${userId}/profilePicture`);
 
     try {
         const res : Response = await fetch(u.toString(), {

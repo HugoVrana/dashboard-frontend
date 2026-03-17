@@ -10,13 +10,12 @@ import {
 import {PageRequest} from "@/app/models/page/pageRequest";
 import {PageResponse} from "@/app/models/page/pageResponse";
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
-import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
+import {buildDataApiUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
 export async function getInvoiceAmount(isLocal: boolean, authToken: string, status?: string) : Promise<number | null> {
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    let u : URL = new URL("/invoices/amount", baseUrl);
+    let u : URL = buildDataApiUrl(isLocal, "/invoices/amount");
 
     if (status && status.trim() !== "") {
         u.searchParams.set("status", status.trim())
@@ -61,8 +60,7 @@ export async function getInvoiceAmount(isLocal: boolean, authToken: string, stat
 }
 
 export async function getInvoiceCount(isLocal : boolean, authToken: string, status : string) : Promise<number | null> {
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    let u : URL = new URL("/invoices/count", baseUrl);
+    let u : URL = buildDataApiUrl(isLocal, "/invoices/count");
 
     if (status && status.trim() !== "") u.searchParams.set("status", status.trim());
     try {
@@ -104,8 +102,7 @@ export async function getInvoiceCount(isLocal : boolean, authToken: string, stat
 }
 
 export async function getLatestInvoices(isLocal : boolean, authToken: string): Promise<InvoiceRead[] | null> {
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    let u : URL = new URL("/invoices/latest", baseUrl);
+    let u : URL = buildDataApiUrl(isLocal, "/invoices/latest");
     try {
         const res : Response = await fetch(u.toString(), {
             headers: {
@@ -149,8 +146,7 @@ export async function getLatestInvoices(isLocal : boolean, authToken: string): P
 export async function getFilteredInvoices(isLocal : boolean, authToken: string, searchTerm: string, page : number) : Promise<PageResponse<InvoiceRead> | null> {
     console.log("[getFilteredInvoices] Starting with params:", { isLocal, searchTerm, page, hasAuthToken: !!authToken });
 
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    let u : URL = new URL("/invoices/search", baseUrl);
+    let u : URL = buildDataApiUrl(isLocal, "/invoices/search");
     console.log("[getFilteredInvoices] Request URL:", u.toString());
 
     try {
@@ -224,8 +220,7 @@ export async function getFilteredInvoices(isLocal : boolean, authToken: string, 
 }
 
 export async function getInvoice(isLocal : boolean, authToken: string, id : string) : Promise<InvoiceRead | null> {
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    const u : URL = new URL("/invoices/" + id, baseUrl);
+    const u : URL = buildDataApiUrl(isLocal, "/invoices/" + id);
     try {
         const res : Response = await fetch(u.toString(), {
             method: "GET",

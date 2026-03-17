@@ -1,6 +1,6 @@
 "use client"
 
-import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
+import {buildDataApiUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 import {RevenueRead} from "@/app/models/revenue/revenueRead";
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
 import {isRevenue} from "@/app/lib/typeValidators/revenueValidator";
@@ -8,8 +8,8 @@ import {isRevenue} from "@/app/lib/typeValidators/revenueValidator";
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
 export async function getRevenue(isLocal: boolean, authToken : string) : Promise<RevenueRead[] | null> {
-    let baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    const u = new URL("/revenues/", baseUrl);
+    console.log("fetching revenue");
+    const u = buildDataApiUrl(isLocal, "/revenues/");
     try {
         const res : Response = await fetch(u.toString(), {
             headers: {
@@ -18,9 +18,12 @@ export async function getRevenue(isLocal: boolean, authToken : string) : Promise
             },
         });
 
+        console.log("res", res);
+
         if (!res.ok) {
             grafanaClient.error("HTTP error", {route: "GET /revenues/", status: res.status, statusText: res.statusText});
             console.error("HTTP error", res.status, res.statusText);
+            return null;
         }
 
         // Return null if no data returned

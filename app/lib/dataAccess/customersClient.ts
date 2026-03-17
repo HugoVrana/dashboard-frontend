@@ -2,15 +2,14 @@
 
 import GrafanaClient from "@/app/lib/dataAccess/grafanaClient";
 import {CustomerRead} from "@/app/models/customer/customerRead";
-import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
+import {buildDataApiUrl} from "@/app/lib/devOverlay/dashboardApiContext";
 import {isCustomerRead, isCustomerReadList} from "@/app/lib/typeValidators/customerValidator";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
 export async function getCustomers(isLocal : boolean, authToken: string) : Promise<CustomerRead[] | null> {
     grafanaClient.info("Fetching customers", {route: "GET /customers/"});
-    const baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    const u : URL = new URL("/customers/", baseUrl);
+    const u : URL = buildDataApiUrl(isLocal, "/customers/");
     try {
         const res : Response = await fetch(u.toString(), {
             headers: {
@@ -53,8 +52,7 @@ export async function getCustomers(isLocal : boolean, authToken: string) : Promi
 
 export async function getCustomerCount(isLocal : boolean, authToken: string) : Promise<number | null> {
     grafanaClient.info("Fetching customer count", {route: "GET /customers/count"});
-    const baseUrl : string = isLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
-    const u : URL = new URL("/customers/count", baseUrl);
+    const u : URL = buildDataApiUrl(isLocal, "/customers/count");
     try {
         const res : Response = await fetch(u.toString(), {
             headers: {
