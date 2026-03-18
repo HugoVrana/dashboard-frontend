@@ -2,13 +2,13 @@ import type {Metadata} from 'next';
 import {Inter} from "next/font/google";
 import "./globals.css";
 import {Analytics} from "@vercel/analytics/next";
-import {geistMono, geistSans} from "@/app/ui/fonts";
+import {geistMono, geistSans} from "@/app/shared/components/fonts";
 import {getLocale, getMessages, getTimeZone} from "next-intl/server";
 import {SpeedInsights} from "@vercel/speed-insights/next";
-import {themeInitScript} from "@/app/ui/navigation/themeSwitchFix";
-import {Providers} from "@/app/ui/providers";
-import {Navbar} from "@/app/ui/navigation/navbar";
-import {DevOverlay} from "@/app/ui/devOverlay/devOverlay";
+import {themeInitScript} from "@/app/shared/components/navigation/themeSwitchFix";
+import {Providers} from "@/app/shared/components/providers";
+import {Navbar} from "@/app/shared/components/navigation/navbar";
+import {DevOverlay} from "@/app/shared/components/devOverlay/devOverlay";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 

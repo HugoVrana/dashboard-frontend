@@ -1,4 +1,4 @@
-import LoginRegisterForm from "@/app/ui/auth/loginRegisterForm";
+import LoginRegisterForm from "@/app/auth/components/loginRegisterForm";
 import {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 

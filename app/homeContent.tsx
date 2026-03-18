@@ -5,16 +5,16 @@ import Link from "next/link";
 import {ArrowRight} from "lucide-react";
 import {useSession} from "next-auth/react";
 import {useContext, useMemo} from "react";
-import {ThemeContext} from "@/app/lib/theme/themeContext";
-import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
-import {ApiContext} from "@/app/lib/devOverlay/apiContext";
-import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/lib/devOverlay/dashboardApiContext";
-import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/lib/devOverlay/dashboardAuthApiContext";
+import {ThemeContext} from "@/app/shared/contexts/theme/themeContext";
+import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
+import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
+import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/dashboard/dashboardApiContext";
+import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
 import {ActivitySource} from "./models/ui/activity/activitySource";
-import AcmeLogo from "./ui/acmeLogo";
+import AcmeLogo from "@/app/shared/components/acmeLogo";
 import {Button, Card } from "@hugovrana/dashboard-frontend-shared/components";
 import {CardContent} from "@hugovrana/dashboard-frontend-shared";
-import {ActivityFeed} from "@/app/ui/activity/activityFeed";
+import {ActivityFeed} from "@/app/dashboard/components/activity/activityFeed";
 
 export default function HomeContent() {
     const { data: session } = useSession();
@@ -23,7 +23,7 @@ export default function HomeContent() {
     const {dashboardApiIsLocal, dashboardAuthApiIsLocal, isReady} = useContext(ApiContext);
     const dashboardApiUrl : string = dashboardApiIsLocal ? getDashboardLocalUrl() : getDashboardRenderUrl();
     const dashboardAuthApiUrl : string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
-    const t = useDebugTranslations("homepage");
+    const t = useDebugTranslations("shared.homepage");
 
     const activitySources: ActivitySource[] = useMemo(() => [
         { name: "Data", brokerURL: `${dashboardApiUrl}/ws` },

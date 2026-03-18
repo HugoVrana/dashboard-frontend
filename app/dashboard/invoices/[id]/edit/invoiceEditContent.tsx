@@ -2,17 +2,17 @@
 
 import {useContext, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
-import {ApiContext} from "@/app/lib/devOverlay/apiContext";
-import {usePermissions} from "@/app/lib/permission/permissionsClient";
-import {InvoiceRead} from "@/app/models/invoice/invoiceRead";
-import {getInvoice} from "@/app/lib/dataAccess/invoicesClient";
+import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
+import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
+import {usePermissions} from "@/app/auth/permission/permissionsClient";
+import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
+import {getInvoice} from "@/app/dashboard/dataAccess/invoicesClient";
 import {AlertCircle, ArrowLeft} from "lucide-react";
-import {InvoiceEditContentProps} from "@/app/models/ui/invoiceEditContentProps";
-import DetailSkeleton from "@/app/ui/invoices/detailSkeleton";
+import {InvoiceEditContentProps} from "@/app/dashboard/models/invoiceEditContentProps";
+import DetailSkeleton from "@/app/dashboard/components/invoices/detailSkeleton";
 import {Button, Card} from "@hugovrana/dashboard-frontend-shared/components";
 import {CardContent} from "@hugovrana/dashboard-frontend-shared";
-import InvoiceEditForm from "@/app/ui/invoices/views/invoiceEditForm";
+import InvoiceEditForm from "@/app/dashboard/components/invoices/views/invoiceEditForm";
 
 export default function InvoiceEditContent({ id }: InvoiceEditContentProps) {
     const router = useRouter();

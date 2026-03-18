@@ -1,4 +1,4 @@
-import DashboardSkeleton from "@/app/ui/skeletons/dashboardSkeleton";
+import DashboardSkeleton from "@/app/dashboard/components/skeletons/dashboardSkeleton";
 
 export default function Loading() {
     return <DashboardSkeleton skeletonProps={{showShimmer : true}} />;

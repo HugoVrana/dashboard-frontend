@@ -1,0 +1,239 @@
+{
+  "shared": {
+    "lang" :{
+      "de" : "Deutsch",
+      "en" : "Englisch",
+      "change" : "Sprache ändern"
+    },
+    "nav" : {
+      "home" : "Startseite",
+      "dashboard" : "Dashboard",
+      "login" : "Anmelden",
+      "logout" : "Abmelden",
+      "invoices" : "Rechnungen"
+    },
+    "homepage" : {
+      "meta": {
+        "title": "Startseite",
+        "description": "Willkommen beim Acme Dashboard"
+      },
+      "welcome" : "Willkomen bei Acme! ",
+      "example" : "Das ist ein Beispiel Page für",
+      "course" : "Next.js Lernkurs",
+      "vercel" : ", gehostet von Vercel.",
+      "dashboard" : "Zum Dashboard",
+      "login" : "Anmelden",
+      "imgAlt" : "Screenshot des Dashboard Projekts"
+    }
+  },
+  "auth" : {
+    "email" : "E-Mail",
+    "password" : "Passwort",
+    "forgotPassword" : "Passwort vergessen?",
+    "noAccount" : "Noch kein Konto?",
+    "signUp" : "Registrieren",
+    "unauthorized" : {
+      "meta" : {
+        "title" : "Nicht berechtig",
+        "description" : "Nicht berechtigt für diese Daten"
+      },
+      "title" : "403 Nicht autorisiert",
+      "description" : "Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.",
+      "back" : "Zurück",
+      "toDashboard" : "Zum Dashboard",
+      "toHome" : "Zur Startseite"
+    },
+    "login": {
+      "meta": {
+        "title": "Anmelden",
+        "description": "Melden Sie sich beim Dashboard an"
+      }
+    },
+    "loginForm" : {
+      "title" : "Willkommen zurück",
+      "email" : {
+        "label" : "E-Mail",
+        "placeholder" : "Ihre E-Mail eingeben"
+      },
+      "password" : {
+        "label" : "Passwort",
+        "placeholder" : "Ihr Passwort eingeben"
+      },
+      "login" : "Anmelden"
+    },
+    "loginRegisterForm": {
+      "login" : "Anmelden",
+      "register" : "Registrieren",
+      "acmeReserved" : "Acme. Alle Rechte vorbehalten."
+    },
+    "registerForm" : {
+      "title" : "Registrieren Sie sich!",
+      "email" : {
+        "label" : "E-Mail",
+        "placeholder" : "Ihre E-Mail eingeben"
+      },
+      "password" : {
+        "label" : "Passwort",
+        "placeholder" : "Ihr Passwort eingeben"
+      },
+      "confirmPassword" : {
+        "label": "Password bestätigen",
+        "placeholder": "Ihr Passwort bestätigen"
+      },
+      "signUp" : "Registrieren",
+      "avatarUpload" : {
+        "upload" : "Hochladen",
+        "change" : "Ändern",
+        "delete" : "Löschen",
+        "fileTooLarge" : "Datei ist zu gross",
+        "invalidFileType" : "Ungültiger Dateityp"
+      }
+    },
+    "logoutButton" : "Abmelden",
+    "totpSetup": {
+      "title": "Zwei-Faktor-Authentifizierung einrichten",
+      "titleLoading": "Zwei-Faktor-Authentifizierung wird eingerichtet",
+      "titleError": "Zwei-Faktor-Authentifizierung",
+      "description": "Scannen Sie den QR-Code mit Ihrer Authenticator-App (Google Authenticator, Authy, etc.)",
+      "secretLabel": "Oder geben Sie dieses Geheimnis manuell ein:",
+      "codeLabel": "Geben Sie den 6-stelligen Code aus Ihrer App ein",
+      "codePlaceholder": "000000",
+      "codeError": "Bitte geben Sie einen 6-stelligen Code ein",
+      "verifyButton": "Verifizieren",
+      "verifySuccess": "Code erfolgreich verifiziert",
+      "skipButton": "Vorerst überspringen",
+      "continueButton": "Weiter",
+      "continueWithout2FA": "Ohne 2FA fortfahren"
+    }
+  },
+  "dashboard" : {
+    "overview" : {
+      "meta": {
+        "title": "Dashboard",
+        "description": "Übersicht Ihres Dashboards"
+      },
+      "dashboard" : "Dashboard"
+    },
+    "invoices" : {
+      "meta": {
+        "title": "Rechnungen",
+        "description": "Verwalten Sie Ihre Rechnungen"
+      },
+      "create": {
+        "meta": {
+          "title": "Rechnung erstellen",
+          "description": "Neue Rechnung erstellen"
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Rechnungsdetails",
+          "description": "Rechnungsdetails anzeigen"
+        }
+      },
+      "edit": {
+        "meta": {
+          "title": "Rechnung bearbeiten",
+          "description": "Bestehende Rechnung bearbeiten"
+        }
+      },
+      "title" : "Rechnungen",
+      "searchPlaceholder" : "Rechnungen suchen (Rechnung id und status sind funktionierend)",
+      "actions" : {
+        "created" : "Rechnung erstellt",
+        "updated" : "Rechnung angepasst",
+        "deleted" : "Rechnung gelöscht"
+      }
+    },
+    "controls" : {
+      "cards" : {
+        "amountPaidInvoices" : "Insbesamt Bezahlte Rechnungen",
+        "amountPendingInvoices" : "Insbesamt ausstehende Rechnungen",
+        "totalInvoices" : "Insgesamt Rechnungen",
+        "totalCustomers" : "Insgesamt Kunden"
+      },
+      "latestInvoices" : {
+        "title" : "Neueste Rechnungen",
+        "updatedNow" : "Aktualisiert jetzt"
+      },
+      "revenueChart" : {
+        "title" : "Umsatz-Trend",
+        "noData" : "Keine Daten vorhanden.",
+        "timeFrame" : "Letzte 12 Monate"
+      },
+      "invoiceButtons" : {
+        "viewInvoice" : "Rechnung anschauen",
+        "createInvoice" : "Rechnung erstellen",
+        "editInvoice" : "Rechnung bearbeiten",
+        "deleteInvoice" : "Rechnung löschen"
+      },
+      "invoiceTable" : {
+        "noInvoices" : "Keine Rechnungen vorhanden.",
+        "noInvoicesQuery" : "Keine Rechunungen für diese Abfrage gefunden:",
+        "invoiceNr" : "Invoice #",
+        "customer" : "Kunde",
+        "email" : "E-Mail",
+        "amount" : "Betrag",
+        "date" : "Datum",
+        "status" : "Status",
+        "actions" : "Aktionen",
+        "profileAlt" : "Profilbild"
+      },
+      "invoiceDetail" : {
+        "title" : "Rechnung",
+        "customer" : "Kunde",
+        "paymentDetails" : "Zahlungsdetails",
+        "amount" : "Betrag",
+        "invoiceId" : "Rechnungsnummer",
+        "date" : "Datum",
+        "unknownCustomer" : "Unbekannter Kunde",
+        "backToInvoices" : "Zurück zu Rechnungen"
+      },
+      "status" : {
+        "pending" : "Ausstehend",
+        "paid" : "Bezahlt"
+      },
+      "pagination" : {
+        "previous" : "Vorherige Seite",
+        "next" : "Nächste Seite"
+      },
+      "activityFeed" : {
+        "title" : "Aktivität",
+        "noActivity" : "Soweit keine Aktivität"
+      },
+      "invoice" : {
+        "views": {
+          "createForm" : {
+            "successMessage" : "Rechnung erfolgreich erstellt!",
+            "errorMessage" : "Rechnung konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+            "chooseCustomer" : "Kunde auswählen",
+            "noCustomerPermission" : "Sie haben keine Berechtigung, Kunden anzuzeigen",
+            "chooseAmount" : "Betrag auswählen",
+            "amountPlaceholder" : "USD-Betrag eingeben",
+            "setStatus" : "Rechnungsstatus festlegen",
+            "pending" : "Ausstehend",
+            "paid" : "Bezahlt",
+            "cancel" : "Abbrechen",
+            "creating" : "Erstellen...",
+            "createInvoice" : "Rechnung erstellen"
+          },
+          "editForm" : {
+            "title" : "Rechnung bearbeiten",
+            "successMessage" : "Rechnung erfolgreich aktualisiert!",
+            "errorMessage" : "Rechnung konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut.",
+            "customer" : "Kunde",
+            "amount" : "Betrag",
+            "amountPlaceholder" : "USD-Betrag eingeben",
+            "status" : "Status",
+            "pending" : "Ausstehend",
+            "paid" : "Bezahlt",
+            "date" : "Datum",
+            "cancel" : "Abbrechen",
+            "saving" : "Speichern...",
+            "saveChanges" : "Änderungen speichern"
+          }
+        }
+      }
+    }
+  }
+}
