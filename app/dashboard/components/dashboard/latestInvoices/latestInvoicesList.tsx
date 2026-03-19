@@ -1,8 +1,9 @@
 import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import {clsx} from "clsx";
 import {RefreshCcw} from "lucide-react";
-import {Avatar, AvatarFallback, AvatarImage, Card, CardContent, CardDescription, CardHeader, CardTitle} from "@hugovrana/dashboard-frontend-shared";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@hugovrana/dashboard-frontend-shared";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
+import CustomerAvatar from "@/app/dashboard/components/customer/customerAvatar";
 
 type Props = {
     invoices: InvoiceRead[];
@@ -35,21 +36,7 @@ export default function LatestInvoicesList({ invoices }: Props) {
                             <div className="flex flex-row items-center gap-4">
                                 {invoice.customer && (
                                     <>
-                                        <Avatar size="sm" className="hidden sm:flex">
-                                            {invoice.customer.image_url && (
-                                                <AvatarImage
-                                                    src={invoice.customer.image_url}
-                                                    alt={invoice.customer.name}
-                                                />
-                                            )}
-                                            <AvatarFallback>
-                                                {invoice.customer.name
-                                                    .split(' ')
-                                                    .map(word => word[0])
-                                                    .join('')
-                                                    .toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
+                                        <CustomerAvatar customer={invoice.customer} size="sm" className="hidden sm:flex" />
                                         <div className="min-w-0">
                                             <p className="truncate text-sm font-semibold md:text-base">
                                                 {invoice.customer.name}

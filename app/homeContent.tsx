@@ -10,11 +10,11 @@ import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugT
 import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/dashboard/dashboardApiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
-import {ActivitySource} from "./models/ui/activity/activitySource";
 import AcmeLogo from "@/app/shared/components/acmeLogo";
 import {Button, Card } from "@hugovrana/dashboard-frontend-shared/components";
 import {CardContent} from "@hugovrana/dashboard-frontend-shared";
 import {ActivityFeed} from "@/app/dashboard/components/activity/activityFeed";
+import {ActivitySource} from "@/app/dashboard/models/activity/activitySource";
 
 export default function HomeContent() {
     const { data: session } = useSession();

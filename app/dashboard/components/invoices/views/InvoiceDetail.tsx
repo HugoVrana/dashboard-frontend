@@ -4,18 +4,16 @@ import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import {useLocale} from "next-intl";
 import {Calendar, CreditCard, FileText, Hash, Mail} from "lucide-react";
 import {
-    AvatarImage,
-    Avatar,
     Card,
     CardContent,
     CardHeader,
     CardTitle,
-    AvatarFallback,
     Separator
 } from "@hugovrana/dashboard-frontend-shared";
 import InvoiceStatus from "@/app/dashboard/components/invoices/status";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {formatCurrency, formatDateToLocal} from "@/app/dashboard/utils";
+import CustomerAvatar from "@/app/dashboard/components/customer/customerAvatar";
 
 interface InvoiceDetailProps {
     invoice: InvoiceRead;
@@ -59,15 +57,12 @@ export default function InvoiceDetail({ invoice }: InvoiceDetailProps) {
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-center gap-4">
-                            <Avatar className="h-16 w-16">
-                                <AvatarImage
-                                    src={invoice.customer?.image_url}
-                                    alt={invoice.customer?.name ?? "Customer"}
-                                />
-                                <AvatarFallback className="text-lg">
-                                    {invoice.customer?.name?.charAt(0) ?? "?"}
-                                </AvatarFallback>
-                            </Avatar>
+                            invoice.customer && (
+                            <>
+                                <CustomerAvatar customer={invoice.customer} className="h-6 w-6" />
+                                <span>{invoice.customer.name}</span>
+                            </>
+                            )
                             <div className="space-y-1">
                                 <p className="text-lg font-semibold">
                                     {invoice.customer?.name ?? t("unknownCustomer")}

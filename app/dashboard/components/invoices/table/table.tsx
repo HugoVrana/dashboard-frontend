@@ -7,9 +7,6 @@ import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import {useSearchParams} from "next/navigation";
 import {useLocale} from "next-intl";
 import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
     Table,
     TableBody,
     TableCell,
@@ -26,6 +23,7 @@ import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {usePermissions} from "@/app/auth/permission/permissionsClient";
 import {getFilteredInvoices} from "@/app/dashboard/dataAccess/invoicesClient";
 import {formatCurrency, formatDateToLocal} from "@/app/dashboard/utils";
+import CustomerAvatar from "@/app/dashboard/components/customer/customerAvatar";
 
 export default function InvoicesTable (props : InvoiceTableProps) {
     const t = useDebugTranslations("dashboard.controls.invoiceTable");
@@ -113,17 +111,11 @@ export default function InvoicesTable (props : InvoiceTableProps) {
                                 <TableCell>
                                     <div className="flex items-center gap-2">
                                         {invoice.customer && (
-                                            <Avatar className="h-7 w-7">
-                                                <AvatarImage
-                                                    src={invoice.customer.image_url}
-                                                    alt={`${invoice.customer.name}`}
-                                                />
-                                                <AvatarFallback>
-                                                    {invoice.customer.name?.charAt(0)}
-                                                </AvatarFallback>
-                                            </Avatar>
+                                            <>
+                                                <CustomerAvatar customer={invoice.customer} className="h-7 w-7" />
+                                                <span>{invoice.customer.name}</span>
+                                            </>
                                         )}
-                                        <span>{invoice.customer?.name}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell>{invoice.customer?.email}</TableCell>
