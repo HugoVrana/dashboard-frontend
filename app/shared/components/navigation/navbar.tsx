@@ -32,10 +32,10 @@ export function Navbar() {
     };
 
     return (
-        <header className="bg-background">
-            <div className="container flex h-14 items-center justify-between px-4">
+        <header className="bg-background w-full overflow-x-hidden">
+            <div className="flex h-14 w-full items-center justify-between gap-2 px-4">
                 {/* Left side */}
-                <NavigationMenu>
+                <NavigationMenu className="min-w-0 shrink">
                     <NavigationMenuList>
                         <NavigationMenuItem>
                             <NavigationMenuLink href={"/"}>
@@ -69,7 +69,7 @@ export function Navbar() {
                 </NavigationMenu>
 
                 {/* Right side */}
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                     <LanguageToggle/>
                     <ThemeToggle/>
                     {status === "loading" ? (
@@ -84,7 +84,7 @@ export function Navbar() {
                                     {session.user.email?.charAt(0).toUpperCase() ?? "U"}
                                 </AvatarFallback>
                             </Avatar>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="hidden max-w-[160px] truncate text-sm text-muted-foreground md:block">
                                 {session.user.email}
                             </span>
                             <Button

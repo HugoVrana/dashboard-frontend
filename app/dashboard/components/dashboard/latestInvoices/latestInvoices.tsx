@@ -31,7 +31,7 @@ export default function LatestInvoices() {
         const customerPermission : boolean = hasGrant("dashboard-customers-read");
         setCanViewCustomer(customerPermission);
 
-        const hasAllPermissions = invoicesPermission && customerPermission;
+        const hasAllPermissions : boolean = invoicesPermission && customerPermission;
         setCanViewInvoicesAndCustomer(hasAllPermissions);
 
         async function loadData() {

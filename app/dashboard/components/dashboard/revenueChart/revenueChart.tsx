@@ -1,15 +1,13 @@
 "use client"
 
 import {Calendar} from "lucide-react";
-import {Bar, BarChart, XAxis, YAxis} from "recharts";
-import {useContext, useEffect, useState} from "react";
+import {Bar, BarChart, Tooltip, XAxis, YAxis} from "recharts";
+import {useContext, useEffect, useRef, useState} from "react";
 import {
     Card,
     CardContent, CardDescription,
     CardHeader,
-    CardTitle, ChartConfig,
-    ChartContainer,
-    ChartTooltip, ChartTooltipContent
+    CardTitle,
 } from "@hugovrana/dashboard-frontend-shared";
 import {RevenueChartSkeleton} from "@/app/dashboard/components/skeletons/revenueChartSkeleton";
 import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
@@ -18,19 +16,23 @@ import {RevenueRead} from "@/app/dashboard/models/revenueRead";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {getRevenue} from "@/app/dashboard/dataAccess/revenueClient";
 
-const chartConfig = {
-    revenue: {
-        label: "Revenue",
-        color: "hsl(var(--primary))",
-    },
-} satisfies ChartConfig;
-
 export default function RevenueChart() {
     const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
     const {hasGrant, isLoading, getAuthToken} = usePermissions();
     const canViewRevenue : boolean = hasGrant("dashboard-revenue-read");
     const [revenue, setRevenue] = useState<RevenueRead[] | null>(null);
     const [dataLoading, setDataLoading] = useState(true);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [chartWidth, setChartWidth] = useState(0);
+
+    useEffect(() => {
+        if (!containerRef.current) return;
+        const observer = new ResizeObserver(entries => {
+            setChartWidth(entries[0].contentRect.width);
+        });
+        observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, [revenue]);
 
     const skellyProps = {showShimmer : true};
     const skellyNoPermissionProps = {showShimmer : false};
@@ -43,9 +45,9 @@ export default function RevenueChart() {
         async function loadData() {
             setDataLoading(true);
             try {
-                const revenue : RevenueRead[] | null = await getRevenue(dashboardApiIsLocal, getAuthToken);
-                if (revenue !== null) {
-                    setRevenue(revenue);
+                const loadingRevenue : RevenueRead[] | null = await getRevenue(dashboardApiIsLocal, getAuthToken);
+                if (loadingRevenue !== null) {
+                    setRevenue(loadingRevenue);
                 }
             } catch (error) {
                 console.error("Failed to load data:", error);
@@ -84,28 +86,33 @@ export default function RevenueChart() {
                 <CardTitle>{t('title')}</CardTitle>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} className="h-87.5 w-full">
-                    <BarChart data={revenue}>
-                        <XAxis
-                            dataKey="month"
-                            tickLine={false}
-                            axisLine={false}
-                            fontSize={12}
-                        />
-                        <YAxis
-                            tickLine={false}
-                            axisLine={false}
-                            fontSize={12}
-                            tickFormatter={(value) => `$${value}`}
-                        />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar
-                            dataKey="revenue"
-                            fill="var(--color-revenue)"
-                            radius={[4, 4, 0, 0]}
-                        />
-                    </BarChart>
-                </ChartContainer>
+                <div
+                    ref={containerRef}
+                    className="w-full text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-layer]:outline-hidden [&_.recharts-surface]:outline-hidden"
+                >
+                    {chartWidth > 0 && (
+                        <BarChart data={revenue} width={chartWidth} height={300}>
+                            <XAxis
+                                dataKey="month"
+                                tickLine={false}
+                                axisLine={false}
+                                fontSize={12}
+                            />
+                            <YAxis
+                                tickLine={false}
+                                axisLine={false}
+                                fontSize={12}
+                                tickFormatter={(value) => `$${value}`}
+                            />
+                            <Tooltip formatter={(value) => [`$${value}`, "Revenue"]} />
+                            <Bar
+                                dataKey="revenue"
+                                fill="hsl(var(--primary))"
+                                radius={[4, 4, 0, 0]}
+                            />
+                        </BarChart>
+                    )}
+                </div>
                 <CardDescription className="flex items-center gap-2 pt-4">
                     <Calendar className="h-4 w-4" />
                     {t('timeFrame')}
