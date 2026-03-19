@@ -1,0 +1,112 @@
+"use client";
+
+import {useState} from "react";
+import Link from "next/link";
+import {signOut, useSession} from "next-auth/react";
+import {Loader2, LogOut} from "lucide-react";
+import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+    Button,
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList
+}
+    from "@hugovrana/dashboard-frontend-shared";
+import LanguageToggle from "@/app/shared/components/navigation/languageToggle";
+import {ThemeToggle} from "@/app/shared/components/navigation/themeToggle";
+import AcmeLogo from "../acmeLogo";
+
+export function Navbar() {
+    const { data: session, status } = useSession();
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const isLoggedIn: boolean = !!session?.user;
+    const t = useDebugTranslations("shared.nav");
+
+    const handleLogout = async () => {
+        setIsLoggingOut(true);
+        await signOut({ callbackUrl: "/" });
+    };
+
+    return (
+        <header className="bg-background w-full overflow-x-hidden">
+            <div className="flex h-14 w-full items-center justify-between gap-2 px-4">
+                {/* Left side */}
+                <NavigationMenu className="min-w-0 shrink">
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink href={"/"}>
+                                <div className="flex h-10 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-15 mt-2">
+                                    <AcmeLogo />
+                                </div>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem>
+                            <NavigationMenuLink href={"/"}>
+                                {t("home")}
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+
+                        {isLoggedIn && (
+                            <>
+                                <NavigationMenuItem>
+                                    <NavigationMenuLink href={"/dashboard"}>
+                                        {t("dashboard")}
+                                    </NavigationMenuLink>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <NavigationMenuLink href={"/dashboard/invoices"}>
+                                        {t("invoices")}
+                                    </NavigationMenuLink>
+                                </NavigationMenuItem>
+                            </>
+                        )}
+                    </NavigationMenuList>
+                </NavigationMenu>
+
+                {/* Right side */}
+                <div className="flex shrink-0 items-center gap-2">
+                    <LanguageToggle/>
+                    <ThemeToggle/>
+                    {status === "loading" ? (
+                        <div className="h-9 w-20 animate-pulse rounded-lg bg-muted" />
+                    ) : session?.user ? (
+                        <div className="flex items-center gap-2">
+                            <Avatar size="sm">
+                                {session.user.image ? (
+                                    <AvatarImage src={session.user.image} alt={session.user.email ?? "User"} />
+                                ) : null}
+                                <AvatarFallback>
+                                    {session.user.email?.charAt(0).toUpperCase() ?? "U"}
+                                </AvatarFallback>
+                            </Avatar>
+                            <span className="hidden max-w-[160px] truncate text-sm text-muted-foreground md:block">
+                                {session.user.email}
+                            </span>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleLogout}
+                                disabled={isLoggingOut}
+                            >
+                                {isLoggingOut ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    <LogOut className="size-4" />
+                                )}
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button variant="default" size="sm">
+                            <Link href="/auth/login">{t("login")}</Link>
+                        </Button>
+                    )}
+                </div>
+            </div>
+        </header>
+    );
+}

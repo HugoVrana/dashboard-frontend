@@ -1,10 +1,10 @@
 import NextAuth, {Session, User} from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import {LoginRequest} from "@/app/models/auth/loginRequest";
-import {RoleRead} from "@/app/models/auth/role";
+import {LoginRequest} from "@/app/auth/models/loginRequest";
+import {RoleRead} from "@/app/auth/models/role";
 import {JWT} from "next-auth/jwt";
-import {loginUserWithTokens, logoutUserWithToken} from "@/app/lib/dataAccess/usersServerClient";
-import {AuthResponse} from "@/app/models/auth/authResponse";
+import {loginUserWithTokens, logoutUserWithToken} from "@/app/auth/dataAccess/usersServerClient";
+import {AuthResponse} from "@/app/auth/models/authResponse";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     session: {

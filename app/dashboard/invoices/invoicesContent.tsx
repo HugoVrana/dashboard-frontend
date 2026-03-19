@@ -1,15 +1,15 @@
 "use client"
 
-import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
 import {useEffect, useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
-import {usePermissions} from "@/app/lib/permission/permissionsClient";
 import {CheckCircle, X} from "lucide-react";
 import { Card } from "@hugovrana/dashboard-frontend-shared/components";
 import {CardContent} from "@hugovrana/dashboard-frontend-shared";
-import Search from "@/app/ui/invoices/search";
-import {CreateInvoice} from "@/app/ui/invoices/buttons";
-import TableWithPermission from "@/app/ui/invoices/table/tableWithPermission";
+import Search from "@/app/dashboard/components/invoices/search";
+import {CreateInvoice} from "@/app/dashboard/components/invoices/buttons";
+import TableWithPermission from "@/app/dashboard/components/invoices/table/tableWithPermission";
+import {usePermissions} from "@/app/auth/permission/permissionsClient";
+import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 
 export default function InvoicesContent() {
     const t = useDebugTranslations("dashboard.invoices");

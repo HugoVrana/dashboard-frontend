@@ -1,9 +1,9 @@
 "use client"
 
-import {useDebugTranslations} from "@/app/lib/i18n/useDebugTranslations";
-import Cards from "@/app/ui/dashboard/cards/cards";
-import RevenueChart from "@/app/ui/dashboard/revenueChart/revenueChart";
-import LatestInvoices from "@/app/ui/dashboard/latestInvoices/latestInvoices";
+import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
+import Cards from "@/app/dashboard/components/dashboard/cards/cards";
+import RevenueChart from "@/app/dashboard/components/dashboard/revenueChart/revenueChart";
+import LatestInvoices from "@/app/dashboard/components/dashboard/latestInvoices/latestInvoices";
 
 export default function OverviewContent() {
     const t = useDebugTranslations("dashboard.overview");
