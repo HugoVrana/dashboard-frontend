@@ -128,6 +128,7 @@ export async function getLatestInvoices(isLocal : boolean, authToken: string): P
         const data : unknown = await JSON.parse(text);
         if (Array.isArray(data)) {
             grafanaClient.info("Fetched latest invoices", {route: "GET /invoices/latest", count: data.length});
+            console.log("Fetched latest invoices count", data.length);
             return data
                 .map(mapToInvoiceRead)
                 .filter((x): x is InvoiceRead => x !== null);

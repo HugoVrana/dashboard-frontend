@@ -40,7 +40,8 @@ export default function LatestInvoices() {
                 if (hasAllPermissions) {
                     const latestInvoices : InvoiceRead[] | null = await getLatestInvoices(dashboardApiIsLocal, getAuthToken);
                     // Only update state if we got valid data
-                    if (latestInvoices !== null) {
+                    if (latestInvoices && latestInvoices.length > 0) {
+                        console.log(latestInvoices);
                         setLatestInvoices(latestInvoices);
                     }
                 }

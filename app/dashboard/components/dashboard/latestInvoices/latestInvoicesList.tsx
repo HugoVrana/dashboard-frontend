@@ -1,7 +1,7 @@
 import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import {clsx} from "clsx";
 import {RefreshCcw} from "lucide-react";
-import {Avatar, AvatarFallback, AvatarImage, Card, CardContent, CardDescription, CardHeader, CardTitle, Label } from "@hugovrana/dashboard-frontend-shared";
+import {Avatar, AvatarFallback, AvatarImage, Card, CardContent, CardDescription, CardHeader, CardTitle} from "@hugovrana/dashboard-frontend-shared";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 
 type Props = {
@@ -12,6 +12,7 @@ export default function LatestInvoicesList({ invoices }: Props) {
 
     const t = useDebugTranslations("dashboard.controls.latestInvoices");
 
+    console.log("LatestInvoicesList ", invoices);
     if (!invoices) return null;
 
     return (
@@ -35,18 +36,18 @@ export default function LatestInvoicesList({ invoices }: Props) {
                                 {invoice.customer && (
                                     <>
                                         <Avatar size="sm" className="hidden sm:flex">
-                                            <AvatarImage
-                                                src={invoice.customer.image_url}
-                                                alt={invoice.customer.name}
-                                            />
+                                            {invoice.customer.image_url && (
+                                                <AvatarImage
+                                                    src={invoice.customer.image_url}
+                                                    alt={invoice.customer.name}
+                                                />
+                                            )}
                                             <AvatarFallback>
-                                                <Label>
-                                                    {invoice.customer?.name
-                                                        .split(' ')
-                                                        .map(word => word[0])
-                                                        .join('')
-                                                        .toUpperCase()}
-                                                </Label>
+                                                {invoice.customer.name
+                                                    .split(' ')
+                                                    .map(word => word[0])
+                                                    .join('')
+                                                    .toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="min-w-0">
