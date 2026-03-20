@@ -3,8 +3,79 @@ import Credentials from "next-auth/providers/credentials";
 import {LoginRequest} from "@/app/auth/models/loginRequest";
 import {RoleRead} from "@/app/auth/models/role";
 import {JWT} from "next-auth/jwt";
+import {loginWithOAuth2, refreshAccessToken, revokeToken} from "@/app/auth/oauth2/oauth2ServerClient";
 import {loginUserWithTokens, logoutUserWithToken} from "@/app/auth/dataAccess/usersServerClient";
 import {AuthResponse} from "@/app/auth/models/authResponse";
+
+/**
+ * Attempts V2 OAuth2 login, falls back to V1 direct login if V2 fails.
+ * Returns a normalized user object or null.
+ *
+ * TODO: Remove V1 fallback and authVersion tracking once OAuth2 V2 is fully rolled out.
+ */
+async function authorizeUser(email: string, password: string, serverUrl: string) {
+
+    // --- Try V2 OAuth2 Authorization Code flow with PKCE first ---
+    try {
+        const result = await loginWithOAuth2(serverUrl, email, password);
+
+        if (result && "mfaRequired" in result) {
+            console.log("MFA required for user (OAuth2 V2):", email);
+            return null;
+        }
+
+        if (result && result.user) {
+            console.log("User authorized via OAuth2 V2:", result.user.email);
+            const grantList: string[] = result.user.roleReads.flatMap(
+                (r: { grants: { name: string }[] }) => r.grants.map((g: { name: string }) => g.name)
+            );
+            return {
+                id: result.user.id,
+                email: result.user.email,
+                role: result.user.roleReads,
+                grants: grantList,
+                accessToken: result.accessToken,
+                refreshToken: result.refreshToken,
+                expiresIn: result.expiresIn,
+                imageUrl: result.user.profileImageUrl,
+                url: serverUrl,
+                authVersion: "v2" as const,
+            };
+        }
+    } catch (e) {
+        console.warn("OAuth2 V2 login failed, falling back to V1:", e);
+    }
+
+    // --- Fallback: V1 direct login ---
+    try {
+        console.log("Attempting V1 fallback login for:", email);
+        const loginRequest: LoginRequest = { email, password };
+        const res: AuthResponse | null = await loginUserWithTokens(serverUrl, loginRequest);
+
+        if (!res || !res.user) {
+            return null;
+        }
+
+        console.log("User authorized via V1 fallback:", res.user.email);
+        const grantList: string[] = res.user.roleReads.flatMap(r => r.grants.map(g => g.name));
+
+        return {
+            id: res.user.id,
+            email: res.user.email,
+            role: res.user.roleReads,
+            grants: grantList,
+            accessToken: res.accessToken,
+            refreshToken: res.refreshToken,
+            expiresIn: res.expiresIn,
+            imageUrl: res.user.profileImageUrl,
+            url: serverUrl,
+            authVersion: "v1" as const,
+        };
+    } catch (e) {
+        console.error("V1 fallback login also failed:", e);
+        return null;
+    }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     session: {
@@ -25,40 +96,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     return null;
                 }
 
-                const loginRequest: LoginRequest = {
-                    email: credentials.email.toString(),
-                    password: credentials.password.toString()
-                };
+                const user = await authorizeUser(
+                    credentials.email.toString(),
+                    credentials.password.toString(),
+                    credentials.url.toString()
+                );
 
-                const res : AuthResponse | null = await loginUserWithTokens(credentials.url.toString(), loginRequest);
-
-                if (!res || !res.user) {
+                if (!user) {
                     return null;
                 }
 
-                console.log("User authorized:", res);
-
-                const grantList: string[] = res.user.roleReads.flatMap(r => r.grants.map(g => g.name));
-
                 return {
-                    id: res.user.id,
-                    email: res.user.email,
-                    role: res.user.roleReads,
-                    grants: grantList,
-                    accessToken: res.accessToken,
-                    refreshToken: res.refreshToken,
-                    expiresIn: res.expiresIn,
-                    imageUrl : res.user.profileImageUrl,
-                    url: credentials.url.toString()
+                    id: user.id,
+                    email: user.email,
+                    role: user.role,
+                    grants: user.grants,
+                    accessToken: user.accessToken,
+                    refreshToken: user.refreshToken,
+                    expiresIn: user.expiresIn,
+                    imageUrl: user.imageUrl,
+                    url: user.url,
+                    authVersion: user.authVersion,
                 };
             },
         })
     ],
     callbacks: {
         async redirect({ url, baseUrl }) {
-            // Allows relative callback URLs
             if (url.startsWith("/")) return `${baseUrl}${url}`;
-            // Allows callback URLs on the same origin
             if (new URL(url).origin === baseUrl) return url;
             return baseUrl;
         },
@@ -72,7 +137,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.expiresAt = Date.now() + (user.expiresIn * 1000);
                 token.url = user.url;
                 token.image = user.imageUrl;
+                token.authVersion = (user as any).authVersion ?? "v1";
             }
+
+            // Automatic token refresh when expired
+            if (token.expiresAt && Date.now() > (token.expiresAt as number)) {
+                if (token.authVersion === "v2") {
+                    // V2: OAuth2 refresh_token grant
+                    console.log("Access token expired, refreshing via OAuth2 V2...");
+                    const refreshed = await refreshAccessToken(
+                        token.url as string,
+                        token.refreshToken as string
+                    );
+
+                    if (refreshed) {
+                        token.accessToken = refreshed.access_token;
+                        token.refreshToken = refreshed.refresh_token;
+                        token.expiresAt = Date.now() + (refreshed.expires_in * 1000);
+                        console.log("Access token refreshed via V2");
+                    } else {
+                        console.error("V2 token refresh failed");
+                        token.error = "RefreshAccessTokenError";
+                    }
+                } else {
+                    // V1: no built-in refresh — mark as expired
+                    console.log("Access token expired (V1 session, no auto-refresh)");
+                    token.error = "RefreshAccessTokenError";
+                }
+            }
+
             return token;
         },
         async session({ session, token } : {session : Session, token : any}) {
@@ -89,16 +182,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     events: {
         async signOut(message : any) {
-            // For JWT strategy, the message contains { token }
             if ("token" in message && message.token) {
-                // Access your custom token properties
                 const url : string | undefined = message.token.url?.toString();
                 const accessToken : string | undefined = message.token.accessToken?.toString();
                 const refreshToken : string | undefined = message.token.refreshToken?.toString();
+                const authVersion : string | undefined = message.token.authVersion?.toString();
                 if (!url || !accessToken || !refreshToken) {
                     return;
                 }
-                await logoutUserWithToken(url, accessToken, refreshToken);
+
+                if (authVersion === "v2") {
+                    // V2: Revoke both tokens via OAuth2 revocation endpoint (RFC 7009)
+                    await Promise.all([
+                        revokeToken(url, accessToken, "access_token"),
+                        revokeToken(url, refreshToken, "refresh_token"),
+                    ]);
+                } else {
+                    // V1: Legacy logout endpoint
+                    await logoutUserWithToken(url, accessToken, refreshToken);
+                }
             }
         }
     }});

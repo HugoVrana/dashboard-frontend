@@ -32,7 +32,7 @@ export function Navbar() {
     };
 
     return (
-        <header className="bg-background w-full overflow-x-hidden">
+        <header className="sticky top-0 z-50 bg-background w-full overflow-x-hidden border-b">
             <div className="flex h-14 w-full items-center justify-between gap-2 px-4">
                 {/* Left side */}
                 <NavigationMenu className="min-w-0 shrink">
