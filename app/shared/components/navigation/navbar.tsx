@@ -32,11 +32,11 @@ export function Navbar() {
     };
 
     return (
-        <header className="sticky top-0 z-50 bg-background w-full overflow-x-hidden border-b">
-            <div className="flex h-14 w-full items-center justify-between gap-2 px-4">
+        <header className="sticky top-0 z-50 w-full overflow-x-clip border-b bg-background">
+            <div className="flex h-14 w-full min-w-0 items-center justify-between gap-2 overflow-x-clip px-4">
                 {/* Left side */}
-                <NavigationMenu className="min-w-0 shrink">
-                    <NavigationMenuList>
+                <NavigationMenu className="min-w-0 shrink overflow-hidden">
+                    <NavigationMenuList className="min-w-0 flex-nowrap overflow-hidden">
                         <NavigationMenuItem>
                             <NavigationMenuLink href={"/"}>
                                 <div className="flex h-10 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-15 mt-2">
