@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {useActionState, useContext, useEffect, useState} from "react";
+import {useActionState, useEffect, useState} from "react";
 import {CheckIcon, ClockIcon, DollarSign, FileText, Users} from "lucide-react";
 import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import {CustomerRead} from "@/app/dashboard/models/customerRead";
@@ -17,6 +17,7 @@ import {
 } from "@hugovrana/dashboard-frontend-shared";
 import {Badge, FieldLabel, InputGroupInput} from "@hugovrana/dashboard-frontend-shared/components";
 import {CustomerDropdown} from "@/app/dashboard/components/customer/customerDropDown";
+import { useContext } from "react";
 import { ApiContext } from "@/app/shared/components/devOverlay/apiContext";
 import { useDebugTranslations } from "@/app/shared/contexts/translations/useDebugTranslations";
 import { useLocale } from "next-intl";
@@ -24,7 +25,7 @@ import { State } from "@/app/shared/models/state";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/dashboard/dashboardApiContext";
 import {usePermissions} from "@/app/auth/permission/permissionsClient";
 import {updateInvoice} from "@/app/dashboard/actions";
-import {getCustomers} from "@/app/dashboard/dataAccess/customersClient";
+import {useCustomersApi} from "@/app/dashboard/hooks/useCustomersApi";
 import {formatDateToLocal} from "@/app/dashboard/utils";
 
 export default function InvoiceEditForm({ invoice }: { invoice: InvoiceRead }) {
@@ -33,7 +34,8 @@ export default function InvoiceEditForm({ invoice }: { invoice: InvoiceRead }) {
 
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
-    const {hasGrant, isLoading, getAuthToken} = usePermissions();
+    const {isLoading} = usePermissions();
+    const {getCustomers} = useCustomersApi();
 
     const [customers, setCustomers] = useState<CustomerRead[]>([]);
     const [customersLoading, setCustomersLoading] = useState(true);
@@ -51,14 +53,14 @@ export default function InvoiceEditForm({ invoice }: { invoice: InvoiceRead }) {
     const [_isPending, setPending] = useState(false);
 
     useEffect(() => {
-        if (!apiContextReady || isLoading || !getAuthToken) {
+        if (!apiContextReady || isLoading) {
             return;
         }
 
         async function loadCustomers() {
             setCustomersLoading(true);
             try {
-                const data = await getCustomers(dashboardApiIsLocal, getAuthToken);
+                const data = await getCustomers();
                 if (data) {
                     setCustomers(data);
                 }
@@ -70,7 +72,7 @@ export default function InvoiceEditForm({ invoice }: { invoice: InvoiceRead }) {
         }
 
         loadCustomers();
-    }, [apiContextReady, isLoading, getAuthToken, dashboardApiIsLocal]);
+    }, [apiContextReady, isLoading, getCustomers]);
 
     return (
         <div className="space-y-6">

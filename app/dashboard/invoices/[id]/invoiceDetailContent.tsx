@@ -1,6 +1,6 @@
 "use client";
 
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import {AlertCircle, ArrowLeft} from "lucide-react";
@@ -10,40 +10,30 @@ import {Button, Card} from "@hugovrana/dashboard-frontend-shared/components";
 import {CardContent} from "@hugovrana/dashboard-frontend-shared";
 import InvoiceDetail from "@/app/dashboard/components/invoices/views/InvoiceDetail";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
-import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {usePermissions} from "@/app/auth/permission/permissionsClient";
-import {getInvoice} from "@/app/dashboard/dataAccess/invoicesClient";
+import {useInvoicesApi} from "@/app/dashboard/hooks/useInvoicesApi";
 
 export default function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
     const router = useRouter();
     const t = useDebugTranslations("dashboard.controls.invoiceDetail");
 
-    const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
-    const { isLoading: permissionsLoading, getAuthToken } = usePermissions();
+    const { isLoading: permissionsLoading } = usePermissions();
+    const {getInvoice} = useInvoicesApi();
 
     const [invoice, setInvoice] = useState<InvoiceRead | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        console.log("[InvoiceDetailPage] useEffect triggered", {
-            apiContextReady,
-            permissionsLoading,
-            hasAuthToken: !!getAuthToken,
-            paramsId: id
-        });
-
-        if (!apiContextReady || permissionsLoading || !getAuthToken) {
-            console.log("[InvoiceDetailPage] Early return - conditions not met");
+        if (permissionsLoading) {
             return;
         }
 
         async function loadInvoice() {
-            console.log("[InvoiceDetailPage] loadInvoice called for id:", id);
             setIsLoading(true);
             setError(null);
             try {
-                const data = await getInvoice(dashboardApiIsLocal, getAuthToken, id);
+                const data = await getInvoice(id);
                 if (data) {
                     setInvoice(data);
                 } else {
@@ -58,7 +48,7 @@ export default function InvoiceDetailContent({ id }: InvoiceDetailContentProps) 
         }
 
         loadInvoice();
-    }, [id, apiContextReady, dashboardApiIsLocal, permissionsLoading, getAuthToken]);
+    }, [id, permissionsLoading, getInvoice]);
 
     // Loading state
     if (permissionsLoading || isLoading) {

@@ -44,3 +44,31 @@ npx shadcn@latest add <component-name>
 ```
 
 Icons : [Lucide](https://lucide.dev/icons)
+
+## API Code Generation
+
+TypeScript types and client code for the backend API are generated from the OpenAPI spec using [orval](https://orval.dev).
+
+### Generated files
+
+| Script | Spec source | Output |
+|---|---|---|
+| `npm run generate:oauth-api` | `https://dashboard-spring-oauth.onrender.com/v3/api-docs/v2` | `app/lib/api/oauth-v2.ts` |
+| `npm run generate:data-api` | `https://dashboard-spring-data.onrender.com/v3/api-docs` | `app/lib/api/data-api.ts` |
+| `npm run generate:api` | both | both |
+
+Do not edit generated files manually.
+
+### Regenerating after spec changes
+
+```bash
+npm run generate:api      # regenerate both
+npm run generate:oauth-api  # regenerate OAuth spec only
+npm run generate:data-api   # regenerate data API spec only
+```
+
+Each script downloads the latest spec, patches it for orval compatibility (see `fix-spec.mjs`), and regenerates the TypeScript output.
+
+### Why manual URL building?
+
+The generated functions have a hardcoded base URL (`OAUTH2_SERVER_URL` env var). The OAuth2 client (`app/auth/oauth2/oauth2ServerClient.ts`) uses a dynamic `serverUrl` at runtime (stored in the JWT, set by the dev overlay). For this reason, the server client imports **types** from the generated file but builds URLs dynamically rather than calling the generated functions directly.

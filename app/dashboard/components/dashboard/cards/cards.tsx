@@ -1,17 +1,17 @@
 "use client"
 
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {CardsSkeleton} from "@/app/dashboard/components/skeletons/cardsSkeleton";
 import CardWithPermission from "@/app/dashboard/components/dashboard/cards/cardWithPermission";
-import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {usePermissions} from "@/app/auth/permission/permissionsClient";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
-import {getCustomerCount} from "@/app/dashboard/dataAccess/customersClient";
-import {getInvoiceAmount, getInvoiceCount} from "@/app/dashboard/dataAccess/invoicesClient";
+import {useCustomersApi} from "@/app/dashboard/hooks/useCustomersApi";
+import {useInvoicesApi} from "@/app/dashboard/hooks/useInvoicesApi";
 
 export default function Cards() {
-    const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
-    const {hasGrant, isLoading, getAuthToken} = usePermissions();
+    const {hasGrant, isLoading} = usePermissions();
+    const {getCustomerCount} = useCustomersApi();
+    const {getInvoiceAmount, getInvoiceCount} = useInvoicesApi();
 
     const [canViewInvoices, setCanViewInvoices] = useState(false);
     const [canViewCustomer, setCanViewCustomer] = useState(false);
@@ -28,7 +28,7 @@ export default function Cards() {
     const t = useDebugTranslations("dashboard.controls.cards");
 
     useEffect(() => {
-        if (!apiContextReady || isLoading || !getAuthToken) return;
+        if (isLoading) return;
 
         const invoices : boolean = hasGrant("dashboard-invoices-read");
         const customer : boolean = hasGrant("dashboard-customers-read");
@@ -40,7 +40,7 @@ export default function Cards() {
             setDataLoading(true);
             try {
                 if (customer) {
-                    const customerCount = await getCustomerCount(dashboardApiIsLocal, getAuthToken);
+                    const customerCount = await getCustomerCount();
                     // Only update state if we got valid data (null means error occurred)
                     if (customerCount !== null) {
                         setCustomersCount(customerCount);
@@ -49,10 +49,10 @@ export default function Cards() {
 
                 if (invoices) {
                     const [paid, pending, invoiceCount, customerCount] = await Promise.all([
-                        getInvoiceAmount(dashboardApiIsLocal, getAuthToken, "paid"),
-                        getInvoiceAmount(dashboardApiIsLocal, getAuthToken, "pending"),
-                        getInvoiceCount(dashboardApiIsLocal, getAuthToken, ""),
-                        getCustomerCount(dashboardApiIsLocal, getAuthToken)
+                        getInvoiceAmount("paid"),
+                        getInvoiceAmount("pending"),
+                        getInvoiceCount(""),
+                        getCustomerCount()
                     ]);
                     console.log("invoices", paid, pending, invoiceCount, customerCount);
 
@@ -70,7 +70,7 @@ export default function Cards() {
         }
 
         loadData();
-    }, [apiContextReady, dashboardApiIsLocal, isLoading, getAuthToken, hasGrant]);
+    }, [isLoading, hasGrant, getCustomerCount, getInvoiceAmount, getInvoiceCount]);
 
     if (dataLoading) {
         return <CardsSkeleton skeletonProps={skellyProps}/>;

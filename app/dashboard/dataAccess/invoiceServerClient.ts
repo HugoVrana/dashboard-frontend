@@ -1,133 +1,55 @@
-
-import {InvoiceCreate} from "@/app/dashboard/models/invoiceCreate";
-import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
-import {InvoiceUpdate} from "@/app/dashboard/models/invoiceUpdate";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
-import {buildDataApiUrlFromBase} from "@/app/dashboard/dashboardApiContext";
 import {getAuthToken} from "@/app/auth/permission/permissionsServerClient";
-import {isInvoiceRead, mapToInvoiceRead} from "@/app/dashboard/typeValidators/invoiceValidator";
+import {dataApiOptions} from "@/app/lib/api/dataApiFetch";
+import {
+    createInvoice,
+    updateInvoice,
+    deleteInvoice as deleteInvoiceApi,
+} from "@/app/lib/api/data/invoices";
+import {mapToInvoiceRead} from "@/app/dashboard/typeValidators/invoiceValidator";
+import type {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
+import type {InvoiceCreate} from "@/app/dashboard/models/invoiceCreate";
+import type {InvoiceUpdate} from "@/app/dashboard/models/invoiceUpdate";
 
-const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
+const grafanaClient = new GrafanaServerClient();
 
-export async function postInvoice(serverUrl : string, invoice : InvoiceCreate): Promise<InvoiceRead | null> {
+export async function postInvoice(serverUrl: string, invoice: InvoiceCreate): Promise<InvoiceRead | null> {
     try {
-        const url = buildDataApiUrlFromBase(serverUrl, "/invoices");
-
-        const res : Response = await fetch(url.toString(), {
-            method: "POST",
-            body: JSON.stringify(invoice),
-            headers: {
-                "Content-Type": "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`,
-            }
-        });
-
-        if (!res.ok) {
-            console.error("API error:", res.status, res.statusText);
-            grafanaClient.error("API error", {route: "POST /invoices", status: res.status, statusText: res.statusText});
+        const res = await createInvoice(invoice, dataApiOptions(serverUrl, await getAuthToken()));
+        if (res.status !== 200) {
+            grafanaClient.error("API error", {route: "POST /invoices", status: res.status});
             return null;
         }
-
-        const text : string = await res.text();
-        if (!text || text.trim() === '') {
-            grafanaClient.error("Empty response body, returning empty page", {route: "POST /invoices"});
-            console.log("Empty response body, returning empty page");
-            return null;
-        }
-
-        const data : unknown = JSON.parse(text);
-        if (!isInvoiceRead(data)) {
-            grafanaClient.error("Unexpected payload:", {route: "POST /invoices", payload: data});
-            console.error("Unexpected payload:", data);
-            return null;
-        }
-
-        const createdInvoice : InvoiceRead | null = mapToInvoiceRead(data);
-        if (!createdInvoice) {
-            grafanaClient.error("Unexpected payload:", {route: "POST /invoices", payload: data});
-            console.error("Unexpected payload:", data);
-            return null;
-        }
-        return createdInvoice;
-
+        return mapToInvoiceRead(res.data);
     } catch (e) {
-        console.error("Post failed:", e);
         grafanaClient.error("Post failed", {route: "POST /invoices", error: e});
         return null;
     }
 }
 
-export async function putInvoice(serverUrl : string, invoice : InvoiceUpdate): Promise<InvoiceRead | null> {
+export async function putInvoice(serverUrl: string, invoice: InvoiceUpdate): Promise<InvoiceRead | null> {
     try {
-        const url = buildDataApiUrlFromBase(serverUrl, "/invoices/" + invoice.id);
-        const res : Response = await fetch(url.toString(), {
-            method: "PUT",
-            body: JSON.stringify(invoice),
-            headers: {
-                "Content-Type": "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
-            }
-        });
-
-        if (!res.ok) {
-            console.error("API error:", res.status, res.statusText);
-            grafanaClient.error("API error", {route: "PUT /invoices", status: res.status, statusText: res.statusText});
+        const res = await updateInvoice(invoice.id, invoice, dataApiOptions(serverUrl, await getAuthToken()));
+        if (res.status !== 200) {
+            grafanaClient.error("API error", {route: "PUT /invoices", status: res.status});
             return null;
         }
-
-        const text : string = await res.text();
-        if (!text || text.trim() === '') {
-            grafanaClient.error("Empty response body, returning empty page", {route: "PUT /invoices"});
-            console.log("Empty response body, returning empty page");
-            return null;
-        }
-
-        const data : unknown = JSON.parse(text);
-        if (!isInvoiceRead(data)) {
-            grafanaClient.error("Unexpected payload:", {route: "PUT /invoices", payload: data});
-            console.error("Unexpected payload:", data);
-            return null;
-        }
-
-        const updatedInvoice : InvoiceRead | null = mapToInvoiceRead(data);
-        if (!updatedInvoice) {
-            grafanaClient.error("Unexpected payload:", {route: "PUT /invoices", payload: data});
-            console.error("Unexpected payload:", data);
-        }
-
-        console.log("Updated invoice:", updatedInvoice);
-        grafanaClient.info("Updated invoice", {route: "PUT /invoices", invoice: updatedInvoice});
-        return updatedInvoice;
+        return mapToInvoiceRead(res.data);
     } catch (e) {
-        console.error("Post failed:", e);
         grafanaClient.error("Post failed", {route: "PUT /invoices", error: e});
         return null;
     }
 }
 
-export async function deleteInvoice(serverUrl : string, id : string) : Promise<number> {
+export async function deleteInvoice(serverUrl: string, id: string): Promise<number> {
     try {
-        const url = buildDataApiUrlFromBase(serverUrl, "/invoices/" + id);
-
-        const res : Response = await fetch(url.toString(), {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization : `Bearer ${await getAuthToken()}`
-            }
-        });
-
-        if (!res.ok) {
-            console.error("API error:", res.status, res.statusText);
-            grafanaClient.error("API error", {route: "DELETE /invoices", status: res.status, statusText: res.statusText});
+        const res = await deleteInvoiceApi(id, dataApiOptions(serverUrl, await getAuthToken()));
+        if (res.status !== 200) {
+            grafanaClient.error("API error", {route: "DELETE /invoices", status: res.status});
             return 0;
         }
-
-        console.log("Deleted invoice:", id);
-        grafanaClient.info("Deleted invoice", {route: "DELETE /invoices", id: id});
         return 1;
     } catch (e) {
-        console.error("Delete failed:", e);
         grafanaClient.error("Delete failed", {route: "DELETE /invoices", error: e});
         return 0;
     }

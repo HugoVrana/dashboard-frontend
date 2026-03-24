@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate:oauth-api": "curl -s https://dashboard-spring-oauth.onrender.com/v3/api-docs/v2 | sed 's/Bearer Authentication/BearerAuthentication/g' > app/auth/test/api-docs-v2.json && node fix-spec.mjs && orval --config orval.oauth.config.ts",
+    "generate:data-api": "curl -s https://dashboard-spring-data.onrender.com/v3/api-docs | sed 's/Bearer Authentication/BearerAuthentication/g' > app/dashboard/test/data-api-docs.json && node fix-spec.mjs --data && orval --config orval.data.config.ts",
+    "generate:api": "npm run generate:oauth-api && npm run generate:data-api"
   },
   "dependencies": {
     "@auth/core": "^0.41.1",
