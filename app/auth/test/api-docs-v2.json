@@ -1,0 +1,1541 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "https://dashboard-spring-oauth.onrender.com",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuthentication": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Grants",
+      "description": "Grant (permission) management"
+    },
+    {
+      "name": "Users (Admin)",
+      "description": "Admin user management"
+    },
+    {
+      "name": "OAuth Clients",
+      "description": "OAuth Client Management"
+    },
+    {
+      "name": "Roles",
+      "description": "Role management"
+    },
+    {
+      "name": "OAuth2",
+      "description": "OAuth 2.0 authorization server endpoints (RFC 6749, RFC 7009, RFC 7662)"
+    },
+    {
+      "name": "Service",
+      "description": "Machine-to-machine endpoints for trusted services"
+    }
+  ],
+  "paths": {
+    "/api/v2/user/{id}": {
+      "get": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Get user by ID",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAdminRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Update user",
+        "description": "Update mutable user fields (e.g. email)",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserAdminUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAdminRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "Email already in use"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Delete user",
+        "description": "Soft-deletes the user account",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2/service/grants/ensure": {
+      "post": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Ensure grants exist",
+        "description": "Idempotently creates any grants from the provided list that do not already exist. Requires HTTP Basic authentication using the service secret. Intended to be called by downstream services on startup.",
+        "operationId": "ensureGrants",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GrantCreate"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Grants ensured",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnsureGrantsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid service secret"
+          }
+        }
+      }
+    },
+    "/v2/oauthclients/{id}/secret": {
+      "post": {
+        "tags": [
+          "OAuth Clients"
+        ],
+        "summary": "Rotate client secret",
+        "description": "Generates a new client secret. The old secret is immediately invalidated. The new secret is shown only once.",
+        "operationId": "rotateSecret",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New secret issued",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthClientCreated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "404": {
+            "description": "Client not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2/oauthclients/": {
+      "post": {
+        "tags": [
+          "OAuth Clients"
+        ],
+        "summary": "Register a new OAuth client",
+        "description": "Creates a client and returns the client secret. The secret is shown only once.",
+        "operationId": "createClient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthClientCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Client created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthClientCreated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2/oauth2/token": {
+      "post": {
+        "tags": [
+          "OAuth2"
+        ],
+        "summary": "Token endpoint (RFC 6749 §3.2)",
+        "description": "Issues access and refresh tokens. Supports `authorization_code` (with PKCE) and `refresh_token` grant types. Responses include `Cache-Control: no-store` and `Pragma: no-cache` per RFC 6749 §5.1.",
+        "operationId": "token",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "description": "`authorization_code` or `refresh_token`"
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "Authorization code (required for `authorization_code` grant)"
+                  },
+                  "code_verifier": {
+                    "type": "string",
+                    "description": "PKCE code verifier (required for `authorization_code` grant)"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "Client ID (required for `authorization_code` grant)"
+                  },
+                  "redirect_uri": {
+                    "type": "string",
+                    "description": "Redirect URI (required for `authorization_code` grant)"
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "description": "Client secret (required for confidential clients)"
+                  },
+                  "refresh_token": {
+                    "type": "string",
+                    "description": "Refresh token (required for `refresh_token` grant)"
+                  }
+                },
+                "required": [
+                  "grant_type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens issued",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid grant or missing parameters",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/oauth2/revoke": {
+      "post": {
+        "tags": [
+          "OAuth2"
+        ],
+        "summary": "Token revocation endpoint (RFC 7009)",
+        "description": "Revokes an access or refresh token. Always returns 200 even if the token is unknown or already revoked.",
+        "operationId": "revoke",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "The token to revoke"
+                  },
+                  "token_type_hint": {
+                    "type": "string",
+                    "description": "Hint about the token type: `access_token` or `refresh_token`"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token revoked (or was already invalid)"
+          }
+        }
+      }
+    },
+    "/v2/oauth2/introspect": {
+      "post": {
+        "tags": [
+          "OAuth2"
+        ],
+        "summary": "Token introspection endpoint (RFC 7662)",
+        "description": "Allows resource servers to validate a token and retrieve its metadata. Requires HTTP Basic authentication using the service client secret.",
+        "operationId": "introspect",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "HTTP Basic credentials (Base64 encoded `client_id:client_secret`)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "The token to introspect"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Introspection result (active or inactive)",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntrospectionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid Basic auth credentials"
+          }
+        }
+      }
+    },
+    "/v2/oauth2/authorize": {
+      "get": {
+        "tags": [
+          "OAuth2"
+        ],
+        "summary": "Authorization endpoint — initiate (RFC 6749 §4.1.1)",
+        "description": "Validates the authorization request and redirects the user-agent to the login page. Only `response_type=code` is supported. PKCE (`code_challenge` + `code_challenge_method`) is required.",
+        "operationId": "authorize",
+        "parameters": [
+          {
+            "name": "response_type",
+            "in": "query",
+            "description": "Must be `code`",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "description": "Client identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "description": "Registered redirect URI",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code_challenge",
+            "in": "query",
+            "description": "PKCE code challenge (RFC 7636)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code_challenge_method",
+            "in": "query",
+            "description": "Must be `S256`",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "description": "Space-separated list of requested scopes",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "Opaque value for CSRF protection, echoed back on redirect",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to login page (success) or redirect_uri with error",
+            "headers": {
+              "Location": {
+                "description": "Login URL with request_id, or redirect_uri with error params",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OAuth2"
+        ],
+        "summary": "Authorization endpoint — submit credentials",
+        "description": "Called by the login form. Validates credentials and either issues an authorization code redirect or returns an `mfa_required` response if 2FA is enabled on the account.",
+        "operationId": "submitAuthorize",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request_id": {
+                    "type": "string",
+                    "description": "Authorization request ID from the GET /authorize redirect"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "User email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password"
+                  }
+                },
+                "required": [
+                  "password",
+                  "request_id",
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MFA required — contains mfa_token for the next step",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfaRequiredResponse"
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Redirect to redirect_uri with authorization code",
+            "headers": {
+              "Location": {
+                "description": "redirect_uri?code=...&state=...",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request_id",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/oauth2/authorize/mfa": {
+      "post": {
+        "tags": [
+          "OAuth2"
+        ],
+        "summary": "Authorization endpoint — complete MFA step",
+        "description": "Called after receiving `mfa_required=true`. Validates the TOTP code and completes the authorization code redirect.",
+        "operationId": "submitMfa",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mfa_token": {
+                    "type": "string",
+                    "description": "MFA token received from POST /authorize"
+                  },
+                  "totp_code": {
+                    "type": "string",
+                    "description": "6-digit TOTP code from authenticator app"
+                  }
+                },
+                "required": [
+                  "mfa_token",
+                  "totp_code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": {
+            "description": "MFA valid — redirect to redirect_uri with authorization code",
+            "headers": {
+              "Location": {
+                "description": "redirect_uri?code=...&state=...",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired mfa_token",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid TOTP code",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/user/{id}/unblock": {
+      "post": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Unblock user",
+        "description": "Unlocks the user account and resets failed login attempts",
+        "operationId": "unblockUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User unblocked"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "User is not blocked"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/user/{id}/reset-password": {
+      "post": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Trigger password reset",
+        "description": "Creates a new password reset token; the scheduler will send the email on its next run",
+        "operationId": "triggerPasswordReset",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Password reset email queued"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/user/{id}/resend-verification": {
+      "post": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Resend verification email",
+        "description": "Creates a new email verification token; the scheduler will send it on its next run",
+        "operationId": "resendVerificationEmail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Verification email queued"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "Email is already verified"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/user/{id}/block": {
+      "post": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Block user",
+        "description": "Locks the user account, preventing login",
+        "operationId": "blockUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User blocked"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "User is already blocked"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/role/": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get all roles",
+        "description": "Returns all roles with their grants",
+        "operationId": "getAllRoles",
+        "responses": {
+          "200": {
+            "description": "List of roles",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleRead"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Create a role",
+        "operationId": "createRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRole"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Role created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Role with this name already exists"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/grant/": {
+      "get": {
+        "tags": [
+          "Grants"
+        ],
+        "summary": "Get all grants",
+        "description": "Returns all grants",
+        "operationId": "getAllGrants",
+        "responses": {
+          "200": {
+            "description": "List of grants",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GrantRead"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Grants"
+        ],
+        "summary": "Create a grant",
+        "operationId": "createGrant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrantCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Grant created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrantRead"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Grant with this name already exists"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2/oauthclients/{id}": {
+      "get": {
+        "tags": [
+          "OAuth Clients"
+        ],
+        "summary": "Get OAuth client by ID",
+        "operationId": "getClient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Client found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthClientRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Client not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "OAuth Clients"
+        ],
+        "summary": "Delete an OAuth client",
+        "operationId": "deleteClient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Client deleted"
+          },
+          "403": {
+            "description": "Insufficient permissions"
+          },
+          "404": {
+            "description": "Client not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/user/search": {
+      "get": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Search users by email",
+        "description": "Case-insensitive partial match on email address",
+        "operationId": "searchUsers",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Search query (matched against email)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching users",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserAdminRead"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/user/": {
+      "get": {
+        "tags": [
+          "Users (Admin)"
+        ],
+        "summary": "Get all users",
+        "operationId": "getAllUsers",
+        "responses": {
+          "200": {
+            "description": "List of all users",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserAdminRead"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/role/{id}": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get role by ID",
+        "operationId": "getRoleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Role ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Delete a role",
+        "operationId": "deleteRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Role ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Role deleted"
+          },
+          "404": {
+            "description": "Role not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/grant/{id}": {
+      "get": {
+        "tags": [
+          "Grants"
+        ],
+        "summary": "Get grant by ID",
+        "operationId": "getGrantById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Grant ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Grant found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrantRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Grant not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Grants"
+        ],
+        "summary": "Delete a grant",
+        "operationId": "deleteGrant",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Grant ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Grant deleted"
+          },
+          "404": {
+            "description": "Grant not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserAdminUpdate": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "minLength": 0
+          }
+        }
+      },
+      "GrantRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "RoleRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "grants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrantRead"
+            }
+          }
+        }
+      },
+      "UserAdminRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "emailVerifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "failedLoginAttempts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "profileImageUrl": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleRead"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GrantCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "EnsureGrantsResponse": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "alreadyExisted": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "OAuthClientCreated": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "redirectUris": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "clientSecret": {
+            "type": "string"
+          }
+        }
+      },
+      "OAuthClientCreate": {
+        "type": "object",
+        "properties": {
+          "redirectUris": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "allowedScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "allowedScopes",
+          "redirectUris"
+        ]
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "token_type": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "refresh_token": {
+            "type": "string"
+          }
+        }
+      },
+      "OAuth2ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "error_description": {
+            "type": "string"
+          }
+        }
+      },
+      "IntrospectionResponse": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "sub": {
+            "type": "string"
+          },
+          "exp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "scope": {
+            "type": "string"
+          }
+        }
+      },
+      "MfaRequiredResponse": {
+        "type": "object",
+        "properties": {
+          "mfa_required": {
+            "type": "boolean"
+          },
+          "mfa_token": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateRole": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "OAuthClientRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "redirectUris": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuthentication": {
+        "type": "http",
+        "description": "Enter JWT token",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -26,6 +26,7 @@
     "next": "^16.1.5",
     "next-auth": "^5.0.0-beta.30",
     "next-intl": "^4.7.0",
+    "openapi-fetch": "^0.17.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-email": "^5.2.5",
@@ -48,6 +49,7 @@
     "@types/sockjs-client": "^1.5.4",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "orval": "^8.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
