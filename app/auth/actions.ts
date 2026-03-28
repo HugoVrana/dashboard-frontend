@@ -7,8 +7,6 @@ import {createUser, postUserProfilePicture, setupTotp, verifyTotp} from "@/app/a
 import {z} from "zod";
 
 export async function registerUser(url: string, prevState: State, formData: FormData): Promise<{ success: boolean; message: string }> {
-    console.log("Registering user");
-
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 

@@ -9,10 +9,13 @@ import {TotpSetupResponse, TotpSetupResponseSchema} from "@/app/auth/models/totp
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
+const OAUTH2_CLIENT_ID : string | undefined = process.env.OAUTH2_CLIENT_ID;
 
 export async function createUser(serverUrl : string, registerRequest : RegisterRequest) : Promise<UserInfo | null> {
     try {
-        const url = buildAuthApiUrl(serverUrl, "auth/register");
+        console.log("creating user");
+        console.log(OAUTH2_CLIENT_ID);
+        const url : URL = new URL("api/v2/auth/register", serverUrl);
 
         registerRequest.roleId = "6939575c98f5fc7bd2216a79";
 
@@ -21,7 +24,8 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
             body : JSON.stringify(registerRequest),
             headers : {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": "*",
+                "X-Client-Id": OAUTH2_CLIENT_ID ?? "69c69004ea37f177fad373d3",
                 // Don't ever add auth token here
             }
         });

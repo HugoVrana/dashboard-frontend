@@ -4,6 +4,12 @@ import {RoleRead} from "@/app/auth/models/role";
 import {JWT} from "next-auth/jwt";
 import {loginWithOAuth2, refreshAccessToken, revokeToken} from "@/app/auth/oauth2/oauth2ServerClient";
 
+const OAUTH2_SERVER_URL = process.env.OAUTH2_SERVER_URL ?? "http://localhost:8081";
+
+/**
+ * Server-side OAuth2 login (used by the Credentials provider).
+ * Performs the full Authorization Code + PKCE flow server-to-server.
+ */
 async function authorizeUser(email: string, password: string, serverUrl: string) {
     console.log("[auth] authorizeUser called — serverUrl:", serverUrl, "email:", email);
 
@@ -16,7 +22,6 @@ async function authorizeUser(email: string, password: string, serverUrl: string)
 
     if ("mfaRequired" in result) {
         console.log("[auth] MFA required for user:", email);
-        // MFA not yet supported in the login form — fail gracefully
         return null;
     }
 
@@ -47,6 +52,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         signIn: '/auth/login',
     },
     providers: [
+        // --- Browser-based OAuth2 redirect flow ---
+        // Flow: browser → backend /authorize → login page → POST credentials → callback
+        {
+            id: "dashboard-oauth",
+            name: "Dashboard",
+            type: "oauth",
+            authorization: {
+                url: `${OAUTH2_SERVER_URL}/v2/oauth2/authorize`,
+                params: { response_type: "code", scope: "" },
+            },
+            token: {
+                url: `${OAUTH2_SERVER_URL}/v2/oauth2/token`,
+            },
+            userinfo: {
+                url: `${OAUTH2_SERVER_URL}/api/v1/auth/me`,
+            },
+            clientId: process.env.OAUTH2_CLIENT_ID,
+            clientSecret: process.env.OAUTH2_CLIENT_SECRET,
+            checks: ["pkce", "state"],
+            client: {
+                token_endpoint_auth_method: "client_secret_post",
+            },
+            profile(profile: any) {
+                return {
+                    id: profile.id,
+                    email: profile.email,
+                    role: profile.roleReads ?? [],
+                    accessToken: "",  // filled by token callback
+                    refreshToken: "",
+                    expiresIn: 0,
+                    url: OAUTH2_SERVER_URL,
+                    imageUrl: profile.profileImageUrl ?? null,
+                };
+            },
+        },
+        // --- Server-side OAuth2 flow (via Credentials provider) ---
         Credentials({
             credentials: {
                 email: { label: "Email", type: "email" },
@@ -88,8 +129,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (new URL(url).origin === baseUrl) return url;
             return baseUrl;
         },
-        async jwt({ token, user } : {token : JWT, user : User}) {
-            if (user) {
+        async jwt({ token, user, account } : {token : JWT, user : User, account?: any}) {
+            // OAuth provider flow: tokens come from the account object
+            if (account?.provider === "dashboard-oauth") {
+                token.accessToken = account.access_token;
+                token.refreshToken = account.refresh_token;
+                token.expiresAt = Date.now() + ((account.expires_in ?? 86400) * 1000);
+                token.url = OAUTH2_SERVER_URL;
+                if (user) {
+                    token.id = user.id;
+                    token.email = user.email;
+                    token.role = user.role ?? [];
+                    token.image = user.imageUrl ?? user.image ?? null;
+                }
+            }
+            // Credentials provider flow: tokens come from the user object
+            else if (user) {
                 token.id = user.id;
                 token.email = user.email;
                 token.role = user.role;

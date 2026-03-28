@@ -8,6 +8,7 @@ import type {MfaRequiredResponse, TokenResponse} from "@/app/lib/api/oauth-v2";
 const grafanaClient: GrafanaServerClient = new GrafanaServerClient();
 
 const OAUTH2_CLIENT_ID = process.env.OAUTH2_CLIENT_ID ?? "dashboard-frontend";
+const OAUTH2_CLIENT_SECRET = process.env.OAUTH2_CLIENT_SECRET;
 const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI ?? "http://localhost:3000/api/auth/callback/credentials";
 
 export interface OAuth2AuthResult {
@@ -96,6 +97,8 @@ export async function refreshAccessToken(
         const body = new URLSearchParams({
             grant_type: "refresh_token",
             refresh_token: refreshToken,
+            client_id: OAUTH2_CLIENT_ID,
+            ...(OAUTH2_CLIENT_SECRET && {client_secret: OAUTH2_CLIENT_SECRET}),
         });
 
         const res = await fetch(buildOAuth2Url(serverUrl, "token"), {
@@ -196,12 +199,14 @@ async function submitAuthorize(
     try {
         const body = new URLSearchParams({request_id: requestId, username, password});
 
-        const res = await fetch(buildOAuth2Url(serverUrl, "authorize"), {
+        const res : Response = await fetch(buildOAuth2Url(serverUrl, "authorize"), {
             method: "POST",
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body: body.toString(),
             redirect: "manual",
         });
+
+        console.log("Authorize response status : " + res.status);
 
         if (res.status === 302) {
             const location = res.headers.get("Location");
@@ -273,6 +278,7 @@ async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifi
             code_verifier: codeVerifier,
             client_id: OAUTH2_CLIENT_ID,
             redirect_uri: OAUTH2_REDIRECT_URI,
+            ...(OAUTH2_CLIENT_SECRET && {client_secret: OAUTH2_CLIENT_SECRET}),
         });
 
         const res = await fetch(buildOAuth2Url(serverUrl, "token"), {
