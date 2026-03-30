@@ -9,12 +9,23 @@ import {TotpSetupResponse, TotpSetupResponseSchema} from "@/app/auth/models/totp
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
-const OAUTH2_CLIENT_ID : string | undefined = process.env.OAUTH2_CLIENT_ID;
+
+function buildBaseHeaders(accessToken?: string): Record<string, string> {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Origin": process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+        "X-Client-Id": process.env.OAUTH2_CLIENT_ID ?? "69c69004ea37f177fad373d3",
+    };
+    if (accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return headers;
+}
 
 export async function createUser(serverUrl : string, registerRequest : RegisterRequest) : Promise<UserInfo | null> {
     try {
         console.log("creating user");
-        console.log(OAUTH2_CLIENT_ID);
         const url : URL = new URL("api/v2/auth/register", serverUrl);
 
         registerRequest.roleId = "6939575c98f5fc7bd2216a79";
@@ -22,12 +33,7 @@ export async function createUser(serverUrl : string, registerRequest : RegisterR
         const res : Response = await fetch(url.toString(), {
             method: "POST",
             body : JSON.stringify(registerRequest),
-            headers : {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "X-Client-Id": OAUTH2_CLIENT_ID ?? "69c69004ea37f177fad373d3",
-                // Don't ever add auth token here
-            }
+            headers : buildBaseHeaders()
         });
 
         if (!res.ok) {
@@ -80,10 +86,7 @@ export async function loginUserWithTokens(
         const res : Response = await fetch(url.toString(), {
             method : "POST",
             body : JSON.stringify(loginRequest),
-            headers : {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            }
+            headers : buildBaseHeaders()
         });
 
         if (!res.ok) {
@@ -128,9 +131,7 @@ export async function loginUserWithTokens(
          const url = buildAuthApiUrl(serverUrl, "auth/logout");
          const res: Response = await fetch(url.toString(), {
              method: "POST",
-             headers: {
-                 Authorization : `Bearer ${accessToken}`
-             }
+             headers: buildBaseHeaders(accessToken)
          });
          return res.ok;
      } catch (e) {
