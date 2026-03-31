@@ -2,7 +2,7 @@
 
 import {Calendar} from "lucide-react";
 import {Bar, BarChart, Tooltip, XAxis, YAxis} from "recharts";
-import {useContext, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {
     Card,
     CardContent, CardDescription,
@@ -10,15 +10,14 @@ import {
     CardTitle,
 } from "@hugovrana/dashboard-frontend-shared";
 import {RevenueChartSkeleton} from "@/app/dashboard/components/skeletons/revenueChartSkeleton";
-import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {usePermissions} from "@/app/auth/permission/permissionsClient";
 import {RevenueRead} from "@/app/dashboard/models/revenueRead";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
-import {getRevenue} from "@/app/dashboard/dataAccess/revenueClient";
+import {useRevenueApi} from "@/app/dashboard/hooks/useRevenueApi";
 
 export default function RevenueChart() {
-    const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
-    const {hasGrant, isLoading, getAuthToken} = usePermissions();
+    const {hasGrant, isLoading} = usePermissions();
+    const {getRevenue} = useRevenueApi();
     const canViewRevenue : boolean = hasGrant("dashboard-revenue-read");
     const [revenue, setRevenue] = useState<RevenueRead[] | null>(null);
     const [dataLoading, setDataLoading] = useState(true);
@@ -40,12 +39,12 @@ export default function RevenueChart() {
     const t = useDebugTranslations("dashboard.controls.revenueChart");
 
     useEffect(() => {
-        if (!apiContextReady || isLoading || !getAuthToken || !canViewRevenue) return;
+        if (isLoading || !canViewRevenue) return;
 
         async function loadData() {
             setDataLoading(true);
             try {
-                const loadingRevenue : RevenueRead[] | null = await getRevenue(dashboardApiIsLocal, getAuthToken);
+                const loadingRevenue : RevenueRead[] | null = await getRevenue();
                 if (loadingRevenue !== null) {
                     setRevenue(loadingRevenue);
                 }
@@ -57,7 +56,7 @@ export default function RevenueChart() {
         }
 
         loadData();
-    },  [apiContextReady, dashboardApiIsLocal, isLoading, getAuthToken, canViewRevenue]);
+    },  [isLoading, getRevenue, canViewRevenue]);
 
     if (!canViewRevenue) {
         return <RevenueChartSkeleton skeletonProps={skellyNoPermissionProps} />;

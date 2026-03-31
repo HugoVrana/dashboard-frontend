@@ -1,16 +1,15 @@
 "use client"
 
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import {LatestInvoicesSkeleton} from "@/app/dashboard/components/skeletons/latestInvoiceSkeleton";
 import LatestInvoicesWithPermission from "@/app/dashboard/components/dashboard/latestInvoices/latestInvoicesWithPermission";
-import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {usePermissions} from "@/app/auth/permission/permissionsClient";
-import {getLatestInvoices} from "@/app/dashboard/dataAccess/invoicesClient";
+import {useInvoicesApi} from "@/app/dashboard/hooks/useInvoicesApi";
 
 export default function LatestInvoices() {
-    const { dashboardApiIsLocal, isReady: apiContextReady } = useContext(ApiContext);
-    const {hasGrant, isLoading, getAuthToken} = usePermissions();
+    const {hasGrant, isLoading} = usePermissions();
+    const {getLatestInvoices} = useInvoicesApi();
 
     const [canViewInvoices, setCanViewInvoices] = useState(false);
     const [canViewCustomer, setCanViewCustomer] = useState(false);
@@ -23,7 +22,7 @@ export default function LatestInvoices() {
     const skellyNoPermissionProps = {showShimmer : false};
 
     useEffect(() => {
-        if (!apiContextReady || isLoading || !getAuthToken) return;
+        if (isLoading) return;
 
         const invoicesPermission : boolean = hasGrant("dashboard-invoices-read");
         setCanViewInvoices(invoicesPermission);
@@ -38,7 +37,7 @@ export default function LatestInvoices() {
             setDataLoading(true);
             try {
                 if (hasAllPermissions) {
-                    const latestInvoices : InvoiceRead[] | null = await getLatestInvoices(dashboardApiIsLocal, getAuthToken);
+                    const latestInvoices : InvoiceRead[] | null = await getLatestInvoices();
                     // Only update state if we got valid data
                     if (latestInvoices && latestInvoices.length > 0) {
                         console.log(latestInvoices);
@@ -53,7 +52,7 @@ export default function LatestInvoices() {
         }
 
         loadData();
-    }, [apiContextReady, dashboardApiIsLocal, isLoading, getAuthToken, hasGrant])
+    }, [isLoading, getLatestInvoices, hasGrant])
 
     if (dataLoading) {
         return <LatestInvoicesSkeleton skeletonProps={skellyProps}/>;

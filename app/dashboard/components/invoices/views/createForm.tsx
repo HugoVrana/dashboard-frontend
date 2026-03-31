@@ -15,7 +15,7 @@ import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {usePermissions} from "@/app/auth/permission/permissionsClient";
 import {getDashboardLocalUrl, getDashboardRenderUrl} from "@/app/dashboard/dashboardApiContext";
 import {createInvoice} from "@/app/dashboard/actions";
-import {getCustomers} from "@/app/dashboard/dataAccess/customersClient";
+import {useCustomersApi} from "@/app/dashboard/hooks/useCustomersApi";
 
 export default function CreateInvoiceForm({customerReadPermission}: { customerReadPermission: boolean; }) {
     const t = useDebugTranslations("dashboard.controls.invoice.views.createForm");
@@ -23,6 +23,7 @@ export default function CreateInvoiceForm({customerReadPermission}: { customerRe
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const {dashboardApiIsLocal, isReady: apiContextReady} = useContext(ApiContext);
     const {hasGrant, isLoading, getAuthToken} = usePermissions();
+    const {getCustomers} = useCustomersApi();
 
     const [customers, setCustomer] = useState<CustomerRead[]>();
     const [pageState, setPageState] = useState("insert");
@@ -44,7 +45,7 @@ export default function CreateInvoiceForm({customerReadPermission}: { customerRe
         async function loadData(){
             setLoading(true);
             try {
-                let localCustomers : CustomerRead[] | null = await getCustomers(dashboardApiIsLocal, getAuthToken);
+                let localCustomers : CustomerRead[] | null = await getCustomers();
                 if (localCustomers) {
                     setCustomer(localCustomers);
                 } else {

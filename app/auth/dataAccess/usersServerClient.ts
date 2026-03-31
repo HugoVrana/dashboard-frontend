@@ -10,20 +10,30 @@ import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 
+function buildBaseHeaders(accessToken?: string): Record<string, string> {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Origin": process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+        "X-Client-Id": process.env.OAUTH2_CLIENT_ID ?? "69c69004ea37f177fad373d3",
+    };
+    if (accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return headers;
+}
+
 export async function createUser(serverUrl : string, registerRequest : RegisterRequest) : Promise<UserInfo | null> {
     try {
-        const url = buildAuthApiUrl(serverUrl, "auth/register");
+        console.log("creating user");
+        const url : URL = new URL("api/v2/auth/register", serverUrl);
 
         registerRequest.roleId = "6939575c98f5fc7bd2216a79";
 
         const res : Response = await fetch(url.toString(), {
             method: "POST",
             body : JSON.stringify(registerRequest),
-            headers : {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-                // Don't ever add auth token here
-            }
+            headers : buildBaseHeaders()
         });
 
         if (!res.ok) {
@@ -76,10 +86,7 @@ export async function loginUserWithTokens(
         const res : Response = await fetch(url.toString(), {
             method : "POST",
             body : JSON.stringify(loginRequest),
-            headers : {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            }
+            headers : buildBaseHeaders()
         });
 
         if (!res.ok) {
@@ -124,9 +131,7 @@ export async function loginUserWithTokens(
          const url = buildAuthApiUrl(serverUrl, "auth/logout");
          const res: Response = await fetch(url.toString(), {
              method: "POST",
-             headers: {
-                 Authorization : `Bearer ${accessToken}`
-             }
+             headers: buildBaseHeaders(accessToken)
          });
          return res.ok;
      } catch (e) {
