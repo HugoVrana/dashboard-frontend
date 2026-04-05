@@ -3,36 +3,25 @@
 import {ArrowRightIcon, AtSign, KeyIcon, Loader2, ShieldAlert} from "lucide-react";
 import {FormEvent, useContext, useState} from "react";
 import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
-import {useSearchParams} from "next/navigation";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
-import {registerUser, setProfilePicture} from "@/app/auth/actions";
+import {loginAction, registerUser, setProfilePicture} from "@/app/auth/actions";
 import {getSession, signIn} from "next-auth/react";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {AvatarUpload, Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
-import TotpSetupStep from "@/app/auth/components/totpSetupStep";
 
-type RegistrationStep = 'form' | 'totp';
+interface RegisterFormProps {
+    onComplete: () => void;
+}
 
-export default function RegisterForm() {
-    const searchParams = useSearchParams();
+export default function RegisterForm({onComplete}: RegisterFormProps) {
     const { dashboardAuthApiIsLocal } = useContext(ApiContext);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [image, setImage] = useState<File | null>(null);
-    const [step, setStep] = useState<RegistrationStep>('form');
 
     const url: string = dashboardAuthApiIsLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
-    const callbackUrl: string = searchParams.get('callbackUrl') || '/dashboard';
 
     const t = useDebugTranslations("auth.registerForm");
-
-    const handleTotpComplete = () => {
-        window.location.href = callbackUrl;
-    };
-
-    const handleTotpSkip = () => {
-        window.location.href = callbackUrl;
-    };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -59,10 +48,26 @@ export default function RegisterForm() {
                 return;
             }
 
-            const signInResult = await signIn('credentials', {
-                email,
-                password,
-                url,
+            const loginResult = await loginAction(email, password, url);
+
+            if (loginResult.status === 'error') {
+                setError('Registration successful but login failed. Please try logging in.');
+                setIsLoading(false);
+                return;
+            }
+
+            if (loginResult.status === 'mfa_required') {
+                setIsLoading(false);
+                onComplete();
+                return;
+            }
+
+            const signInResult = await signIn('mfa', {
+                accessToken: loginResult.accessToken,
+                refreshToken: loginResult.refreshToken,
+                expiresIn: loginResult.expiresIn.toString(),
+                userInfoJson: loginResult.userInfoJson,
+                url: loginResult.url,
                 redirect: false,
             });
 
@@ -88,18 +93,13 @@ export default function RegisterForm() {
                 }
             }
 
-            // Move to TOTP setup step
             setIsLoading(false);
-            setStep('totp');
+            onComplete();
         } catch {
             setError('Something went wrong.');
             setIsLoading(false);
         }
     };
-
-    if (step === 'totp') {
-        return <TotpSetupStep onComplete={handleTotpComplete} onSkip={handleTotpSkip} />;
-    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">

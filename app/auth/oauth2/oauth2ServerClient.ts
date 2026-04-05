@@ -9,7 +9,8 @@ const grafanaClient: GrafanaServerClient = new GrafanaServerClient();
 
 const OAUTH2_CLIENT_ID = process.env.OAUTH2_CLIENT_ID ?? "dashboard-frontend";
 const OAUTH2_CLIENT_SECRET = process.env.OAUTH2_CLIENT_SECRET;
-const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI ?? "http://localhost:3000/api/auth/callback/credentials";
+const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI ?? "http://localhost:3000/api/auth/callback/mfa";
+const OAUTH2_ORIGIN = new URL(OAUTH2_REDIRECT_URI).origin;
 
 export interface OAuth2AuthResult {
     accessToken: string;
@@ -29,17 +30,34 @@ export interface OAuth2MfaRequired {
 // Public API
 // ---------------------------------------------------------------------------
 
+export async function initiatePkce(serverUrl: string): Promise<{ requestId: string; codeVerifier: string } | null> {
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = await generateCodeChallenge(codeVerifier);
+    const requestId = await initiateAuthorize(serverUrl, codeChallenge);
+    if (!requestId) return null;
+    return { requestId, codeVerifier };
+}
+
 export async function loginWithOAuth2(
     serverUrl: string,
     email: string,
-    password: string
+    password: string,
+    existingPkce?: { requestId: string; codeVerifier: string }
 ): Promise<OAuth2AuthResult | OAuth2MfaRequired | null> {
 
-    const codeVerifier = generateCodeVerifier();
-    const codeChallenge = await generateCodeChallenge(codeVerifier);
+    let codeVerifier: string;
+    let requestId: string;
 
-    const requestId = await initiateAuthorize(serverUrl, codeChallenge);
-    if (!requestId) return null;
+    if (existingPkce) {
+        codeVerifier = existingPkce.codeVerifier;
+        requestId = existingPkce.requestId;
+    } else {
+        codeVerifier = generateCodeVerifier();
+        const codeChallenge = await generateCodeChallenge(codeVerifier);
+        const initiatedId = await initiateAuthorize(serverUrl, codeChallenge);
+        if (!initiatedId) return null;
+        requestId = initiatedId;
+    }
 
     const submitResult = await submitAuthorize(serverUrl, requestId, email, password);
     if (!submitResult) return null;
@@ -161,7 +179,10 @@ async function initiateAuthorize(serverUrl: string, codeChallenge: string): Prom
             code_challenge_method: "S256",
         });
 
-        const res = await fetch(buildOAuth2Url(serverUrl, "authorize") + "?" + params.toString(), {redirect: "manual"});
+        const res = await fetch(buildOAuth2Url(serverUrl, "authorize") + "?" + params.toString(), {
+            redirect: "manual",
+            headers: { Origin: OAUTH2_ORIGIN },
+        });
 
         if (res.status !== 302) {
             grafanaClient.error("Authorize initiation failed", {route: "GET /v2/oauth2/authorize", status: res.status});
@@ -201,7 +222,10 @@ async function submitAuthorize(
 
         const res : Response = await fetch(buildOAuth2Url(serverUrl, "authorize"), {
             method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Origin": OAUTH2_ORIGIN,
+            },
             body: body.toString(),
             redirect: "manual",
         });
@@ -220,9 +244,9 @@ async function submitAuthorize(
             }
 
             const code = redirectUrl.searchParams.get("code");
-            if (!code) return null;
+            if (code) return {mfaRequired: false, code};
 
-            return {mfaRequired: false, code};
+            return null;
         }
 
         if (res.status === 200) {
@@ -247,10 +271,18 @@ async function submitMfa(serverUrl: string, mfaToken: string, totpCode: string):
 
         const res = await fetch(buildOAuth2Url(serverUrl, "authorize/mfa"), {
             method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Origin": OAUTH2_ORIGIN,
+            },
             body: body.toString(),
             redirect: "manual",
         });
+
+        if (res.status === 401) {
+            // Wrong TOTP code — token is NOT consumed, caller can retry
+            return null;
+        }
 
         if (res.status !== 302) {
             grafanaClient.error("MFA submit failed", {route: "POST /v2/oauth2/authorize/mfa", status: res.status});
