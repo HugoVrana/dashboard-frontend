@@ -1,7 +1,6 @@
 import {generateCodeChallenge, generateCodeVerifier} from "@/app/auth/oauth2/pkce";
 import {UserInfo} from "@/app/auth/models/userInfo";
 import {isUserInfo, mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
-import {buildAuthApiUrl} from "@/app/auth/dashboardAuthApiContext";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 import type {MfaRequiredResponse, TokenResponse} from "@/app/lib/api/oauth-v2";
 
@@ -339,18 +338,20 @@ async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifi
 
 async function fetchUserInfo(serverUrl: string, accessToken: string): Promise<UserInfo | null> {
     try {
-        const res = await fetch(buildAuthApiUrl(serverUrl, "auth/me").toString(), {
+        const res = await fetch(new URL("v2/oauth2/userinfo", serverUrl).toString(), {
             headers: {Authorization: `Bearer ${accessToken}`},
         });
 
         if (!res.ok) {
-            grafanaClient.error("Fetch user info failed", {route: "GET /api/v1/auth/me", status: res.status});
+            grafanaClient.error("Fetch user info failed", {route: "GET /v2/oauth2/userinfo", status: res.status});
             return null;
         }
 
         const data: unknown = await res.json();
+        console.log("[fetchUserInfo] raw payload:", JSON.stringify(data));
         if (!isUserInfo(data)) {
             grafanaClient.error("Unexpected user info payload", {payload: data});
+            console.error("[fetchUserInfo] schema validation failed for payload:", JSON.stringify(data));
             return null;
         }
 

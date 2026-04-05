@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import {RoleRead} from "@/app/auth/models/role";
 import {JWT} from "next-auth/jwt";
 import {refreshAccessToken, revokeToken} from "@/app/auth/oauth2/oauth2ServerClient";
-import {UserInfo} from "@/app/auth/models/userInfo";
+import {mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     session: {
@@ -29,7 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 try {
                     const parsed = JSON.parse(credentials.userInfoJson as string);
-                    const user: UserInfo | null = parsed && typeof parsed === "object" ? parsed as UserInfo : null;
+                    const user = mapToUserInfo(parsed);
                     const expiresIn = parseInt(credentials.expiresIn as string);
 
                     const grantList: string[] = (user?.roleReads ?? []).flatMap(
