@@ -12,26 +12,6 @@ async function getSession() {
     return session;
 }
 
-export async function getRolesAction(): Promise<{ success: boolean; message: string; data?: RoleRead[] }> {
-    const session = await getSession();
-    if (!session) return { success: false, message: "Not authenticated" };
-
-    const data = await getRoles(session.url, session.accessToken);
-    if (!data) return { success: false, message: "Failed to fetch roles" };
-
-    return { success: true, message: "OK", data };
-}
-
-export async function getRoleAction(id: string): Promise<{ success: boolean; message: string; data?: RoleRead }> {
-    const session = await getSession();
-    if (!session) return { success: false, message: "Not authenticated" };
-
-    const data = await getRole(session.url, session.accessToken, id);
-    if (!data) return { success: false, message: "Role not found" };
-
-    return { success: true, message: "OK", data };
-}
-
 export async function createRoleAction(body: CreateRole): Promise<{ success: boolean; message: string; data?: RoleRead }> {
     const session = await getSession();
     if (!session) return { success: false, message: "Not authenticated" };

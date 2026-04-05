@@ -1,7 +1,7 @@
 "use server";
 
 import {auth} from "@/auth";
-import {getGrants, getGrant, createGrant, updateGrant, deleteGrant} from "@/app/auth/dataAccess/grantsServerClient";
+import {createGrant, updateGrant, deleteGrant} from "@/app/auth/dataAccess/grantsServerClient";
 import {GrantCreate, GrantCreateSchema} from "@/app/auth/models/grant/grantCreate";
 import {GrantUpdate, GrantUpdateSchema} from "@/app/auth/models/grant/grantUpdate";
 import {GrantRead} from "@/app/auth/models/grant/grantRead";
@@ -10,26 +10,6 @@ async function getSession() {
     const session = await auth();
     if (!session?.accessToken || !session?.url) return null;
     return session;
-}
-
-export async function getGrantsAction(): Promise<{ success: boolean; message: string; data?: GrantRead[] }> {
-    const session = await getSession();
-    if (!session) return { success: false, message: "Not authenticated" };
-
-    const data = await getGrants(session.url, session.accessToken);
-    if (!data) return { success: false, message: "Failed to fetch grants" };
-
-    return { success: true, message: "OK", data };
-}
-
-export async function getGrantAction(id: string): Promise<{ success: boolean; message: string; data?: GrantRead }> {
-    const session = await getSession();
-    if (!session) return { success: false, message: "Not authenticated" };
-
-    const data = await getGrant(session.url, session.accessToken, id);
-    if (!data) return { success: false, message: "Grant not found" };
-
-    return { success: true, message: "OK", data };
 }
 
 export async function createGrantAction(body: GrantCreate): Promise<{ success: boolean; message: string; data?: GrantRead }> {
