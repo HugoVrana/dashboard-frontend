@@ -24,8 +24,10 @@ const IV_LENGTH = 12;
 const AUTH_TAG_LENGTH = 16;
 
 function getEncryptionKey(): Buffer {
-    const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
-    if (!secret) throw new Error("AUTH_SECRET is not set");
+    const secret : string | undefined = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
+    if (!secret) {
+        throw new Error("AUTH_SECRET is not set");
+    }
     return createHash("sha256").update(secret).digest();
 }
 
