@@ -1,30 +1,41 @@
 "use client"
 
 import {Suspense, useState} from "react";
+import {useSearchParams} from "next/navigation";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, Card, CardContent, CardHeader} from "@hugovrana/dashboard-frontend-shared";
 import AcmeLogo from "@/app/shared/components/acmeLogo";
 import RegisterForm from "@/app/auth/components/registerForm";
 import LoginForm from "@/app/auth/components/loginForm";
+import TotpVerifyStep from "@/app/auth/components/totpVerifyStep";
+import TotpSetupStep from "@/app/auth/components/totpSetupStep";
 
-export default function LoginRegisterCard() {
-    const [pageState, setPageState] = useState<"login" | "register">("login");
+type PageState = "login" | "register" | "mfa" | "totp-setup";
+
+function LoginRegisterCardInner() {
+    const [pageState, setPageState] = useState<PageState>("login");
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+    const requestId = searchParams.get("request_id") ?? undefined;
     const t = useDebugTranslations("auth.loginRegisterForm");
 
-    return (
-        <Suspense>
-            <div className="flex flex-col items-center justify-center min-h-screen p-4">
-                {/* Logo Header */}
-                <div className="relative z-10 flex h-20 w-full max-w-md items-end rounded-t-lg bg-blue-500 p-3 md:h-36">
-                    <div className="w-32 text-white md:w-36">
-                        <AcmeLogo />
-                    </div>
-                </div>
+    const handleComplete = () => {
+        window.location.href = callbackUrl;
+    };
 
-                {/* Main Card */}
-                <Card className="w-full max-w-md rounded-t-none border-t-0">
+    const showTabs = pageState === "login" || pageState === "register";
+
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+            <div className="relative z-10 flex h-20 w-full max-w-md items-end rounded-t-lg bg-blue-500 p-3 md:h-36">
+                <div className="w-32 text-white md:w-36">
+                    <AcmeLogo/>
+                </div>
+            </div>
+
+            <Card className="w-full max-w-md rounded-t-none border-t-0">
+                {showTabs && (
                     <CardHeader className="pb-4">
-                        {/* Tab Switcher */}
                         <div className="flex gap-1 p-1 rounded-lg">
                             <Button
                                 variant="outline"
@@ -36,7 +47,7 @@ export default function LoginRegisterCard() {
                                         : "text-muted-foreground hover:text-foreground"
                                 }`}
                             >
-                                {t('login')}
+                                {t("login")}
                             </Button>
                             <Button
                                 variant="outline"
@@ -48,23 +59,51 @@ export default function LoginRegisterCard() {
                                         : "text-muted-foreground hover:text-foreground"
                                 }`}
                             >
-                                {t('register')}
+                                {t("register")}
                             </Button>
                         </div>
                     </CardHeader>
+                )}
 
-                    <CardContent>
-                        {pageState === "login" ? (
-                            <LoginForm/>
-                        ) : (
-                            <RegisterForm />
-                        )}
-                    </CardContent>
-                </Card>
-                <p className="mt-4 text-center text-sm text-muted-foreground">
-                    &copy; {new Date().getFullYear()} {t('acmeReserved')}
-                </p>
-            </div>
+                <CardContent className={showTabs ? "" : "pt-6"}>
+                    {pageState === "login" && (
+                        <LoginForm
+                            onSuccess={handleComplete}
+                            onMfaRequired={() => setPageState("mfa")}
+                            requestId={requestId}
+                        />
+                    )}
+                    {pageState === "register" && (
+                        <RegisterForm
+                            onComplete={() => setPageState("totp-setup")}
+                        />
+                    )}
+                    {pageState === "mfa" && (
+                        <TotpVerifyStep
+                            onComplete={handleComplete}
+                            onBack={() => setPageState("login")}
+                        />
+                    )}
+                    {pageState === "totp-setup" && (
+                        <TotpSetupStep
+                            onComplete={handleComplete}
+                            onSkip={handleComplete}
+                        />
+                    )}
+                </CardContent>
+            </Card>
+
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+                &copy; {new Date().getFullYear()} {t("acmeReserved")}
+            </p>
+        </div>
+    );
+}
+
+export default function LoginRegisterCard() {
+    return (
+        <Suspense>
+            <LoginRegisterCardInner/>
         </Suspense>
     );
 }

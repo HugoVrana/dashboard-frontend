@@ -15,11 +15,8 @@ export function usePermissions() {
     }, [session?.accessToken]);
 
     const userGrants = useMemo(() => {
-        if (!session) return [];
-        return session.user?.role?.flatMap((x: { grants: any[] }) =>
-            x.grants?.map(y => y.name) ?? []
-        ) ?? [];
-    }, [session]);
+        return session?.user?.grants ?? [];
+    }, [session?.user?.grants]);
 
     const userRoles = useMemo(() => {
         if (!session) return [];
@@ -27,22 +24,14 @@ export function usePermissions() {
     }, [session]);
 
     const getUserGrants = useMemo(() => {
-        return () : string[] => {
-            if (!session) {
-                return [];
-            }
-            return session.user.role?.flatMap((x: { grants: any[] }) => x.grants?.map(y => y.name) ?? []);
-        };
-    }, [session]);
+        return (): string[] => session?.user?.grants ?? [];
+    }, [session?.user?.grants]);
 
     const hasGrant = useMemo(() => {
         return (grantName: string): boolean => {
-            if (!session) return false;
-            return session.user?.role?.some(
-                (x: { grants: any[] }) => x.grants?.some(y => y.name === grantName)
-            ) ?? false;
+            return session?.user?.grants?.includes(grantName) ?? false;
         };
-    }, [session]);
+    }, [session?.user?.grants]);
 
     const hasRole = useMemo(() => {
         return (roleName: string): boolean => {

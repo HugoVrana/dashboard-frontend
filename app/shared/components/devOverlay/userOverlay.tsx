@@ -20,7 +20,6 @@ export default function UserOverlay() {
     }
 
     const image = session?.user?.image ?? "";
-
     return (
         <div className="space-y-4">
             <Card className="bg-gray-800 border-gray-700">

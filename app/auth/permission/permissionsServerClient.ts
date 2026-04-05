@@ -5,7 +5,7 @@ export async function hasGrant(grantName: string): Promise<boolean> {
     if (!session) {
         return false;
     }
-    return session.user.role.some((x: { grants: any[]; }) => x.grants?.some(y => y.name == grantName)) ?? false;
+    return session.user.grants?.includes(grantName) ?? false;
 }
 
 export async function hasGrants(grantNames: string[]): Promise<Record<string, boolean>> {
@@ -16,12 +16,7 @@ export async function hasGrants(grantNames: string[]): Promise<Record<string, bo
     }
 
     return Object.fromEntries(
-        grantNames.map(name => [
-            name,
-            session.user.role?.some(
-                (x: { grants: any[] }) => x.grants?.some(y => y.name === name)
-            ) ?? false
-        ])
+        grantNames.map(name => [name, session.user.grants?.includes(name) ?? false])
     );
 }
 
@@ -30,7 +25,7 @@ export async function getAllGrants(): Promise<string[]> {
     if (!session) {
         return [];
     }
-    return session.user.role.flatMap((x: { grants: any[]; }) => x.grants?.map(y => y.name) ?? []);
+    return session.user.grants ?? [];
 }
 
 export async function getUserEmail(): Promise<string> {
@@ -54,7 +49,7 @@ export async function getUserGrants(): Promise<string[]> {
     if (!session) {
         return [];
     }
-    return session.user.role?.flatMap((x: { grants: any[] }) => x.grants?.map(y => y.name) ?? []);
+    return session.user.grants ?? [];
 }
 
 export async function getUserRoles(): Promise<string[]> {

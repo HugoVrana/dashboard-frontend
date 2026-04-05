@@ -81,10 +81,10 @@ export function Navbar() {
                                     <AvatarImage src={session.user.image} alt={session.user.email ?? "User"} />
                                 ) : null}
                                 <AvatarFallback>
-                                    {session.user.email?.charAt(0).toUpperCase() ?? "U"}
+                                    {session.user.email?.charAt(0).toUpperCase() || "U"}
                                 </AvatarFallback>
                             </Avatar>
-                            <span className="hidden max-w-[160px] truncate text-sm text-muted-foreground md:block">
+                            <span className="hidden max-w-40 truncate text-sm text-muted-foreground md:block">
                                 {session.user.email}
                             </span>
                             <Button

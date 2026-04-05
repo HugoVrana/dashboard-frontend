@@ -10,9 +10,9 @@
  *   POST /v2/oauth2/authorize/mfa  - Complete MFA step
  *   POST /v2/oauth2/token          - Exchange code for tokens / refresh tokens
  *   POST /v2/oauth2/revoke         - Revoke tokens (RFC 7009)
- *   GET  /api/v1/auth/me           - Fetch user info (authenticated)
+ *   GET  /v2/oauth2/userinfo        - Fetch user info (OIDC UserInfo endpoint)
  */
-export {loginWithOAuth2, completeMfaLogin, refreshAccessToken, revokeToken} from "./oauth2ServerClient";
+export {loginWithOAuth2, completeMfaLogin, refreshAccessToken, revokeToken, initiatePkce} from "./oauth2ServerClient";
 export type {OAuth2AuthResult, OAuth2MfaRequired} from "./oauth2ServerClient";
 export {generateCodeVerifier, generateCodeChallenge} from "./pkce";
 export type {TokenResponse as OAuth2TokenResponse, OAuth2ErrorResponse, MfaRequiredResponse} from "@/app/lib/api/oauth-v2";

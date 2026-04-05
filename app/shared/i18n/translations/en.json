@@ -59,7 +59,9 @@
         "label": "Password",
         "placeholder": "Enter your password"
       },
-      "login": "Log in"
+      "login": "Log in",
+      "invalidCredentials": "Invalid email or password.",
+      "genericError": "Something went wrong. Please try again."
     },
     "loginRegisterForm": {
       "login": "Log in",
@@ -90,6 +92,15 @@
       }
     },
     "logoutButton" : "Sign out",
+    "totpVerify": {
+      "title": "Two-Factor Authentication",
+      "description": "Enter the 6-digit code from your authenticator app.",
+      "codeLabel": "Authentication Code",
+      "codePlaceholder": "000000",
+      "verifyButton": "Verify",
+      "backButton": "Back to login",
+      "signInError": "Session error. Please log in again."
+    },
     "totpSetup": {
       "title": "Set Up Two-Factor Authentication",
       "titleLoading": "Setting up Two-Factor Authentication",
