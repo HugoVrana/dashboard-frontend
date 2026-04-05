@@ -1,15 +1,15 @@
 "use server";
 
 import {State} from "@/app/shared/models/state";
-import {RegisterRequest} from "@/app/auth/models/registerRequest";
-import {UserInfo} from "@/app/auth/models/userInfo";
 import {auth} from "@/auth";
-import {TotpSetupResponse} from "@/app/auth/models/totpSetupResponse";
 import {createUser, postUserProfilePicture, setupTotp, verifyTotp} from "@/app/auth/dataAccess/usersServerClient";
 import {z} from "zod";
 import {loginWithOAuth2, completeMfaLogin, initiatePkce} from "@/app/auth/oauth2";
 import {cookies} from "next/headers";
 import {createCipheriv, createDecipheriv, createHash, randomBytes} from "crypto";
+import {TotpSetupResponse} from "@/app/auth/models/authMessaging/totpSetupResponse";
+import {RegisterRequest} from "@/app/auth/models/authMessaging/registerRequest";
+import {UserInfo} from "@/app/auth/models/user/userInfo";
 
 // ---------------------------------------------------------------------------
 // MFA pending cookie helpers

@@ -1,12 +1,12 @@
-import {RegisterRequest} from "@/app/auth/models/registerRequest";
 import {buildAuthApiUrl} from "@/app/auth/dashboardAuthApiContext";
 import {isUserInfo, mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
-import {LoginRequest} from "@/app/auth/models/loginRequest";
-import {UserInfo} from "@/app/auth/models/userInfo";
-import {AuthResponse} from "@/app/auth/models/authResponse";
-import {isAuthResponse, mapToAuthResponse} from "@/app/auth/typeValidators/authResponseValidator";
-import {TotpSetupResponse, TotpSetupResponseSchema} from "@/app/auth/models/totpSetupResponse";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
+import {RegisterRequest} from "@/app/auth/models/authMessaging/registerRequest";
+import {UserInfo} from "@/app/auth/models/user/userInfo";
+import {LoginRequest} from "@/app/auth/models/authMessaging/loginRequest";
+import {AuthResponse} from "@/app/auth/models/authMessaging/authResponse";
+import {isAuthResponse, mapToAuthResponse} from "@/app/auth/typeValidators/authResponseValidator";
+import {TotpSetupResponse, TotpSetupResponseSchema} from "@/app/auth/models/authMessaging/totpSetupResponse";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 

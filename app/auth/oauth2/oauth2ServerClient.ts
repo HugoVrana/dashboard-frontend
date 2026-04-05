@@ -1,8 +1,8 @@
 import {generateCodeChallenge, generateCodeVerifier} from "@/app/auth/oauth2/pkce";
-import {UserInfo} from "@/app/auth/models/userInfo";
 import {isUserInfo, mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 import type {MfaRequiredResponse, TokenResponse} from "@/app/lib/api/oauth-v2";
+import {UserInfo} from "@/app/auth/models/user/userInfo";
 
 const grafanaClient: GrafanaServerClient = new GrafanaServerClient();
 

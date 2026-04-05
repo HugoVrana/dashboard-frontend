@@ -1,10 +1,9 @@
 import {z} from "zod";
-import {RoleReadSchema} from "./role";
+import {RoleReadSchema} from "@/app/auth/models/role/roleRead";
 
 export const UserInfoSchema = z.object({
     id: z.string(),
     email: z.string(),
-    emailVerified: z.boolean().optional(),
     profileImageUrl: z.string().nullable().optional(),
     roleReads: z.array(RoleReadSchema).optional().default([]),
 });

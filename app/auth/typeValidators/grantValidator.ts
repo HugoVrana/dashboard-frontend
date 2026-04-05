@@ -1,4 +1,4 @@
-import {type GrantRead, GrantReadSchema} from "@/app/auth/models/grantRead";
+import {GrantRead, GrantReadSchema} from "@/app/auth/models/grant/grantRead";
 
 export function isGrantRead(x: unknown): x is GrantRead {
     return GrantReadSchema.safeParse(x).success;

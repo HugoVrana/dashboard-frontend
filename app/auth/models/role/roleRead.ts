@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {GrantReadSchema} from "./grantRead";
+import {GrantReadSchema} from "@/app/auth/models/grant/grantRead";
 
 export const RoleReadSchema = z.object({
     id: z.string(),

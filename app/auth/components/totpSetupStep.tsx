@@ -3,9 +3,9 @@
 import {Loader2, ShieldAlert, ShieldCheck, CheckCircle2} from "lucide-react";
 import {useEffect, useState} from "react";
 import {setupTotpAction, verifyTotpAction} from "@/app/auth/actions";
-import {TotpSetupResponse} from "@/app/auth/models/totpSetupResponse";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, CardTitle, Input, Label } from "@hugovrana/dashboard-frontend-shared";
+import {TotpSetupResponse} from "@/app/auth/models/authMessaging/totpSetupResponse";
 
 interface TotpSetupStepProps {
     onComplete: () => void;

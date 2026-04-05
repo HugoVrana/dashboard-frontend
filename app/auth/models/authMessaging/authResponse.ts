@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {UserInfoSchema} from "./userInfo";
+import {UserInfoSchema} from "@/app/auth/models/user/userInfo";
 
 export const AuthResponseSchema = z.object({
     accessToken: z.string(),
