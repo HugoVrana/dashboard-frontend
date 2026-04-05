@@ -5,9 +5,9 @@ import {signIn} from "next-auth/react";
 import {FormEvent, useContext, useState} from "react";
 import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
-import {loginAction} from "@/app/auth/actions";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
+import {loginAction} from "@/app/auth/actions/loginActions";
 
 interface LoginFormProps {
     onSuccess: () => void;

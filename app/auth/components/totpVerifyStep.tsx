@@ -3,9 +3,9 @@
 import {ArrowRightIcon, Loader2, ShieldAlert} from "lucide-react";
 import {FormEvent, useState} from "react";
 import {signIn} from "next-auth/react";
-import {completeMfaLoginAction} from "@/app/auth/actions";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
+import {completeMfaLoginAction} from "@/app/auth/actions/loginActions";
 
 interface TotpVerifyStepProps {
     onComplete: () => void;
