@@ -10,6 +10,14 @@ import {createCipheriv, createDecipheriv, createHash, randomBytes} from "crypto"
 import {TotpSetupResponse} from "@/app/auth/models/authMessaging/totpSetupResponse";
 import {RegisterRequest} from "@/app/auth/models/authMessaging/registerRequest";
 import {UserInfo} from "@/app/auth/models/user/userInfo";
+import type {LoginActionResult} from "@/app/auth/models/authMessaging/loginActionResult";
+import type {InitiatePkceResult} from "@/app/auth/models/authMessaging/initiatePkceResult";
+import type {CompleteMfaActionResult} from "@/app/auth/models/authMessaging/completeMfaActionResult";
+import {MfaPendingPayload} from "@/app/auth/models/authMessaging/mfaPendingPayload";
+import {PkceStatePayload} from "@/app/auth/models/authMessaging/pkceStatePayload";
+export type { LoginActionResult } from "@/app/auth/models/authMessaging/loginActionResult";
+export type { InitiatePkceResult } from "@/app/auth/models/authMessaging/initiatePkceResult";
+export type { CompleteMfaActionResult } from "@/app/auth/models/authMessaging/completeMfaActionResult";
 
 // ---------------------------------------------------------------------------
 // MFA pending cookie helpers
@@ -20,12 +28,6 @@ const MFA_COOKIE_MAX_AGE = 5 * 60; // 5 minutes
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
 const AUTH_TAG_LENGTH = 16;
-
-interface MfaPendingPayload {
-    mfaToken: string;
-    codeVerifier: string;
-    serverUrl: string;
-}
 
 function getEncryptionKey(): Buffer {
     const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
@@ -92,12 +94,6 @@ async function consumeMfaCookie(): Promise<MfaPendingPayload | null> {
 const PKCE_COOKIE_NAME = "pkce_state";
 const PKCE_COOKIE_MAX_AGE = 10 * 60; // 10 minutes
 
-interface PkceStatePayload {
-    requestId: string;
-    codeVerifier: string;
-    serverUrl: string;
-}
-
 async function setPkceStateCookie(payload: PkceStatePayload): Promise<void> {
     const cookieStore = await cookies();
     cookieStore.set(PKCE_COOKIE_NAME, encryptPayload(payload), {
@@ -122,16 +118,6 @@ async function consumePkceStateCookie(requestId: string): Promise<PkceStatePaylo
 // ---------------------------------------------------------------------------
 // Login actions
 // ---------------------------------------------------------------------------
-
-export type LoginActionResult =
-    | { status: "success"; accessToken: string; refreshToken: string; expiresIn: number; userInfoJson: string; url: string }
-    | { status: "mfa_required" }
-    | { status: "error"; message: string };
-
-export type InitiatePkceResult =
-    | { status: "success"; requestId: string }
-    | { status: "error"; message: string };
-
 export async function initiatePkceAction(url: string): Promise<InitiatePkceResult> {
     const pkce = await initiatePkce(url);
     if (!pkce) {
@@ -173,10 +159,6 @@ export async function loginAction(email: string, password: string, url: string, 
         url,
     };
 }
-
-export type CompleteMfaActionResult =
-    | { status: "success"; accessToken: string; refreshToken: string; expiresIn: number; userInfoJson: string; url: string }
-    | { status: "error"; message: string };
 
 export async function completeMfaLoginAction(totpCode: string): Promise<CompleteMfaActionResult> {
     const pending = await consumeMfaCookie();
