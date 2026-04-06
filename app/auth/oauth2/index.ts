@@ -15,4 +15,3 @@
 export {loginWithOAuth2, completeMfaLogin, refreshAccessToken, revokeToken, initiatePkce} from "./oauth2ServerClient";
 export type {OAuth2AuthResult, OAuth2MfaRequired} from "./oauth2ServerClient";
 export {generateCodeVerifier, generateCodeChallenge} from "./pkce";
-export type {TokenResponse as OAuth2TokenResponse, OAuth2ErrorResponse, MfaRequiredResponse} from "@/app/lib/api/oauth-v2";
