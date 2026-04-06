@@ -10,10 +10,7 @@ import {AvatarUpload, Button, CardTitle, Input, Label} from "@hugovrana/dashboar
 import {registerUser, setProfilePicture} from "@/app/auth/actions/userActions";
 import {loginAction} from "@/app/auth/actions/loginActions";
 import {RegisterFormSchema} from "@/app/auth/models/authMessaging/registerRequest";
-
-interface RegisterFormProps {
-    onComplete: () => void;
-}
+import {RegisterFormProps} from "@/app/auth/models/components/registerFormProps";
 
 export default function RegisterForm({onComplete}: RegisterFormProps) {
     const { dashboardAuthApiIsLocal } = useContext(ApiContext);

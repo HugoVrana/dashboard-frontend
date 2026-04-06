@@ -7,11 +7,7 @@ import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugT
 import {Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
 import {completeMfaLoginAction} from "@/app/auth/actions/loginActions";
 import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
-
-interface TotpVerifyStepProps {
-    onComplete: () => void;
-    onBack: () => void;
-}
+import {TotpVerifyStepProps} from "@/app/auth/models/components/totpVerifyStepProps";
 
 export default function TotpVerifyStep({onComplete, onBack}: TotpVerifyStepProps) {
     const [code, setCode] = useState("");

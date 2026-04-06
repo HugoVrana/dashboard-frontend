@@ -5,15 +5,14 @@ import {useSearchParams} from "next/navigation";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, Card, CardContent, CardHeader} from "@hugovrana/dashboard-frontend-shared";
 import AcmeLogo from "@/app/shared/components/acmeLogo";
-import RegisterForm from "@/app/auth/components/registerForm";
-import LoginForm from "@/app/auth/components/loginForm";
-import TotpVerifyStep from "@/app/auth/components/totpVerifyStep";
-import TotpSetupStep from "@/app/auth/components/totpSetupStep";
-
-type PageState = "login" | "register" | "mfa" | "totp-setup";
+import LoginForm from "@/app/auth/components/loginRegister/loginForm";
+import RegisterForm from "@/app/auth/components/loginRegister/registerForm";
+import TotpVerifyStep from "@/app/auth/components/loginRegister/totpVerifyStep";
+import TotpSetupStep from "@/app/auth/components/loginRegister/totpSetupStep";
+import {LoginRegisterFormPageState} from "@/app/auth/models/components/loginRegisterFormPageState";
 
 function LoginRegisterCardInner() {
-    const [pageState, setPageState] = useState<PageState>("login");
+    const [pageState, setPageState] = useState<LoginRegisterFormPageState>("login");
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
     const requestId = searchParams.get("request_id") ?? undefined;

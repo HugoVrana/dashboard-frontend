@@ -7,11 +7,7 @@ import {Button, CardTitle, Input, Label } from "@hugovrana/dashboard-frontend-sh
 import {TotpSetupResponse} from "@/app/auth/models/authMessaging/totpSetupResponse";
 import {setupTotpAction, verifyTotpAction} from "@/app/auth/actions/totpActions";
 import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
-
-interface TotpSetupStepProps {
-    onComplete: () => void;
-    onSkip: () => void;
-}
+import {TotpSetupStepProps} from "@/app/auth/models/components/totpSetupStepProps";
 
 export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) {
     const [isLoading, setIsLoading] = useState(true);

@@ -9,12 +9,7 @@ import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugT
 import {Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
 import {loginAction} from "@/app/auth/actions/loginActions";
 import {LoginRequestSchema} from "@/app/auth/models/authMessaging/loginRequest";
-
-interface LoginFormProps {
-    onSuccess: () => void;
-    onMfaRequired: () => void;
-    requestId?: string;
-}
+import {LoginFormProps} from "@/app/auth/models/components/loginFormProps";
 
 export default function LoginForm({onSuccess, onMfaRequired, requestId}: LoginFormProps) {
     const {dashboardAuthApiIsLocal} = useContext(ApiContext);

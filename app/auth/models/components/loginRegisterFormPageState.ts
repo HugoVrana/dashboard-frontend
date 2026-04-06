@@ -1,0 +1,1 @@
+export type LoginRegisterFormPageState = "login" | "register" | "mfa" | "totp-setup";
