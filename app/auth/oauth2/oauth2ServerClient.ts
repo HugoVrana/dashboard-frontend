@@ -1,8 +1,9 @@
 import {generateCodeChallenge, generateCodeVerifier} from "@/app/auth/oauth2/pkce";
 import {isUserInfo, mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
-import type {MfaRequiredResponse, TokenResponse} from "@/app/lib/api/oauth-v2";
 import {UserInfo} from "@/app/auth/models/user/userInfo";
+import {OAuth2TokenResponse} from "@/app/auth/models/authMessaging/oauth2TokenResponse";
+import {MfaRequiredResponse} from "@/app/auth/models/authMessaging/oauth2ErrorResponse";
 
 const grafanaClient: GrafanaServerClient = new GrafanaServerClient();
 
@@ -109,7 +110,7 @@ export async function completeMfaLogin(
 export async function refreshAccessToken(
     serverUrl: string,
     refreshToken: string
-): Promise<TokenResponse | null> {
+): Promise<OAuth2TokenResponse | null> {
     try {
         const body = new URLSearchParams({
             grant_type: "refresh_token",
@@ -129,7 +130,7 @@ export async function refreshAccessToken(
             return null;
         }
 
-        const data = await res.json() as TokenResponse;
+        const data = await res.json() as OAuth2TokenResponse;
         if (!data.access_token || !data.refresh_token) {
             grafanaClient.error("Unexpected token refresh response", {payload: data});
             return null;
@@ -301,7 +302,7 @@ async function submitMfa(serverUrl: string, mfaToken: string, totpCode: string):
     }
 }
 
-async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifier: string): Promise<TokenResponse | null> {
+async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifier: string): Promise<OAuth2TokenResponse | null> {
     try {
         const body = new URLSearchParams({
             grant_type: "authorization_code",
@@ -323,7 +324,7 @@ async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifi
             return null;
         }
 
-        const data = await res.json() as TokenResponse;
+        const data = await res.json() as OAuth2TokenResponse;
         if (!data.access_token || !data.refresh_token) {
             grafanaClient.error("Unexpected token response", {payload: data});
             return null;
