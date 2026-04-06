@@ -10,7 +10,8 @@
       "dashboard" : "Dashboard",
       "login" : "Anmelden",
       "logout" : "Abmelden",
-      "invoices" : "Rechnungen"
+      "invoices" : "Rechnungen",
+      "roles": "Rollen"
     },
     "homepage" : {
       "meta": {
@@ -143,6 +144,101 @@
         "created" : "Rechnung erstellt",
         "updated" : "Rechnung angepasst",
         "deleted" : "Rechnung gelöscht"
+      }
+    },
+    "roles": {
+      "meta": {
+        "title": "Rollen",
+        "description": "Rollen und Berechtigungen verwalten"
+      },
+      "eyebrow": "Zugriffssteuerung",
+      "title": "Rollen, die steuern, was jedes Team sehen und bearbeiten darf",
+      "description": "Durchsuchen Sie Ihr Zugriffsmodell, passen Sie Rollennamen an und ordnen Sie Berechtigungen zu, ohne den Dashboard-Fluss zu verlassen.",
+      "subheading": "Client-seitige Lesezugriffe, serverseitige Schreibvorgänge.",
+      "liveData": "Live-Daten aus der Auth-API",
+      "retry": "Erneut versuchen",
+      "refresh": "Aktualisieren",
+      "loadError": "Rollen oder Berechtigungen konnten nicht geladen werden.",
+      "actions": {
+        "created": "Rolle erstellt.",
+        "updated": "Rolle aktualisiert.",
+        "deleted": "Rolle gelöscht.",
+        "grantCreated": "Berechtigung erstellt.",
+        "grantUpdated": "Berechtigung aktualisiert.",
+        "grantDeleted": "Berechtigung gelöscht.",
+        "grantAdded": "Berechtigung zur Rolle hinzugefügt.",
+        "grantRemoved": "Berechtigung von Rolle entfernt."
+      },
+      "stats": {
+        "roles": "Rollen",
+        "grants": "Berechtigungen",
+        "selected": "Zugewiesene Berechtigungen"
+      },
+      "fields": {
+        "name": "Rollenname"
+      },
+      "library": {
+        "title": "Rollenbibliothek",
+        "description": "Wählen Sie eine Rolle aus, um ihre Berechtigungen anzusehen und zu bearbeiten.",
+        "search": "Rollen suchen",
+        "grantCount": "{count, plural, one {# Berechtigung} other {# Berechtigungen}}",
+        "empty": "Noch keine Rollen vorhanden. Erstellen Sie die erste.",
+        "noMatch": "Keine Rollen für diese Suche gefunden."
+      },
+      "create": {
+        "title": "Rolle erstellen",
+        "description": "Fügen Sie eine gezielte Rolle für ein Team, eine Funktion oder einen Workflow hinzu.",
+        "placeholder": "z. B. billing-manager",
+        "submit": "Rolle erstellen",
+        "submitting": "Wird erstellt..."
+      },
+      "createGrant": {
+        "title": "Berechtigung erstellen",
+        "description": "Fügen Sie eine neue Berechtigung hinzu, die später Rollen zugeordnet werden kann.",
+        "nameLabel": "Berechtigungsname",
+        "namePlaceholder": "z. B. dashboard-roles-read",
+        "descriptionLabel": "Beschreibung",
+        "descriptionPlaceholder": "Kurze Erklärung, was diese Berechtigung freischaltet",
+        "submit": "Berechtigung erstellen",
+        "submitting": "Wird erstellt..."
+      },
+      "detail": {
+        "description": "Bearbeiten Sie den Rollennamen und stellen Sie zusammen, welche Berechtigungen dazugehören.",
+        "delete": "Rolle löschen",
+        "deleting": "Wird gelöscht...",
+        "save": "Änderungen speichern",
+        "saving": "Speichert...",
+        "emptyTitle": "Rolle auswählen",
+        "emptyDescription": "Wählen Sie eine Rolle aus der Bibliothek oder erstellen Sie eine neue, um Berechtigungen zuzuweisen.",
+        "stats": {
+          "grants": "Zugewiesene Berechtigungen",
+          "id": "Rollen-ID",
+          "type": "Typ",
+          "custom": "Benutzerdefinierte Rolle"
+        }
+      },
+      "grants": {
+        "title": "Berechtigungs-Matrix",
+        "description": "Prüfen Sie zugewiesene Berechtigungen oder durchsuchen Sie den gesamten Katalog für diese Rolle.",
+        "search": "Berechtigungen suchen",
+        "tabs": {
+          "assigned": "Zugewiesen",
+          "catalog": "Katalog"
+        },
+        "assigned": "Zugewiesen",
+        "available": "Verfügbar",
+        "add": "Hinzufügen",
+        "adding": "Wird hinzugefügt...",
+        "save": "Berechtigung speichern",
+        "saving": "Speichert...",
+        "delete": "Berechtigung löschen",
+        "deleting": "Wird gelöscht...",
+        "remove": "Entfernen",
+        "removing": "Wird entfernt...",
+        "selectRole": "Zuerst Rolle wählen",
+        "emptyAssigned": "Diese Rolle hat noch keine Berechtigungen.",
+        "noDescription": "Keine Beschreibung vorhanden.",
+        "noMatch": "Keine Berechtigungen für diese Suche gefunden."
       }
     },
     "controls" : {

@@ -1,7 +1,7 @@
 "use server";
 
 import {auth} from "@/auth";
-import {getRoles, getRole, createRole, updateRole, deleteRole, addGrantToRole, removeGrantFromRole} from "@/app/auth/dataAccess/rolesServerClient";
+import {createRole, updateRole, deleteRole, addGrantToRole, removeGrantFromRole} from "@/app/auth/dataAccess/rolesServerClient";
 import {CreateRole, CreateRoleSchema} from "@/app/auth/models/role/createRole";
 import {RoleUpdate, RoleUpdateSchema} from "@/app/auth/models/role/roleUpdate";
 import {RoleRead} from "@/app/auth/models/role/roleRead";

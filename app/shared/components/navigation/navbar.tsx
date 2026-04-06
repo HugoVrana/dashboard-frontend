@@ -63,6 +63,11 @@ export function Navbar() {
                                         {t("invoices")}
                                     </NavigationMenuLink>
                                 </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <NavigationMenuLink href={"/auth/roles"}>
+                                        {t("roles")}
+                                    </NavigationMenuLink>
+                                </NavigationMenuItem>
                             </>
                         )}
                     </NavigationMenuList>
