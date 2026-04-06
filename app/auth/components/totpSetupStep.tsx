@@ -6,6 +6,7 @@ import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugT
 import {Button, CardTitle, Input, Label } from "@hugovrana/dashboard-frontend-shared";
 import {TotpSetupResponse} from "@/app/auth/models/authMessaging/totpSetupResponse";
 import {setupTotpAction, verifyTotpAction} from "@/app/auth/actions/totpActions";
+import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
 
 interface TotpSetupStepProps {
     onComplete: () => void;
@@ -44,15 +45,17 @@ export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) 
     }, []);
 
     const handleVerify = async () => {
-        if (code.length !== 6) {
-            setVerifyError(t("codeError"));
+        const validatedFields = TotpCodeSchema.safeParse({code});
+
+        if (!validatedFields.success) {
+            setVerifyError(validatedFields.error.issues[0]?.message ?? t("codeError"));
             return;
         }
 
         setIsVerifying(true);
         setVerifyError(null);
 
-        const result = await verifyTotpAction(code);
+        const result = await verifyTotpAction(validatedFields.data.code);
 
         if (!result.success) {
             setVerifyError(result.message);

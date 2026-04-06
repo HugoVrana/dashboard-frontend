@@ -9,6 +9,7 @@ import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugT
 import {AvatarUpload, Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
 import {registerUser, setProfilePicture} from "@/app/auth/actions/userActions";
 import {loginAction} from "@/app/auth/actions/loginActions";
+import {RegisterFormSchema} from "@/app/auth/models/authMessaging/registerRequest";
 
 interface RegisterFormProps {
     onComplete: () => void;
@@ -30,15 +31,19 @@ export default function RegisterForm({onComplete}: RegisterFormProps) {
         setIsLoading(true);
 
         const formData = new FormData(e.currentTarget);
-        const email = formData.get('email') as string;
-        const password = formData.get('password') as string;
-        const confirmPassword = formData.get('confirmPassword') as string;
+        const validatedFields = RegisterFormSchema.safeParse({
+            email: formData.get('email'),
+            password: formData.get('password'),
+            confirmPassword: formData.get('confirmPassword'),
+        });
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.');
+        if (!validatedFields.success) {
+            setError(validatedFields.error.issues[0]?.message ?? 'Invalid form data. Please check your inputs.');
             setIsLoading(false);
             return;
         }
+
+        const {email, password} = validatedFields.data;
 
         try {
             const result = await registerUser(url, { message: null }, formData);

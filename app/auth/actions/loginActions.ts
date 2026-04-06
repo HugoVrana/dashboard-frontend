@@ -8,6 +8,8 @@ import type {InitiatePkceResult} from "@/app/auth/models/authMessaging/initiateP
 import type {CompleteMfaActionResult} from "@/app/auth/models/authMessaging/completeMfaActionResult";
 import {MfaPendingPayload} from "@/app/auth/models/authMessaging/mfaPendingPayload";
 import {PkceStatePayload} from "@/app/auth/models/authMessaging/pkceStatePayload";
+import {LoginRequestSchema} from "@/app/auth/models/authMessaging/loginRequest";
+import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
 
 export type { LoginActionResult } from "@/app/auth/models/authMessaging/loginActionResult";
 export type { InitiatePkceResult } from "@/app/auth/models/authMessaging/initiatePkceResult";
@@ -125,17 +127,24 @@ export async function initiatePkceAction(url: string): Promise<InitiatePkceResul
 }
 
 export async function loginAction(email: string, password: string, url: string, requestId?: string): Promise<LoginActionResult> {
+    const validatedFields = LoginRequestSchema.safeParse({email, password});
+
+    if (!validatedFields.success) {
+        return { status: "error", message: "Invalid credentials." };
+    }
+
+    const credentials = validatedFields.data;
     let result;
 
     if (requestId) {
         const pkceState = await consumePkceStateCookie(requestId);
         if (pkceState) {
-            result = await loginWithOAuth2(url, email, password, { requestId, codeVerifier: pkceState.codeVerifier });
+            result = await loginWithOAuth2(url, credentials.email, credentials.password, { requestId, codeVerifier: pkceState.codeVerifier });
         } else {
-            result = await loginWithOAuth2(url, email, password);
+            result = await loginWithOAuth2(url, credentials.email, credentials.password);
         }
     } else {
-        result = await loginWithOAuth2(url, email, password);
+        result = await loginWithOAuth2(url, credentials.email, credentials.password);
     }
 
     if (!result) {
@@ -158,13 +167,19 @@ export async function loginAction(email: string, password: string, url: string, 
 }
 
 export async function completeMfaLoginAction(totpCode: string): Promise<CompleteMfaActionResult> {
+    const validatedFields = TotpCodeSchema.safeParse({code: totpCode});
+
+    if (!validatedFields.success) {
+        return { status: "error", message: "Invalid code. Please try again." };
+    }
+
     const pending = await consumeMfaCookie();
 
     if (!pending) {
         return { status: "error", message: "MFA session expired. Please log in again." };
     }
 
-    const result = await completeMfaLogin(pending.serverUrl, pending.mfaToken, totpCode, pending.codeVerifier);
+    const result = await completeMfaLogin(pending.serverUrl, pending.mfaToken, validatedFields.data.code, pending.codeVerifier);
 
     if (!result) {
         // Re-set cookie so user can retry with a different code

@@ -8,6 +8,7 @@ import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/da
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
 import {loginAction} from "@/app/auth/actions/loginActions";
+import {LoginRequestSchema} from "@/app/auth/models/authMessaging/loginRequest";
 
 interface LoginFormProps {
     onSuccess: () => void;
@@ -30,8 +31,18 @@ export default function LoginForm({onSuccess, onMfaRequired, requestId}: LoginFo
         setIsLoading(true);
 
         const formData = new FormData(e.currentTarget);
-        const email = formData.get("username") as string;
-        const password = formData.get("password") as string;
+        const validatedFields = LoginRequestSchema.safeParse({
+            email: formData.get("username"),
+            password: formData.get("password"),
+        });
+
+        if (!validatedFields.success) {
+            setError(validatedFields.error.issues[0]?.message ?? t("invalidCredentials"));
+            setIsLoading(false);
+            return;
+        }
+
+        const {email, password} = validatedFields.data;
 
         try {
             const result = await loginAction(email, password, url, requestId);

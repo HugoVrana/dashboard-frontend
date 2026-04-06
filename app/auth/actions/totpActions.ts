@@ -3,6 +3,7 @@
 import {auth} from "@/auth";
 import {setupTotp, verifyTotp} from "@/app/auth/dataAccess/usersServerClient";
 import {TotpSetupResponse} from "@/app/auth/models/authMessaging/totpSetupResponse";
+import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
 
 export async function setupTotpAction(): Promise<{ success: boolean; message: string; data?: TotpSetupResponse }> {
     console.log("setupTotpAction: Starting TOTP setup");
@@ -44,6 +45,12 @@ export async function setupTotpAction(): Promise<{ success: boolean; message: st
 export async function verifyTotpAction(code: string): Promise<{ success: boolean; message: string }> {
     console.log("verifyTotpAction: Verifying TOTP code");
 
+    const validatedFields = TotpCodeSchema.safeParse({code});
+
+    if (!validatedFields.success) {
+        return { success: false, message: 'Invalid code. Please try again.' };
+    }
+
     const session = await auth();
 
     if (!session || !session.accessToken || !session.url) {
@@ -51,7 +58,7 @@ export async function verifyTotpAction(code: string): Promise<{ success: boolean
     }
 
     try {
-        const isValid = await verifyTotp(session.url, session.accessToken, code);
+        const isValid = await verifyTotp(session.url, session.accessToken, validatedFields.data.code);
 
         if (!isValid) {
             return { success: false, message: 'Invalid code. Please try again.' };

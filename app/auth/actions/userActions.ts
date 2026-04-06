@@ -3,29 +3,22 @@
 import {State} from "@/app/shared/models/state";
 import {auth} from "@/auth";
 import {createUser, postUserProfilePicture} from "@/app/auth/dataAccess/usersServerClient";
-import {z} from "zod";
-import {RegisterRequest} from "@/app/auth/models/authMessaging/registerRequest";
+import {RegisterRequest, RegisterRequestSchema} from "@/app/auth/models/authMessaging/registerRequest";
 import {UserInfo} from "@/app/auth/models/user/userInfo";
 
 export async function registerUser(url: string, prevState: State, formData: FormData): Promise<{ success: boolean; message: string }> {
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    const validatedFields = z.object({
-        email: z.string().email(),
-        password: z.string().min(6)
-    }).safeParse({ email, password });
+    const validatedFields = RegisterRequestSchema.safeParse({
+        email: formData.get('email'),
+        password: formData.get('password'),
+        roleId: "693950e2bf5065eaf5737136",
+    });
 
     if (!validatedFields.success) {
         return { success: false, message: 'Invalid form data. Please check your inputs.' };
     }
 
     try {
-        const registerRequest: RegisterRequest = {
-            email: validatedFields.data.email,
-            password: validatedFields.data.password,
-            roleId: "693950e2bf5065eaf5737136"
-        };
+        const registerRequest: RegisterRequest = validatedFields.data;
 
         const res : UserInfo | null = await createUser(url, registerRequest);
         if (!res) {

@@ -6,6 +6,7 @@ import {signIn} from "next-auth/react";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
 import {completeMfaLoginAction} from "@/app/auth/actions/loginActions";
+import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
 
 interface TotpVerifyStepProps {
     onComplete: () => void;
@@ -21,12 +22,17 @@ export default function TotpVerifyStep({onComplete, onBack}: TotpVerifyStepProps
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (code.length !== 6) return;
+        const validatedFields = TotpCodeSchema.safeParse({code});
+
+        if (!validatedFields.success) {
+            setError(validatedFields.error.issues[0]?.message ?? t("signInError"));
+            return;
+        }
 
         setError(null);
         setIsLoading(true);
 
-        const result = await completeMfaLoginAction(code);
+        const result = await completeMfaLoginAction(validatedFields.data.code);
 
         if (result.status === "error") {
             setError(result.message);
