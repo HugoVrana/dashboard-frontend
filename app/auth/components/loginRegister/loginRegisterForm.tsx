@@ -99,7 +99,7 @@ function LoginRegisterCardInner() {
     );
 }
 
-export default function LoginRegisterCard() {
+export default function LoginRegisterForm() {
     return (
         <Suspense>
             <LoginRegisterCardInner/>

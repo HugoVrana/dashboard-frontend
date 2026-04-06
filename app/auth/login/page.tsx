@@ -1,6 +1,6 @@
-import LoginRegisterForm from "@/app/auth/components/loginRegisterForm";
 import {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
+import LoginRegisterForm from "@/app/auth/components/loginRegister/loginRegisterForm";
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("auth.login.meta");
