@@ -5,6 +5,8 @@ import {UserInfo} from "@/app/auth/models/user/userInfo";
 import {OAuth2TokenResponse} from "@/app/auth/models/authMessaging/oauth2TokenResponse";
 import {MfaRequiredResponse} from "@/app/auth/models/authMessaging/oauth2ErrorResponse";
 import {SubmitAuthorizeResult} from "@/app/auth/models/authMessaging/submitAuthorizationResult";
+import {Oauth2AuthResult} from "@/app/auth/models/authMessaging/oauth2AuthResult";
+import {OAuth2MfaRequired} from "@/app/auth/models/authMessaging/oauth2MfaRequired";
 
 const grafanaClient: GrafanaServerClient = new GrafanaServerClient();
 
@@ -12,20 +14,6 @@ const OAUTH2_CLIENT_ID = process.env.OAUTH2_CLIENT_ID ?? "dashboard-frontend";
 const OAUTH2_CLIENT_SECRET = process.env.OAUTH2_CLIENT_SECRET;
 const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI ?? "http://localhost:3000/api/auth/callback/mfa";
 const OAUTH2_ORIGIN = new URL(OAUTH2_REDIRECT_URI).origin;
-
-export interface OAuth2AuthResult {
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    user: UserInfo | null;
-}
-
-export interface OAuth2MfaRequired {
-    mfaRequired: true;
-    mfaToken: string;
-    codeVerifier: string;
-    serverUrl: string;
-}
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -44,7 +32,7 @@ export async function loginWithOAuth2(
     email: string,
     password: string,
     existingPkce?: { requestId: string; codeVerifier: string }
-): Promise<OAuth2AuthResult | OAuth2MfaRequired | null> {
+): Promise<Oauth2AuthResult | OAuth2MfaRequired | null> {
 
     let codeVerifier: string;
     let requestId: string;
@@ -90,7 +78,7 @@ export async function completeMfaLogin(
     mfaToken: string,
     totpCode: string,
     codeVerifier: string
-): Promise<OAuth2AuthResult | null> {
+): Promise<Oauth2AuthResult | null> {
 
     const authCode = await submitMfa(serverUrl, mfaToken, totpCode);
     if (!authCode) return null;
@@ -205,7 +193,6 @@ async function initiateAuthorize(serverUrl: string, codeChallenge: string): Prom
         return null;
     }
 }
-
 
 async function submitAuthorize(
     serverUrl: string,

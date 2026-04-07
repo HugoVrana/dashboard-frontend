@@ -13,5 +13,4 @@
  *   GET  /v2/oauth2/userinfo        - Fetch user info (OIDC UserInfo endpoint)
  */
 export {loginWithOAuth2, completeMfaLogin, refreshAccessToken, revokeToken, initiatePkce} from "./oauth2ServerClient";
-export type {OAuth2AuthResult, OAuth2MfaRequired} from "./oauth2ServerClient";
 export {generateCodeVerifier, generateCodeChallenge} from "./pkce";
