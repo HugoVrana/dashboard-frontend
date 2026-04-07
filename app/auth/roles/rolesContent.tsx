@@ -14,7 +14,7 @@ import {
 } from "@/app/auth/actions/roleActions";
 import {createGrantAction, deleteGrantAction, updateGrantAction} from "@/app/auth/actions/grantActions";
 import RolesHeader from "@/app/auth/components/roles/rolesHeader";
-import {RolesFlash, RolesLoadError} from "@/app/auth/components/roles/rolesStatus";
+import {RolesLoadError} from "@/app/auth/components/roles/rolesStatus";
 import RolesLibraryCard from "@/app/auth/components/roles/rolesLibraryCard";
 import CreateRoleCard from "@/app/auth/components/roles/createRoleCard";
 import CreateGrantCard from "@/app/auth/components/roles/createGrantCard";
@@ -22,7 +22,8 @@ import RoleDetailCard from "@/app/auth/components/roles/roleDetailCard";
 import RoleGrantsCard from "@/app/auth/components/roles/roleGrantsCard";
 import type {RoleRead} from "@/app/auth/models/role/roleRead";
 import type {GrantRead} from "@/app/auth/models/grant/grantRead";
-import type {FlashState} from "@/app/auth/components/roles/types";
+import {FlashState} from "@/app/auth/models/components/flashState";
+import {RolesFlash} from "@/app/auth/components/roles/roleFlash";
 
 function sortRoles(roles: RoleRead[]): RoleRead[] {
     return [...roles].sort((a, b) => a.name.localeCompare(b.name));
@@ -31,7 +32,16 @@ function sortRoles(roles: RoleRead[]): RoleRead[] {
 export default function RolesContent() {
     const t = useDebugTranslations("dashboard.roles");
     const {isReady: apiContextReady} = useContext(ApiContext);
-    const {isLoading: permissionsLoading, isAuthenticated} = usePermissions();
+    const {isLoading: permissionsLoading, isAuthenticated, hasGrant} = usePermissions();
+
+    const canCreateRole : boolean = hasGrant("dashboard-oauth-role-create");
+    const canEditRole : boolean = hasGrant("dashboard-oauth-role-update");
+    const canManageRoleGrants : boolean = hasGrant("dashboard-oauth-role-manage-grants");
+    const canDeleteRole : boolean = hasGrant("dashboard-oauth-role-delete");
+    const canCreateGrant : boolean = hasGrant("dashboard-oauth-grant-create");
+    const canUpdateGrant : boolean = hasGrant("dashboard-oauth-grant-update");
+    const canDeleteGrant : boolean = hasGrant("dashboard-oauth-grant-delete");
+
     const {getRoles, getGrants} = useRolesApi();
 
     const [roles, setRoles] = useState<RoleRead[]>([]);
@@ -308,7 +318,7 @@ export default function RolesContent() {
                     selectedGrantCount={selectedRole ? assignedGrants.length : 0}
                 />
 
-                <RolesFlash flash={flash} />
+                {flash && <RolesFlash {...flash} />}
 
                 <RolesLoadError
                     loadError={loadError}
@@ -328,21 +338,25 @@ export default function RolesContent() {
                             onRoleSelect={setSelectedRoleId}
                         />
 
-                        <CreateRoleCard
-                            createName={createName}
-                            busy={busyKey === "create"}
-                            onNameChange={setCreateName}
-                            onSubmit={handleCreateRole}
-                        />
+                        {canCreateRole && (
+                            <CreateRoleCard
+                                createName={createName}
+                                busy={busyKey === "create"}
+                                onNameChange={setCreateName}
+                                onSubmit={handleCreateRole}
+                            />
+                        )}
 
-                        <CreateGrantCard
-                            name={createGrantName}
-                            description={createGrantDescription}
-                            busy={busyKey === "create-grant"}
-                            onNameChange={setCreateGrantName}
-                            onDescriptionChange={setCreateGrantDescription}
-                            onSubmit={handleCreateGrant}
-                        />
+                        {canCreateGrant && (
+                            <CreateGrantCard
+                                name={createGrantName}
+                                description={createGrantDescription}
+                                busy={busyKey === "create-grant"}
+                                onNameChange={setCreateGrantName}
+                                onDescriptionChange={setCreateGrantDescription}
+                                onSubmit={handleCreateGrant}
+                            />
+                        )}
                     </div>
 
                     <div className="space-y-6">
@@ -352,6 +366,8 @@ export default function RolesContent() {
                             editName={editName}
                             loading={loading}
                             busyKey={busyKey}
+                            canEdit={canEditRole}
+                            canDelete={canDeleteRole}
                             onEditNameChange={setEditName}
                             onRefresh={() => setReloadKey((current) => current + 1)}
                             onUpdateRole={handleUpdateRole}
@@ -366,6 +382,9 @@ export default function RolesContent() {
                             grantDrafts={grantDrafts}
                             grantSearch={grantSearch}
                             busyKey={busyKey}
+                            canManageRoleGrants={canManageRoleGrants}
+                            canUpdateGrant={canUpdateGrant}
+                            canDeleteGrant={canDeleteGrant}
                             onGrantSearchChange={setGrantSearch}
                             onGrantDraftChange={(grantId, patch) => setGrantDrafts((current) => ({
                                 ...current,

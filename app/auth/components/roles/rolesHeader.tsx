@@ -3,24 +3,11 @@
 import {Card, CardContent} from "@hugovrana/dashboard-frontend-shared";
 import {Shield} from "lucide-react";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
+import {RolesHeaderProps} from "@/app/auth/models/components/rolesHeaderProps";
+import {MetricCard} from "@/app/auth/components/roles/metricCard";
 
-function MetricCard({title, value}: {title: string; value: string}) {
-    return (
-        <div className="rounded-2xl border border-border/70 bg-background p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{title}</p>
-            <p className="mt-2 text-2xl font-semibold text-foreground">{value}</p>
-        </div>
-    );
-}
-
-type Props = {
-    roleCount: number;
-    grantCount: number;
-    selectedGrantCount: number;
-};
-
-export default function RolesHeader({roleCount, grantCount, selectedGrantCount}: Props) {
-    const t = useDebugTranslations("dashboard.roles");
+export default function RolesHeader(props: RolesHeaderProps) {
+    const t = useDebugTranslations("auth.roles");
     return (
         <Card className="border-border/70 shadow-none">
             <CardContent className="p-6 lg:p-8">
@@ -49,9 +36,9 @@ export default function RolesHeader({roleCount, grantCount, selectedGrantCount}:
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-                        <MetricCard title={t("stats.roles")} value={roleCount.toString()} />
-                        <MetricCard title={t("stats.grants")} value={grantCount.toString()} />
-                        <MetricCard title={t("stats.selected")} value={selectedGrantCount.toString()} />
+                        <MetricCard title={t("stats.roles")} value={props.roleCount.toString()} />
+                        <MetricCard title={t("stats.grants")} value={props.grantCount.toString()} />
+                        <MetricCard title={t("stats.selected")} value={props.selectedGrantCount.toString()} />
                     </div>
                 </div>
             </CardContent>

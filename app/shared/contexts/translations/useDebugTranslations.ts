@@ -4,7 +4,7 @@ import {useCallback} from "react";
 import {useTranslations} from "next-intl"
 import {useTranslationDebug} from "@/app/shared/contexts/translations/translationDebugContext";
 
-type TranslationValues = Record<string, string | number | boolean | Date | null | undefined>;
+type TranslationValues = Record<string, string | number | Date>;
 
 export function useDebugTranslations(namespace?: string): (key: string, values?: TranslationValues) => string {
     const t = useTranslations(namespace)

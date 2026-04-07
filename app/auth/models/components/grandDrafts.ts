@@ -1,0 +1,1 @@
+export type GrantDrafts = Record<string, {name: string; description: string}>;

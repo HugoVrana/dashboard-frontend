@@ -116,46 +116,6 @@
       "skipButton": "Skip for now",
       "continueButton": "Continue",
       "continueWithout2FA": "Continue without 2FA"
-    }
-  },
-  "dashboard" : {
-    "overview" : {
-      "meta": {
-        "title": "Dashboard",
-        "description": "Overview of your dashboard"
-      },
-      "dashboard": "Dashboard"
-    },
-    "invoices" : {
-      "meta": {
-        "title": "Invoices",
-        "description": "Manage your invoices"
-      },
-      "create": {
-        "meta": {
-          "title": "Create Invoice",
-          "description": "Create a new invoice"
-        }
-      },
-      "detail": {
-        "meta": {
-          "title": "Invoice Details",
-          "description": "View invoice details"
-        }
-      },
-      "edit": {
-        "meta": {
-          "title": "Edit Invoice",
-          "description": "Edit an existing invoice"
-        }
-      },
-      "title" : "Invoices",
-      "searchPlaceholder" : "Search invoices (InvoiceRead id and status are working)",
-      "actions" : {
-        "created" : "Invoice created",
-        "updated" : "Invoice edited",
-        "deleted" : "Invoice deleted"
-      }
     },
     "roles": {
       "meta": {
@@ -250,6 +210,52 @@
         "emptyAssigned": "This role has no grants yet.",
         "noDescription": "No description provided.",
         "noMatch": "No grants match this search."
+      }
+    }
+  },
+  "dashboard" : {
+    "roles" : {
+      "meta": {
+        "title": "Roles & Grants",
+        "description": "Manage roles and grant assignments"
+      }
+    },
+    "overview" : {
+      "meta": {
+        "title": "Dashboard",
+        "description": "Overview of your dashboard"
+      },
+      "dashboard": "Dashboard"
+    },
+    "invoices" : {
+      "meta": {
+        "title": "Invoices",
+        "description": "Manage your invoices"
+      },
+      "create": {
+        "meta": {
+          "title": "Create Invoice",
+          "description": "Create a new invoice"
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Invoice Details",
+          "description": "View invoice details"
+        }
+      },
+      "edit": {
+        "meta": {
+          "title": "Edit Invoice",
+          "description": "Edit an existing invoice"
+        }
+      },
+      "title" : "Invoices",
+      "searchPlaceholder" : "Search invoices (InvoiceRead id and status are working)",
+      "actions" : {
+        "created" : "Invoice created",
+        "updated" : "Invoice edited",
+        "deleted" : "Invoice deleted"
       }
     },
     "controls" : {

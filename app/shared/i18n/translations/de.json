@@ -105,46 +105,6 @@
       "skipButton": "Vorerst überspringen",
       "continueButton": "Weiter",
       "continueWithout2FA": "Ohne 2FA fortfahren"
-    }
-  },
-  "dashboard" : {
-    "overview" : {
-      "meta": {
-        "title": "Dashboard",
-        "description": "Übersicht Ihres Dashboards"
-      },
-      "dashboard" : "Dashboard"
-    },
-    "invoices" : {
-      "meta": {
-        "title": "Rechnungen",
-        "description": "Verwalten Sie Ihre Rechnungen"
-      },
-      "create": {
-        "meta": {
-          "title": "Rechnung erstellen",
-          "description": "Neue Rechnung erstellen"
-        }
-      },
-      "detail": {
-        "meta": {
-          "title": "Rechnungsdetails",
-          "description": "Rechnungsdetails anzeigen"
-        }
-      },
-      "edit": {
-        "meta": {
-          "title": "Rechnung bearbeiten",
-          "description": "Bestehende Rechnung bearbeiten"
-        }
-      },
-      "title" : "Rechnungen",
-      "searchPlaceholder" : "Rechnungen suchen (Rechnung id und status sind funktionierend)",
-      "actions" : {
-        "created" : "Rechnung erstellt",
-        "updated" : "Rechnung angepasst",
-        "deleted" : "Rechnung gelöscht"
-      }
     },
     "roles": {
       "meta": {
@@ -239,6 +199,52 @@
         "emptyAssigned": "Diese Rolle hat noch keine Berechtigungen.",
         "noDescription": "Keine Beschreibung vorhanden.",
         "noMatch": "Keine Berechtigungen für diese Suche gefunden."
+      }
+    }
+  },
+  "dashboard" : {
+    "roles" : {
+      "meta": {
+        "title": "Rollen & Berechtigungen",
+        "description": "Rollen und Berechtigungszuweisungen verwalten"
+      }
+    },
+    "overview" : {
+      "meta": {
+        "title": "Dashboard",
+        "description": "Übersicht Ihres Dashboards"
+      },
+      "dashboard" : "Dashboard"
+    },
+    "invoices" : {
+      "meta": {
+        "title": "Rechnungen",
+        "description": "Verwalten Sie Ihre Rechnungen"
+      },
+      "create": {
+        "meta": {
+          "title": "Rechnung erstellen",
+          "description": "Neue Rechnung erstellen"
+        }
+      },
+      "detail": {
+        "meta": {
+          "title": "Rechnungsdetails",
+          "description": "Rechnungsdetails anzeigen"
+        }
+      },
+      "edit": {
+        "meta": {
+          "title": "Rechnung bearbeiten",
+          "description": "Bestehende Rechnung bearbeiten"
+        }
+      },
+      "title" : "Rechnungen",
+      "searchPlaceholder" : "Rechnungen suchen (Rechnung id und status sind funktionierend)",
+      "actions" : {
+        "created" : "Rechnung erstellt",
+        "updated" : "Rechnung angepasst",
+        "deleted" : "Rechnung gelöscht"
       }
     },
     "controls" : {

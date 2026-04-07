@@ -3,16 +3,10 @@
 import {Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
 import {Plus} from "lucide-react";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
+import {CreateRoleCardProps} from "@/app/auth/models/components/createRoleCardProps";
 
-type Props = {
-    createName: string;
-    busy: boolean;
-    onNameChange: (value: string) => void;
-    onSubmit: (formData: FormData) => Promise<void>;
-};
-
-export default function CreateRoleCard({createName, busy, onNameChange, onSubmit}: Props) {
-    const t = useDebugTranslations("dashboard.roles");
+export default function CreateRoleCard(props: CreateRoleCardProps) {
+    const t = useDebugTranslations("auth.roles");
     return (
         <Card className="border-slate-200/80 dark:border-slate-800">
             <CardHeader>
@@ -20,21 +14,21 @@ export default function CreateRoleCard({createName, busy, onNameChange, onSubmit
                 <CardDescription>{t("create.description")}</CardDescription>
             </CardHeader>
             <CardContent>
-                <form action={onSubmit} className="space-y-4">
+                <form action={props.onSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="role-create-name">{t("fields.name")}</Label>
                         <Input
                             id="role-create-name"
                             name="name"
-                            value={createName}
-                            onChange={(event) => onNameChange(event.target.value)}
+                            value={props.createName}
+                            onChange={(event) => props.onNameChange(event.target.value)}
                             placeholder={t("create.placeholder")}
                             required
                         />
                     </div>
-                    <Button type="submit" className="w-full" disabled={busy}>
+                    <Button type="submit" className="w-full" disabled={props.busy}>
                         <Plus className="mr-2 size-4" />
-                        {busy ? t("create.submitting") : t("create.submit")}
+                        {props.busy ? t("create.submitting") : t("create.submit")}
                     </Button>
                 </form>
             </CardContent>
