@@ -4,6 +4,7 @@ import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 import {UserInfo} from "@/app/auth/models/user/userInfo";
 import {OAuth2TokenResponse} from "@/app/auth/models/authMessaging/oauth2TokenResponse";
 import {MfaRequiredResponse} from "@/app/auth/models/authMessaging/oauth2ErrorResponse";
+import {SubmitAuthorizeResult} from "@/app/auth/models/authMessaging/submitAuthorizationResult";
 
 const grafanaClient: GrafanaServerClient = new GrafanaServerClient();
 
@@ -205,11 +206,6 @@ async function initiateAuthorize(serverUrl: string, codeChallenge: string): Prom
     }
 }
 
-interface SubmitAuthorizeResult {
-    mfaRequired: boolean;
-    mfaToken?: string;
-    code?: string;
-}
 
 async function submitAuthorize(
     serverUrl: string,
