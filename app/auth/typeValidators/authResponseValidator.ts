@@ -1,4 +1,4 @@
-import {type AuthResponse, AuthResponseSchema} from "@/app/auth/models/authResponse";
+import {AuthResponse, AuthResponseSchema} from "@/app/auth/models/authMessaging/authResponse";
 
 export function isAuthResponse(x: unknown): x is AuthResponse {
     return AuthResponseSchema.safeParse(x).success;

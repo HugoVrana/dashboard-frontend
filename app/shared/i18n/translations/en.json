@@ -10,7 +10,8 @@
       "dashboard": "Dashboard",
       "login": "Log in",
       "logout": "Sign out",
-      "invoices" : "Invoices"
+      "invoices" : "Invoices",
+      "roles": "Roles"
     },
     "homepage" : {
       "meta": {
@@ -115,9 +116,111 @@
       "skipButton": "Skip for now",
       "continueButton": "Continue",
       "continueWithout2FA": "Continue without 2FA"
+    },
+    "roles": {
+      "meta": {
+        "title": "Roles",
+        "description": "Manage roles and grant assignments"
+      },
+      "eyebrow": "Access Control",
+      "title": "Roles that shape what each team can see and change",
+      "description": "Browse your access model, tune role names, and attach grants without leaving the dashboard flow.",
+      "subheading": "Client-side reads, server-side writes.",
+      "liveData": "Live data from the auth API",
+      "retry": "Retry",
+      "refresh": "Refresh",
+      "loadError": "Failed to load roles or grants.",
+      "actions": {
+        "created": "Role created.",
+        "updated": "Role updated.",
+        "deleted": "Role deleted.",
+        "grantCreated": "Grant created.",
+        "grantUpdated": "Grant updated.",
+        "grantDeleted": "Grant deleted.",
+        "grantAdded": "Grant added to role.",
+        "grantRemoved": "Grant removed from role."
+      },
+      "stats": {
+        "roles": "Roles",
+        "grants": "Grants",
+        "selected": "Selected Grants"
+      },
+      "fields": {
+        "name": "Role name"
+      },
+      "library": {
+        "title": "Role Library",
+        "description": "Pick a role to inspect and edit its permissions.",
+        "search": "Search roles",
+        "grantCount": "{count, plural, one {# grant} other {# grants}}",
+        "empty": "No roles yet. Create the first one.",
+        "noMatch": "No roles match this search."
+      },
+      "create": {
+        "title": "Create Role",
+        "description": "Add a focused role for a team, function, or workflow.",
+        "placeholder": "e.g. billing-manager",
+        "submit": "Create role",
+        "submitting": "Creating..."
+      },
+      "createGrant": {
+        "title": "Create Grant",
+        "description": "Add a new permission that can later be attached to roles.",
+        "nameLabel": "Grant name",
+        "namePlaceholder": "e.g. dashboard-roles-read",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Short explanation of what this grant unlocks",
+        "submit": "Create grant",
+        "submitting": "Creating..."
+      },
+      "detail": {
+        "description": "Edit the role name and curate which grants belong to it.",
+        "delete": "Delete role",
+        "deleting": "Deleting...",
+        "save": "Save changes",
+        "saving": "Saving...",
+        "emptyTitle": "Select a role",
+        "emptyDescription": "Choose a role from the library or create a new one to start assigning grants.",
+        "stats": {
+          "grants": "Assigned Grants",
+          "id": "Role ID",
+          "type": "Type",
+          "custom": "Custom role"
+        }
+      },
+      "grants": {
+        "title": "Grant Matrix",
+        "description": "Review assigned grants or browse the full catalog for this role.",
+        "search": "Search grants",
+        "tabs": {
+          "assigned": "Assigned",
+          "catalog": "Catalog"
+        },
+        "assigned": "Assigned",
+        "available": "Available",
+        "add": "Add grant",
+        "adding": "Adding...",
+        "save": "Save grant",
+        "saving": "Saving...",
+        "delete": "Delete grant",
+        "deleting": "Deleting...",
+        "remove": "Remove grant",
+        "removing": "Removing...",
+        "selectRole": "Select role first",
+        "emptyAssigned": "This role has no grants yet.",
+        "noDescription": "No description provided.",
+        "noMatch": "No grants match this search."
+      }
     }
   },
   "dashboard" : {
+    "roles" : {
+      "meta": {
+        "title": "Roles & Grants",
+        "description": "Manage roles and grant assignments"
+      },
+      "loadError": "Failed to load roles or grants."
+    },
     "overview" : {
       "meta": {
         "title": "Dashboard",

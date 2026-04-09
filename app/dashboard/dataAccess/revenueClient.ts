@@ -2,9 +2,8 @@
 
 import GrafanaClient from "@/app/shared/dataAccess/grafanaClient";
 import {DASHBOARD_API_CONFIG} from "@/app/dashboard/dashboardApiContext";
-import {dataApiOptions} from "@/app/lib/api/dataApiFetch";
-import {getAllRevenues} from "@/app/lib/api/data/revenues";
-import type {RevenueRead} from "@/app/dashboard/models/revenueRead";
+import {apiFetch} from "@/app/shared/lib/apiFetch";
+import {RevenueReadSchema, type RevenueRead} from "@/app/dashboard/models/revenueRead";
 
 const grafanaClient = new GrafanaClient();
 
@@ -14,12 +13,22 @@ function resolveUrl(isLocal: boolean): string {
 
 export async function getRevenue(isLocal: boolean, authToken: string): Promise<RevenueRead[] | null> {
     try {
-        const res = await getAllRevenues(dataApiOptions(resolveUrl(isLocal), authToken));
+        const res = await apiFetch(`${resolveUrl(isLocal)}/api/v1/revenues/`, {
+            headers: {Authorization: `Bearer ${authToken}`},
+        });
         if (res.status !== 200) {
             grafanaClient.error("HTTP error", {route: "GET /revenues/", status: res.status});
             return null;
         }
-        return res.data as RevenueRead[];
+
+        const data = await res.json();
+        const parsed = RevenueReadSchema.array().safeParse(data);
+        if (!parsed.success) {
+            grafanaClient.error("Unexpected payload", {route: "GET /revenues/", payload: data});
+            return null;
+        }
+
+        return parsed.data;
     } catch (e) {
         grafanaClient.error("Fetch failed", {route: "GET /revenues/", error: e});
         return null;

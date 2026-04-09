@@ -1,8 +1,12 @@
 import {generateCodeChallenge, generateCodeVerifier} from "@/app/auth/oauth2/pkce";
-import {UserInfo} from "@/app/auth/models/userInfo";
 import {isUserInfo, mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
-import type {MfaRequiredResponse, TokenResponse} from "@/app/lib/api/oauth-v2";
+import {UserInfo} from "@/app/auth/models/user/userInfo";
+import {OAuth2TokenResponse, OAuth2TokenResponseSchema} from "@/app/auth/models/authMessaging/oauth2TokenResponse";
+import {MfaRequiredResponseSchema} from "@/app/auth/models/authMessaging/oauth2ErrorResponse";
+import {SubmitAuthorizeResult} from "@/app/auth/models/authMessaging/submitAuthorizationResult";
+import {Oauth2AuthResult} from "@/app/auth/models/authMessaging/oauth2AuthResult";
+import {OAuth2MfaRequired} from "@/app/auth/models/authMessaging/oauth2MfaRequired";
 
 const grafanaClient: GrafanaServerClient = new GrafanaServerClient();
 
@@ -10,20 +14,6 @@ const OAUTH2_CLIENT_ID = process.env.OAUTH2_CLIENT_ID ?? "dashboard-frontend";
 const OAUTH2_CLIENT_SECRET = process.env.OAUTH2_CLIENT_SECRET;
 const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI ?? "http://localhost:3000/api/auth/callback/mfa";
 const OAUTH2_ORIGIN = new URL(OAUTH2_REDIRECT_URI).origin;
-
-export interface OAuth2AuthResult {
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    user: UserInfo | null;
-}
-
-export interface OAuth2MfaRequired {
-    mfaRequired: true;
-    mfaToken: string;
-    codeVerifier: string;
-    serverUrl: string;
-}
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -42,7 +32,7 @@ export async function loginWithOAuth2(
     email: string,
     password: string,
     existingPkce?: { requestId: string; codeVerifier: string }
-): Promise<OAuth2AuthResult | OAuth2MfaRequired | null> {
+): Promise<Oauth2AuthResult | OAuth2MfaRequired | null> {
 
     let codeVerifier: string;
     let requestId: string;
@@ -88,7 +78,7 @@ export async function completeMfaLogin(
     mfaToken: string,
     totpCode: string,
     codeVerifier: string
-): Promise<OAuth2AuthResult | null> {
+): Promise<Oauth2AuthResult | null> {
 
     const authCode = await submitMfa(serverUrl, mfaToken, totpCode);
     if (!authCode) return null;
@@ -109,7 +99,7 @@ export async function completeMfaLogin(
 export async function refreshAccessToken(
     serverUrl: string,
     refreshToken: string
-): Promise<TokenResponse | null> {
+): Promise<OAuth2TokenResponse | null> {
     try {
         const body = new URLSearchParams({
             grant_type: "refresh_token",
@@ -129,17 +119,33 @@ export async function refreshAccessToken(
             return null;
         }
 
-        const data = await res.json() as TokenResponse;
-        if (!data.access_token || !data.refresh_token) {
-            grafanaClient.error("Unexpected token refresh response", {payload: data});
+        const parsed = OAuth2TokenResponseSchema.safeParse(await res.json());
+        if (!parsed.success) {
+            grafanaClient.error("Unexpected token refresh response", {error: parsed.error});
             return null;
         }
 
-        return data;
+        return parsed.data;
     } catch (e) {
         grafanaClient.error("Token refresh error", {error: e});
         return null;
     }
+}
+
+export async function exchangeCodeAndFetchUser(
+    serverUrl: string,
+    code: string,
+    codeVerifier: string
+): Promise<Oauth2AuthResult | null> {
+    const tokens = await exchangeCodeForTokens(serverUrl, code, codeVerifier);
+    if (!tokens) return null;
+    const user = await fetchUserInfo(serverUrl, tokens.access_token);
+    return {
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresIn: tokens.expires_in,
+        user,
+    };
 }
 
 export async function revokeToken(
@@ -204,12 +210,6 @@ async function initiateAuthorize(serverUrl: string, codeChallenge: string): Prom
     }
 }
 
-interface SubmitAuthorizeResult {
-    mfaRequired: boolean;
-    mfaToken?: string;
-    code?: string;
-}
-
 async function submitAuthorize(
     serverUrl: string,
     requestId: string,
@@ -249,11 +249,9 @@ async function submitAuthorize(
         }
 
         if (res.status === 200) {
-            const data = await res.json() as MfaRequiredResponse;
-            if (data.mfa_required && data.mfa_token) {
-                return {mfaRequired: true, mfaToken: data.mfa_token};
-            }
-            return null;
+            const parsed = MfaRequiredResponseSchema.safeParse(await res.json());
+            if (!parsed.success) return null;
+            return {mfaRequired: true, mfaToken: parsed.data.mfa_token};
         }
 
         grafanaClient.error("Authorize submit failed", {route: "POST /v2/oauth2/authorize", status: res.status});
@@ -301,7 +299,7 @@ async function submitMfa(serverUrl: string, mfaToken: string, totpCode: string):
     }
 }
 
-async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifier: string): Promise<TokenResponse | null> {
+async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifier: string): Promise<OAuth2TokenResponse | null> {
     try {
         const body = new URLSearchParams({
             grant_type: "authorization_code",
@@ -323,13 +321,13 @@ async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifi
             return null;
         }
 
-        const data = await res.json() as TokenResponse;
-        if (!data.access_token || !data.refresh_token) {
-            grafanaClient.error("Unexpected token response", {payload: data});
+        const parsed = OAuth2TokenResponseSchema.safeParse(await res.json());
+        if (!parsed.success) {
+            grafanaClient.error("Unexpected token response", {error: parsed.error});
             return null;
         }
 
-        return data;
+        return parsed.data;
     } catch (e) {
         grafanaClient.error("Token exchange error", {error: e});
         return null;

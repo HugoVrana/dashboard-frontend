@@ -1,16 +1,23 @@
 "use client"
 
+import {useCallback} from "react";
 import {useTranslations} from "next-intl"
 import {useTranslationDebug} from "@/app/shared/contexts/translations/translationDebugContext";
 
-export function useDebugTranslations(namespace?: string): (key: string) => string {
+type TranslationValues = Record<string, string | number | Date>;
+
+export function useDebugTranslations(namespace?: string): (key: string, values?: TranslationValues) => string {
     const t = useTranslations(namespace)
     const { showKeys } = useTranslationDebug()
 
-    if (showKeys) {
-        return (key: string) => `[${namespace ? `${namespace}.` : ""}${key}]`
-    }
+    return useCallback(
+        (key: string, values?: TranslationValues) => {
+            if (showKeys) {
+                return `[${namespace ? `${namespace}.` : ""}${key}]`;
+            }
 
-    return (key: string) => t(key)
+            return t(key, values);
+        },
+        [namespace, showKeys, t]
+    );
 }
-

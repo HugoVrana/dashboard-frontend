@@ -19,12 +19,30 @@ import {
 import LanguageToggle from "@/app/shared/components/navigation/languageToggle";
 import {ThemeToggle} from "@/app/shared/components/navigation/themeToggle";
 import AcmeLogo from "../acmeLogo";
+import {usePermissions} from "@/app/auth/permission/permissionsClient";
+
+type NavItemDef = {
+    href: string;
+    labelKey: string;
+    grants?: string[];
+};
+
+const NAV_ITEMS: NavItemDef[] = [
+    { href: "/dashboard",          labelKey: "dashboard", grants: ["dashboard-revenue-read", "dashboard-invoices-read"] },
+    { href: "/dashboard/invoices", labelKey: "invoices",  grants: ["dashboard-invoices-read"] },
+    { href: "/auth/roles",         labelKey: "roles" },
+];
 
 export function Navbar() {
     const { data: session, status } = useSession();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const isLoggedIn: boolean = !!session?.user;
     const t = useDebugTranslations("shared.nav");
+    const {hasGrant} = usePermissions();
+
+    const visibleNavItems = isLoggedIn
+        ? NAV_ITEMS.filter(item => !item.grants || item.grants.every(hasGrant))
+        : [];
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
@@ -51,20 +69,13 @@ export function Navbar() {
                             </NavigationMenuLink>
                         </NavigationMenuItem>
 
-                        {isLoggedIn && (
-                            <>
-                                <NavigationMenuItem>
-                                    <NavigationMenuLink href={"/dashboard"}>
-                                        {t("dashboard")}
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
-                                <NavigationMenuItem>
-                                    <NavigationMenuLink href={"/dashboard/invoices"}>
-                                        {t("invoices")}
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
-                            </>
-                        )}
+                        {visibleNavItems.map(item => (
+                            <NavigationMenuItem key={item.href}>
+                                <NavigationMenuLink href={item.href}>
+                                    {t(item.labelKey)}
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                        ))}
                     </NavigationMenuList>
                 </NavigationMenu>
 

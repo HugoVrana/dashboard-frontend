@@ -1,20 +1,21 @@
-import {RegisterRequest} from "@/app/auth/models/registerRequest";
 import {buildAuthApiUrl} from "@/app/auth/dashboardAuthApiContext";
 import {isUserInfo, mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
-import {LoginRequest} from "@/app/auth/models/loginRequest";
-import {UserInfo} from "@/app/auth/models/userInfo";
-import {AuthResponse} from "@/app/auth/models/authResponse";
-import {isAuthResponse, mapToAuthResponse} from "@/app/auth/typeValidators/authResponseValidator";
-import {TotpSetupResponse, TotpSetupResponseSchema} from "@/app/auth/models/totpSetupResponse";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
+import {RegisterRequest} from "@/app/auth/models/authMessaging/registerRequest";
+import {UserInfo} from "@/app/auth/models/user/userInfo";
+import {LoginRequest} from "@/app/auth/models/authMessaging/loginRequest";
+import {AuthResponse} from "@/app/auth/models/authMessaging/authResponse";
+import {isAuthResponse, mapToAuthResponse} from "@/app/auth/typeValidators/authResponseValidator";
+import {TotpSetupResponse, TotpSetupResponseSchema} from "@/app/auth/models/authMessaging/totpSetupResponse";
+import {headers as nextHeaders} from "next/headers";
 
 const grafanaClient : GrafanaServerClient = new GrafanaServerClient();
 
-function buildBaseHeaders(accessToken?: string): Record<string, string> {
+async function buildBaseHeaders(accessToken?: string): Promise<Record<string, string>> {
+    const origin = await getRequestOrigin();
     const headers: Record<string, string> = {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Origin": process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+        "Origin": origin,
         "X-Client-Id": process.env.OAUTH2_CLIENT_ID ?? "69c69004ea37f177fad373d3",
     };
     if (accessToken) {
@@ -23,22 +24,43 @@ function buildBaseHeaders(accessToken?: string): Record<string, string> {
     return headers;
 }
 
+async function getRequestOrigin(): Promise<string> {
+    const requestHeaders = await nextHeaders();
+    const requestOrigin = requestHeaders.get("origin");
+    if (requestOrigin) {
+        return requestOrigin;
+    }
+
+    const referer = requestHeaders.get("referer");
+    if (referer) {
+        return new URL(referer).origin;
+    }
+
+    return process.env.NEXT_PUBLIC_APP_URL
+        ?? process.env.NEXTAUTH_URL
+        ?? "http://localhost:3000";
+}
+
 export async function createUser(serverUrl : string, registerRequest : RegisterRequest) : Promise<UserInfo | null> {
     try {
         console.log("creating user");
-        const url : URL = new URL("api/v2/auth/register", serverUrl);
-
-        registerRequest.roleId = "6939575c98f5fc7bd2216a79";
+        const url = buildAuthApiUrl(serverUrl, "auth/register");
 
         const res : Response = await fetch(url.toString(), {
             method: "POST",
             body : JSON.stringify(registerRequest),
-            headers : buildBaseHeaders()
+            headers : await buildBaseHeaders()
         });
 
         if (!res.ok) {
-            console.error("API error", res.status, res.statusText);
-            grafanaClient.error("API error", {route: "POST /api/auth/register", status: res.status, statusText: res.statusText});
+            const responseBody = await res.text();
+            console.error("API error", res.status, res.statusText, responseBody);
+            grafanaClient.error("API error", {
+                route: "POST /api/v2/auth/register",
+                status: res.status,
+                statusText: res.statusText,
+                responseBody,
+            });
             return null;
         }
 
@@ -86,7 +108,7 @@ export async function loginUserWithTokens(
         const res : Response = await fetch(url.toString(), {
             method : "POST",
             body : JSON.stringify(loginRequest),
-            headers : buildBaseHeaders()
+            headers : await buildBaseHeaders()
         });
 
         if (!res.ok) {
@@ -131,7 +153,7 @@ export async function loginUserWithTokens(
          const url = buildAuthApiUrl(serverUrl, "auth/logout");
          const res: Response = await fetch(url.toString(), {
              method: "POST",
-             headers: buildBaseHeaders(accessToken)
+             headers: await buildBaseHeaders(accessToken)
          });
          return res.ok;
      } catch (e) {

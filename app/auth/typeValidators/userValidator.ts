@@ -1,5 +1,5 @@
-import {type UserRead, UserReadSchema} from "@/app/auth/models/userRead";
 import {createPageSchema, type PageResponse} from "@/app/shared/models/pageResponse";
+import {UserRead, UserReadSchema} from "@/app/auth/models/user/userRead";
 
 // Page schema for users
 const UserReadPageSchema = createPageSchema(UserReadSchema);

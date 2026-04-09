@@ -1,9 +1,9 @@
 import NextAuth, {Session, User} from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import {RoleRead} from "@/app/auth/models/role";
 import {JWT} from "next-auth/jwt";
 import {refreshAccessToken, revokeToken} from "@/app/auth/oauth2/oauth2ServerClient";
 import {mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
+import {RoleRead} from "@/app/auth/models/role/roleRead";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     session: {
