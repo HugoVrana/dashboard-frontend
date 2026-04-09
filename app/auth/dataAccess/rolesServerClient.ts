@@ -3,56 +3,17 @@ import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 import {RoleRead, RoleReadSchema} from "@/app/auth/models/role/roleRead";
 import {CreateRole} from "@/app/auth/models/role/createRole";
 import {RoleUpdate} from "@/app/auth/models/role/roleUpdate";
+import {getXsrfToken} from "@/app/shared/lib/xsrfToken";
 
 const grafanaClient = new GrafanaServerClient();
 
-function buildHeaders(accessToken: string): Record<string, string> {
+async function buildHeaders(accessToken: string): Promise<Record<string, string>> {
+    const xsrfToken = await getXsrfToken();
     return {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${accessToken}`,
+        ...(xsrfToken && {"X-XSRF-TOKEN": xsrfToken}),
     };
-}
-
-export async function getRoles(serverUrl: string, accessToken: string): Promise<RoleRead[] | null> {
-    try {
-        const url = buildAuthApiUrl(serverUrl, "role/");
-        const res = await fetch(url.toString(), { headers: buildHeaders(accessToken) });
-        if (!res.ok) {
-            grafanaClient.error("API error", { route: "GET /api/v2/role/", status: res.status });
-            return null;
-        }
-        const data = await res.json();
-        const parsed = RoleReadSchema.array().safeParse(data);
-        if (!parsed.success) {
-            grafanaClient.error("Unexpected payload", { route: "GET /api/v2/role/", error: parsed.error });
-            return null;
-        }
-        return parsed.data;
-    } catch (e) {
-        grafanaClient.error("Request failed", { route: "GET /api/v2/role/", error: e });
-        return null;
-    }
-}
-
-export async function getRole(serverUrl: string, accessToken: string, id: string): Promise<RoleRead | null> {
-    try {
-        const url = buildAuthApiUrl(serverUrl, `role/${id}`);
-        const res = await fetch(url.toString(), { headers: buildHeaders(accessToken) });
-        if (!res.ok) {
-            grafanaClient.error("API error", { route: `GET /api/v2/role/${id}`, status: res.status });
-            return null;
-        }
-        const data = await res.json();
-        const parsed = RoleReadSchema.safeParse(data);
-        if (!parsed.success) {
-            grafanaClient.error("Unexpected payload", { route: `GET /api/v2/role/${id}`, error: parsed.error });
-            return null;
-        }
-        return parsed.data;
-    } catch (e) {
-        grafanaClient.error("Request failed", { route: `GET /api/v2/role/${id}`, error: e });
-        return null;
-    }
 }
 
 export async function createRole(serverUrl: string, accessToken: string, body: CreateRole): Promise<RoleRead | null> {
@@ -60,7 +21,7 @@ export async function createRole(serverUrl: string, accessToken: string, body: C
         const url = buildAuthApiUrl(serverUrl, "role/");
         const res = await fetch(url.toString(), {
             method: "POST",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
             body: JSON.stringify(body),
         });
         if (!res.ok) {
@@ -85,7 +46,7 @@ export async function updateRole(serverUrl: string, accessToken: string, id: str
         const url = buildAuthApiUrl(serverUrl, `role/${id}`);
         const res = await fetch(url.toString(), {
             method: "PUT",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
             body: JSON.stringify(body),
         });
         if (!res.ok) {
@@ -110,7 +71,7 @@ export async function deleteRole(serverUrl: string, accessToken: string, id: str
         const url = buildAuthApiUrl(serverUrl, `role/${id}`);
         const res = await fetch(url.toString(), {
             method: "DELETE",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
         });
         if (!res.ok) {
             grafanaClient.error("API error", { route: `DELETE /api/v2/role/${id}`, status: res.status });
@@ -128,7 +89,7 @@ export async function addGrantToRole(serverUrl: string, accessToken: string, rol
         const url = buildAuthApiUrl(serverUrl, `role/${roleId}/grants/${grantId}`);
         const res = await fetch(url.toString(), {
             method: "POST",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
         });
         if (!res.ok) {
             grafanaClient.error("API error", { route: `POST /api/v2/role/${roleId}/grants/${grantId}`, status: res.status });
@@ -152,7 +113,7 @@ export async function removeGrantFromRole(serverUrl: string, accessToken: string
         const url = buildAuthApiUrl(serverUrl, `role/${roleId}/grants/${grantId}`);
         const res = await fetch(url.toString(), {
             method: "DELETE",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
         });
         if (!res.ok) {
             grafanaClient.error("API error", { route: `DELETE /api/v2/role/${roleId}/grants/${grantId}`, status: res.status });

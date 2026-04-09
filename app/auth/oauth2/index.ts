@@ -12,5 +12,5 @@
  *   POST /v2/oauth2/revoke         - Revoke tokens (RFC 7009)
  *   GET  /v2/oauth2/userinfo        - Fetch user info (OIDC UserInfo endpoint)
  */
-export {loginWithOAuth2, completeMfaLogin, refreshAccessToken, revokeToken, initiatePkce} from "./oauth2ServerClient";
+export {loginWithOAuth2, completeMfaLogin, exchangeCodeAndFetchUser, refreshAccessToken, revokeToken, initiatePkce} from "./oauth2ServerClient";
 export {generateCodeVerifier, generateCodeChallenge} from "./pkce";

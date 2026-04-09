@@ -1,6 +1,6 @@
 "use server";
 
-import {loginWithOAuth2, completeMfaLogin, initiatePkce} from "@/app/auth/oauth2";
+import {loginWithOAuth2, completeMfaLogin, exchangeCodeAndFetchUser, initiatePkce} from "@/app/auth/oauth2";
 import {cookies} from "next/headers";
 import {createCipheriv, createDecipheriv, createHash, randomBytes} from "crypto";
 import type {LoginActionResult} from "@/app/auth/models/authMessaging/loginActionResult";
@@ -164,6 +164,51 @@ export async function loginAction(email: string, password: string, url: string, 
         userInfoJson: JSON.stringify(result.user),
         url,
     };
+}
+
+export async function completePkceCallbackAction(code: string): Promise<LoginActionResult> {
+    const cookieStore = await cookies();
+
+    // Path 1: PKCE cookie — set by initiatePkceAction for browser-initiated flows
+    const pkceValue = cookieStore.get(PKCE_COOKIE_NAME)?.value;
+    if (pkceValue) {
+        const pkceState = decryptPayload<PkceStatePayload>(pkceValue);
+        if (pkceState) {
+            cookieStore.delete(PKCE_COOKIE_NAME);
+            const result = await exchangeCodeAndFetchUser(pkceState.serverUrl, code, pkceState.codeVerifier);
+            if (!result) return { status: "error", message: "Failed to complete authentication." };
+            return {
+                status: "success",
+                accessToken: result.accessToken,
+                refreshToken: result.refreshToken,
+                expiresIn: result.expiresIn,
+                userInfoJson: JSON.stringify(result.user),
+                url: pkceState.serverUrl,
+            };
+        }
+    }
+
+    // Path 2: MFA cookie — set by loginAction when the auth server requires MFA.
+    // The codeVerifier from the original PKCE session is stored here.
+    const mfaValue = cookieStore.get(MFA_COOKIE_NAME)?.value;
+    if (mfaValue) {
+        const mfaState = decryptMfaPayload(mfaValue);
+        if (mfaState) {
+            cookieStore.delete(MFA_COOKIE_NAME);
+            const result = await exchangeCodeAndFetchUser(mfaState.serverUrl, code, mfaState.codeVerifier);
+            if (!result) return { status: "error", message: "Failed to complete authentication." };
+            return {
+                status: "success",
+                accessToken: result.accessToken,
+                refreshToken: result.refreshToken,
+                expiresIn: result.expiresIn,
+                userInfoJson: JSON.stringify(result.user),
+                url: mfaState.serverUrl,
+            };
+        }
+    }
+
+    return { status: "error", message: "Session expired. Please log in again." };
 }
 
 export async function completeMfaLoginAction(totpCode: string): Promise<CompleteMfaActionResult> {

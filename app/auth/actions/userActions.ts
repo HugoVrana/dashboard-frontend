@@ -10,7 +10,7 @@ export async function registerUser(url: string, prevState: State, formData: Form
     const validatedFields = RegisterRequestSchema.safeParse({
         email: formData.get('email'),
         password: formData.get('password'),
-        roleId: "693950e2bf5065eaf5737136",
+        roleId: "69d53e275972e07a551946dc",
     });
 
     if (!validatedFields.success) {
@@ -22,6 +22,7 @@ export async function registerUser(url: string, prevState: State, formData: Form
 
         const res : UserInfo | null = await createUser(url, registerRequest);
         if (!res) {
+            console.error("userActions.registerUser");
             console.error("Error registering user");
             return {success : false, message : 'User not registered!'};
         }

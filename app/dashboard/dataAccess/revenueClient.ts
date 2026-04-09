@@ -2,6 +2,7 @@
 
 import GrafanaClient from "@/app/shared/dataAccess/grafanaClient";
 import {DASHBOARD_API_CONFIG} from "@/app/dashboard/dashboardApiContext";
+import {apiFetch} from "@/app/shared/lib/apiFetch";
 import {RevenueReadSchema, type RevenueRead} from "@/app/dashboard/models/revenueRead";
 
 const grafanaClient = new GrafanaClient();
@@ -12,10 +13,8 @@ function resolveUrl(isLocal: boolean): string {
 
 export async function getRevenue(isLocal: boolean, authToken: string): Promise<RevenueRead[] | null> {
     try {
-        const res = await fetch(`${resolveUrl(isLocal)}/api/v1/revenues/`, {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
+        const res = await apiFetch(`${resolveUrl(isLocal)}/api/v1/revenues/`, {
+            headers: {Authorization: `Bearer ${authToken}`},
         });
         if (res.status !== 200) {
             grafanaClient.error("HTTP error", {route: "GET /revenues/", status: res.status});

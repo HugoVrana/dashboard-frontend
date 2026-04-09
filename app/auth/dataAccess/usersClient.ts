@@ -2,6 +2,7 @@
 
 import {buildAuthApiUrl, getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
 import GrafanaClient from "@/app/shared/dataAccess/grafanaClient";
+import {apiFetch} from "@/app/shared/lib/apiFetch";
 
 const grafanaClient : GrafanaClient = new GrafanaClient();
 
@@ -19,12 +20,7 @@ export async function getUserProfileImageUrl(isLocal : boolean, userId : string)
     const u : URL = buildAuthApiUrl(baseUrl, `user/${userId}/profilePicture`);
 
     try {
-        const res : Response = await fetch(u.toString(), {
-            method : "GET",
-            headers : {
-                "Content-Type" : "application/json"
-            }
-        });
+        const res : Response = await apiFetch(u.toString());
 
         if (!res.ok) {
             console.error("API error:", res.status, res.statusText);

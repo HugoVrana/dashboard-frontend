@@ -3,6 +3,7 @@
 import {buildAuthApiUrl, getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
 import GrafanaClient from "@/app/shared/dataAccess/grafanaClient";
 import {RoleReadSchema, type RoleRead} from "@/app/auth/models/role/roleRead";
+import {apiFetch} from "@/app/shared/lib/apiFetch";
 
 const grafanaClient = new GrafanaClient();
 
@@ -10,19 +11,12 @@ function resolveUrl(isLocal: boolean): string {
     return isLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
 }
 
-function buildHeaders(authToken: string): HeadersInit {
-    return {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-    };
-}
-
 export async function getRolesClient(isLocal: boolean, authToken: string): Promise<RoleRead[] | null> {
     const url = buildAuthApiUrl(resolveUrl(isLocal), "role/");
 
     try {
-        const res = await fetch(url.toString(), {
-            headers: buildHeaders(authToken),
+        const res = await apiFetch(url.toString(), {
+            headers: {Authorization: `Bearer ${authToken}`},
         });
 
         if (!res.ok) {

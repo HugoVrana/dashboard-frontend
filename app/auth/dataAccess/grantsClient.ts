@@ -3,6 +3,7 @@
 import {buildAuthApiUrl, getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
 import GrafanaClient from "@/app/shared/dataAccess/grafanaClient";
 import {GrantReadSchema, type GrantRead} from "@/app/auth/models/grant/grantRead";
+import {apiFetch} from "@/app/shared/lib/apiFetch";
 
 const grafanaClient = new GrafanaClient();
 
@@ -10,19 +11,12 @@ function resolveUrl(isLocal: boolean): string {
     return isLocal ? getDashboardAuthLocalUrl() : getDashboardAuthRenderUrl();
 }
 
-function buildHeaders(authToken: string): HeadersInit {
-    return {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-    };
-}
-
 export async function getGrantsClient(isLocal: boolean, authToken: string): Promise<GrantRead[] | null> {
     const url = buildAuthApiUrl(resolveUrl(isLocal), "grant/");
 
     try {
-        const res = await fetch(url.toString(), {
-            headers: buildHeaders(authToken),
+        const res = await apiFetch(url.toString(), {
+            headers: {Authorization: `Bearer ${authToken}`},
         });
 
         if (!res.ok) {

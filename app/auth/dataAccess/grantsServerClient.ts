@@ -3,20 +3,23 @@ import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 import {GrantRead, GrantReadSchema} from "@/app/auth/models/grant/grantRead";
 import {GrantCreate} from "@/app/auth/models/grant/grantCreate";
 import {GrantUpdate} from "@/app/auth/models/grant/grantUpdate";
+import {getXsrfToken} from "@/app/shared/lib/xsrfToken";
 
 const grafanaClient = new GrafanaServerClient();
 
-function buildHeaders(accessToken: string): Record<string, string> {
+async function buildHeaders(accessToken: string): Promise<Record<string, string>> {
+    const xsrfToken = await getXsrfToken();
     return {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${accessToken}`,
+        ...(xsrfToken && {"X-XSRF-TOKEN": xsrfToken}),
     };
 }
 
 export async function getGrants(serverUrl: string, accessToken: string): Promise<GrantRead[] | null> {
     try {
         const url = buildAuthApiUrl(serverUrl, "grant/");
-        const res = await fetch(url.toString(), { headers: buildHeaders(accessToken) });
+        const res = await fetch(url.toString(), { headers: await buildHeaders(accessToken) });
         if (!res.ok) {
             grafanaClient.error("API error", { route: "GET /api/v2/grant/", status: res.status });
             return null;
@@ -37,7 +40,7 @@ export async function getGrants(serverUrl: string, accessToken: string): Promise
 export async function getGrant(serverUrl: string, accessToken: string, id: string): Promise<GrantRead | null> {
     try {
         const url = buildAuthApiUrl(serverUrl, `grant/${id}`);
-        const res = await fetch(url.toString(), { headers: buildHeaders(accessToken) });
+        const res = await fetch(url.toString(), { headers: await buildHeaders(accessToken) });
         if (!res.ok) {
             grafanaClient.error("API error", { route: `GET /api/v2/grant/${id}`, status: res.status });
             return null;
@@ -60,7 +63,7 @@ export async function createGrant(serverUrl: string, accessToken: string, body: 
         const url = buildAuthApiUrl(serverUrl, "grant/");
         const res = await fetch(url.toString(), {
             method: "POST",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
             body: JSON.stringify(body),
         });
         if (!res.ok) {
@@ -85,7 +88,7 @@ export async function updateGrant(serverUrl: string, accessToken: string, id: st
         const url = buildAuthApiUrl(serverUrl, `grant/${id}`);
         const res = await fetch(url.toString(), {
             method: "PUT",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
             body: JSON.stringify(body),
         });
         if (!res.ok) {
@@ -110,7 +113,7 @@ export async function deleteGrant(serverUrl: string, accessToken: string, id: st
         const url = buildAuthApiUrl(serverUrl, `grant/${id}`);
         const res = await fetch(url.toString(), {
             method: "DELETE",
-            headers: buildHeaders(accessToken),
+            headers: await buildHeaders(accessToken),
         });
         if (!res.ok) {
             grafanaClient.error("API error", { route: `DELETE /api/v2/grant/${id}`, status: res.status });

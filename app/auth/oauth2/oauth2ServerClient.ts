@@ -2,8 +2,8 @@ import {generateCodeChallenge, generateCodeVerifier} from "@/app/auth/oauth2/pkc
 import {isUserInfo, mapToUserInfo} from "@/app/auth/typeValidators/userInfoValidator";
 import GrafanaServerClient from "@/app/shared/dataAccess/grafanaServerClient";
 import {UserInfo} from "@/app/auth/models/user/userInfo";
-import {OAuth2TokenResponse} from "@/app/auth/models/authMessaging/oauth2TokenResponse";
-import {MfaRequiredResponse} from "@/app/auth/models/authMessaging/oauth2ErrorResponse";
+import {OAuth2TokenResponse, OAuth2TokenResponseSchema} from "@/app/auth/models/authMessaging/oauth2TokenResponse";
+import {MfaRequiredResponseSchema} from "@/app/auth/models/authMessaging/oauth2ErrorResponse";
 import {SubmitAuthorizeResult} from "@/app/auth/models/authMessaging/submitAuthorizationResult";
 import {Oauth2AuthResult} from "@/app/auth/models/authMessaging/oauth2AuthResult";
 import {OAuth2MfaRequired} from "@/app/auth/models/authMessaging/oauth2MfaRequired";
@@ -119,17 +119,33 @@ export async function refreshAccessToken(
             return null;
         }
 
-        const data = await res.json() as OAuth2TokenResponse;
-        if (!data.access_token || !data.refresh_token) {
-            grafanaClient.error("Unexpected token refresh response", {payload: data});
+        const parsed = OAuth2TokenResponseSchema.safeParse(await res.json());
+        if (!parsed.success) {
+            grafanaClient.error("Unexpected token refresh response", {error: parsed.error});
             return null;
         }
 
-        return data;
+        return parsed.data;
     } catch (e) {
         grafanaClient.error("Token refresh error", {error: e});
         return null;
     }
+}
+
+export async function exchangeCodeAndFetchUser(
+    serverUrl: string,
+    code: string,
+    codeVerifier: string
+): Promise<Oauth2AuthResult | null> {
+    const tokens = await exchangeCodeForTokens(serverUrl, code, codeVerifier);
+    if (!tokens) return null;
+    const user = await fetchUserInfo(serverUrl, tokens.access_token);
+    return {
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresIn: tokens.expires_in,
+        user,
+    };
 }
 
 export async function revokeToken(
@@ -233,11 +249,9 @@ async function submitAuthorize(
         }
 
         if (res.status === 200) {
-            const data = await res.json() as MfaRequiredResponse;
-            if (data.mfa_required && data.mfa_token) {
-                return {mfaRequired: true, mfaToken: data.mfa_token};
-            }
-            return null;
+            const parsed = MfaRequiredResponseSchema.safeParse(await res.json());
+            if (!parsed.success) return null;
+            return {mfaRequired: true, mfaToken: parsed.data.mfa_token};
         }
 
         grafanaClient.error("Authorize submit failed", {route: "POST /v2/oauth2/authorize", status: res.status});
@@ -307,13 +321,13 @@ async function exchangeCodeForTokens(serverUrl: string, code: string, codeVerifi
             return null;
         }
 
-        const data = await res.json() as OAuth2TokenResponse;
-        if (!data.access_token || !data.refresh_token) {
-            grafanaClient.error("Unexpected token response", {payload: data});
+        const parsed = OAuth2TokenResponseSchema.safeParse(await res.json());
+        if (!parsed.success) {
+            grafanaClient.error("Unexpected token response", {error: parsed.error});
             return null;
         }
 
-        return data;
+        return parsed.data;
     } catch (e) {
         grafanaClient.error("Token exchange error", {error: e});
         return null;

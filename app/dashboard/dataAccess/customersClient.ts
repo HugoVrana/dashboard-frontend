@@ -4,6 +4,7 @@ import GrafanaClient from "@/app/shared/dataAccess/grafanaClient";
 import {DASHBOARD_API_CONFIG} from "@/app/dashboard/dashboardApiContext";
 import type {CustomerRead} from "@/app/dashboard/models/customerRead";
 import {CustomerReadSchema} from "@/app/dashboard/models/customerRead";
+import {apiFetch} from "@/app/shared/lib/apiFetch";
 
 const grafanaClient = new GrafanaClient();
 
@@ -11,16 +12,10 @@ function resolveUrl(isLocal: boolean): string {
     return isLocal ? DASHBOARD_API_CONFIG.LOCAL_URL : DASHBOARD_API_CONFIG.CLOUD_URL;
 }
 
-function buildHeaders(authToken: string): HeadersInit {
-    return {
-        Authorization: `Bearer ${authToken}`,
-    };
-}
-
 export async function getCustomers(isLocal: boolean, authToken: string): Promise<CustomerRead[] | null> {
     try {
-        const res = await fetch(`${resolveUrl(isLocal)}/api/v1/customers/`, {
-            headers: buildHeaders(authToken),
+        const res = await apiFetch(`${resolveUrl(isLocal)}/api/v1/customers/`, {
+            headers: {Authorization: `Bearer ${authToken}`},
         });
         if (res.status !== 200) {
             grafanaClient.error("HTTP error", {route: "GET /customers/", status: res.status});
@@ -43,8 +38,8 @@ export async function getCustomers(isLocal: boolean, authToken: string): Promise
 
 export async function getCustomerCount(isLocal: boolean, authToken: string): Promise<number | null> {
     try {
-        const res = await fetch(`${resolveUrl(isLocal)}/api/v1/customers/count`, {
-            headers: buildHeaders(authToken),
+        const res = await apiFetch(`${resolveUrl(isLocal)}/api/v1/customers/count`, {
+            headers: {Authorization: `Bearer ${authToken}`},
         });
         if (res.status !== 200) {
             grafanaClient.error("HTTP error", {route: "GET /customers/count", status: res.status});

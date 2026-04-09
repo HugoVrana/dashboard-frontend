@@ -4,13 +4,16 @@ import {mapToInvoiceRead} from "@/app/dashboard/typeValidators/invoiceValidator"
 import type {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import type {InvoiceCreate} from "@/app/dashboard/models/invoiceCreate";
 import type {InvoiceUpdate} from "@/app/dashboard/models/invoiceUpdate";
+import {getXsrfToken} from "@/app/shared/lib/xsrfToken";
 
 const grafanaClient = new GrafanaServerClient();
 
-function buildHeaders(authToken: string): HeadersInit {
+async function buildHeaders(authToken: string): Promise<HeadersInit> {
+    const xsrfToken = await getXsrfToken();
     return {
         Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
+        ...(xsrfToken && {"X-XSRF-TOKEN": xsrfToken}),
     };
 }
 
@@ -18,7 +21,7 @@ export async function postInvoice(serverUrl: string, invoice: InvoiceCreate): Pr
     try {
         const res = await fetch(`${serverUrl}/api/v1/invoices`, {
             method: "POST",
-            headers: buildHeaders(await getAuthToken()),
+            headers: await buildHeaders(await getAuthToken()),
             body: JSON.stringify(invoice),
         });
         if (res.status !== 200) {
@@ -38,7 +41,7 @@ export async function putInvoice(serverUrl: string, invoice: InvoiceUpdate): Pro
     try {
         const res = await fetch(`${serverUrl}/api/v1/invoices/${invoice.id}`, {
             method: "PUT",
-            headers: buildHeaders(await getAuthToken()),
+            headers: await buildHeaders(await getAuthToken()),
             body: JSON.stringify(invoice),
         });
         if (res.status !== 200) {
@@ -58,7 +61,7 @@ export async function deleteInvoice(serverUrl: string, id: string): Promise<numb
     try {
         const res = await fetch(`${serverUrl}/api/v1/invoices/${id}`, {
             method: "DELETE",
-            headers: buildHeaders(await getAuthToken()),
+            headers: await buildHeaders(await getAuthToken()),
         });
         if (res.status !== 200) {
             grafanaClient.error("API error", {route: "DELETE /invoices", status: res.status});

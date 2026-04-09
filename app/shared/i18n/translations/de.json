@@ -207,7 +207,8 @@
       "meta": {
         "title": "Rollen & Berechtigungen",
         "description": "Rollen und Berechtigungszuweisungen verwalten"
-      }
+      },
+      "loadError": "Rollen oder Berechtigungen konnten nicht geladen werden."
     },
     "overview" : {
       "meta": {

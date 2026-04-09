@@ -218,7 +218,8 @@
       "meta": {
         "title": "Roles & Grants",
         "description": "Manage roles and grant assignments"
-      }
+      },
+      "loadError": "Failed to load roles or grants."
     },
     "overview" : {
       "meta": {

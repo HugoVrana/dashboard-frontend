@@ -5,6 +5,7 @@ import {DASHBOARD_API_CONFIG} from "@/app/dashboard/dashboardApiContext";
 import {mapToInvoiceRead, mapToInvoiceReadPage} from "@/app/dashboard/typeValidators/invoiceValidator";
 import type {InvoiceRead} from "@/app/dashboard/models/invoiceRead";
 import type {PageResponse} from "@/app/shared/models/pageResponse";
+import {apiFetch} from "@/app/shared/lib/apiFetch";
 
 const grafanaClient = new GrafanaClient();
 
@@ -26,19 +27,12 @@ function buildUrl(isLocal: boolean, path: string, params?: Record<string, string
     return url.toString();
 }
 
-function buildHeaders(authToken: string): HeadersInit {
-    return {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-    };
-}
-
 export async function getInvoiceAmount(isLocal: boolean, authToken: string, status?: string): Promise<number | null> {
     try {
-        const res = await fetch(
+        const res = await apiFetch(
             buildUrl(isLocal, "/invoices/amount", status?.trim() ? {status: status.trim()} : undefined),
             {
-                headers: buildHeaders(authToken),
+                headers: {Authorization: `Bearer ${authToken}`},
             }
         );
         if (res.status !== 200) {
@@ -56,10 +50,10 @@ export async function getInvoiceAmount(isLocal: boolean, authToken: string, stat
 
 export async function getInvoiceCount(isLocal: boolean, authToken: string, status: string): Promise<number | null> {
     try {
-        const res = await fetch(
+        const res = await apiFetch(
             buildUrl(isLocal, "/invoices/count", status.trim() ? {status: status.trim()} : undefined),
             {
-                headers: buildHeaders(authToken),
+                headers: {Authorization: `Bearer ${authToken}`},
             }
         );
         if (res.status !== 200) {
@@ -77,8 +71,8 @@ export async function getInvoiceCount(isLocal: boolean, authToken: string, statu
 
 export async function getLatestInvoices(isLocal: boolean, authToken: string): Promise<InvoiceRead[] | null> {
     try {
-        const res = await fetch(buildUrl(isLocal, "/invoices/latest"), {
-            headers: buildHeaders(authToken),
+        const res = await apiFetch(buildUrl(isLocal, "/invoices/latest"), {
+            headers: {Authorization: `Bearer ${authToken}`},
         });
         if (res.status !== 200) {
             grafanaClient.error("HTTP error", {route: "GET /invoices/latest", status: res.status});
@@ -102,9 +96,9 @@ export async function getLatestInvoices(isLocal: boolean, authToken: string): Pr
 
 export async function getFilteredInvoices(isLocal: boolean, authToken: string, searchTerm: string, page: number): Promise<PageResponse<InvoiceRead> | null> {
     try {
-        const res = await fetch(buildUrl(isLocal, "/invoices/search"), {
+        const res = await apiFetch(buildUrl(isLocal, "/invoices/search"), {
             method: "POST",
-            headers: buildHeaders(authToken),
+            headers: {Authorization: `Bearer ${authToken}`},
             body: JSON.stringify({order: "", page, search: searchTerm, size: 10, sort: ""}),
         });
         if (res.status !== 200) {
@@ -127,8 +121,8 @@ export async function getFilteredInvoices(isLocal: boolean, authToken: string, s
 
 export async function getInvoice(isLocal: boolean, authToken: string, id: string): Promise<InvoiceRead | null> {
     try {
-        const res = await fetch(buildUrl(isLocal, `/invoices/${id}`), {
-            headers: buildHeaders(authToken),
+        const res = await apiFetch(buildUrl(isLocal, `/invoices/${id}`), {
+            headers: {Authorization: `Bearer ${authToken}`},
         });
         if (res.status !== 200) {
             grafanaClient.error("HTTP error", {route: `GET /invoices/${id}`, status: res.status});
