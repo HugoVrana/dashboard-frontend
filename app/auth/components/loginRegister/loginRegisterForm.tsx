@@ -13,6 +13,8 @@ import {LoginRegisterFormPageState} from "@/app/auth/models/components/loginRegi
 
 function LoginRegisterCardInner() {
     const [pageState, setPageState] = useState<LoginRegisterFormPageState>("login");
+    const [totpEnrollmentRequired, setTotpEnrollmentRequired] = useState(false);
+    const [totpCredentials, setTotpCredentials] = useState<{ accessToken: string; url: string } | null>(null);
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
     const requestId = searchParams.get("request_id") ?? undefined;
@@ -68,13 +70,25 @@ function LoginRegisterCardInner() {
                     {pageState === "login" && (
                         <LoginForm
                             onSuccess={handleComplete}
-                            onMfaRequired={() => setPageState("mfa")}
+                            onMfaRequired={() => {
+                                setTotpEnrollmentRequired(false);
+                                setPageState("mfa");
+                            }}
                             requestId={requestId}
                         />
                     )}
                     {pageState === "register" && (
                         <RegisterForm
-                            onComplete={() => setPageState("totp-setup")}
+                            onComplete={handleComplete}
+                            onMfaRequired={() => {
+                                setTotpEnrollmentRequired(false);
+                                setPageState("mfa");
+                            }}
+                            onTwoFactorEnrollmentRequired={(credentials) => {
+                                setTotpCredentials(credentials);
+                                setTotpEnrollmentRequired(true);
+                                setPageState("totp-setup");
+                            }}
                         />
                     )}
                     {pageState === "mfa" && (
@@ -87,6 +101,9 @@ function LoginRegisterCardInner() {
                         <TotpSetupStep
                             onComplete={handleComplete}
                             onSkip={handleComplete}
+                            required={totpEnrollmentRequired}
+                            accessToken={totpCredentials?.accessToken}
+                            url={totpCredentials?.url}
                         />
                     )}
                 </CardContent>

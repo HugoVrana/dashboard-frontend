@@ -2,10 +2,10 @@
 
 import {ArrowRightIcon, Loader2, ShieldAlert} from "lucide-react";
 import {FormEvent, useState} from "react";
-import {signIn} from "next-auth/react";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
 import {completeMfaLoginAction} from "@/app/auth/actions/loginActions";
+import {establishSessionAfterRegister} from "@/app/auth/actions/userActions";
 import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
 import {TotpVerifyStepProps} from "@/app/auth/models/components/totpVerifyStepProps";
 
@@ -36,16 +36,15 @@ export default function TotpVerifyStep({onComplete, onBack}: TotpVerifyStepProps
             return;
         }
 
-        const signInResult = await signIn("mfa", {
+        const signInResult = await establishSessionAfterRegister({
             accessToken: result.accessToken,
             refreshToken: result.refreshToken,
-            expiresIn: result.expiresIn.toString(),
+            expiresIn: result.expiresIn,
             userInfoJson: result.userInfoJson,
             url: result.url,
-            redirect: false,
         });
 
-        if (signInResult?.error) {
+        if (!signInResult.success) {
             setError(t("signInError"));
             setIsLoading(false);
             return;

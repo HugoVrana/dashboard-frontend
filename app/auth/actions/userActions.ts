@@ -1,12 +1,16 @@
 "use server";
 
 import {State} from "@/app/shared/models/state";
-import {auth} from "@/auth";
+import {auth, signIn as authSignIn} from "@/auth";
 import {createUser, postUserProfilePicture} from "@/app/auth/dataAccess/usersServerClient";
 import {RegisterRequest, RegisterRequestSchema} from "@/app/auth/models/authMessaging/registerRequest";
-import {UserInfo} from "@/app/auth/models/user/userInfo";
+import {RegisterResponse} from "@/app/auth/models/authMessaging/registerResponse";
 
-export async function registerUser(url: string, prevState: State, formData: FormData): Promise<{ success: boolean; message: string }> {
+export async function registerUser(
+    url: string,
+    prevState: State,
+    formData: FormData
+): Promise<{ success: boolean; message: string; nextStep?: string | null }> {
     const validatedFields = RegisterRequestSchema.safeParse({
         email: formData.get('email'),
         password: formData.get('password'),
@@ -20,21 +24,52 @@ export async function registerUser(url: string, prevState: State, formData: Form
     try {
         const registerRequest: RegisterRequest = validatedFields.data;
 
-        const res : UserInfo | null = await createUser(url, registerRequest);
+        const res : RegisterResponse | null = await createUser(url, registerRequest);
         if (!res) {
             console.error("userActions.registerUser");
             console.error("Error registering user");
             return {success : false, message : 'User not registered!'};
         }
-        if (!res.id) {
+        if (!res.user?.id) {
             console.error("Error registering user", res);
             return { success: false, message: 'User not registered!' };
         }
 
-        return { success: true, message: 'Registration successful' };
+        return {
+            success: true,
+            message: 'Registration successful',
+            nextStep: res.nextStep,
+        };
     } catch (error) {
         console.error("Registration error:", error);
         return { success: false, message: 'Something went wrong during registration.' };
+    }
+}
+
+export async function establishSessionAfterRegister(params: {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+    userInfoJson: string;
+    url: string;
+}): Promise<{ success: boolean; message: string }> {
+    try {
+        await authSignIn("mfa", {
+            accessToken: params.accessToken,
+            refreshToken: params.refreshToken,
+            expiresIn: params.expiresIn.toString(),
+            userInfoJson: params.userInfoJson,
+            url: params.url,
+            redirect: false,
+        });
+
+        return { success: true, message: "Session established" };
+    } catch (error) {
+        console.error("Session establish error:", error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to establish session.",
+        };
     }
 }
 

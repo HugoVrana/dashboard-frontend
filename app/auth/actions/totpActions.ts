@@ -5,44 +5,85 @@ import {setupTotp, verifyTotp} from "@/app/auth/dataAccess/usersServerClient";
 import {TotpSetupResponse} from "@/app/auth/models/authMessaging/totpSetupResponse";
 import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
 
-export async function setupTotpAction(): Promise<{ success: boolean; message: string; data?: TotpSetupResponse }> {
+export async function setupTotpAction(directCredentials?: { accessToken: string; url: string }): Promise<{
+    success: boolean;
+    message: string;
+    data?: TotpSetupResponse;
+    debug?: Record<string, string | boolean | null>;
+}> {
     console.log("setupTotpAction: Starting TOTP setup");
 
-    const session = await auth();
-    console.log("setupTotpAction: Session retrieved:", session ? "yes" : "no");
+    let accessToken: string | undefined = directCredentials?.accessToken;
+    let url: string | undefined = directCredentials?.url;
 
-    if (!session) {
-        console.log("setupTotpAction: No session found");
-        return { success: false, message: 'Not authenticated - no session' };
+    if (!accessToken || !url) {
+        const session = await auth();
+        console.log("setupTotpAction: Session retrieved:", session ? "yes" : "no");
+        accessToken = session?.accessToken ?? undefined;
+        url = session?.url ?? undefined;
     }
 
-    if (!session.accessToken) {
-        console.log("setupTotpAction: No access token in session");
-        return { success: false, message: 'Not authenticated - no access token' };
+    const debugBase = {
+        hasAccessToken: Boolean(accessToken),
+        hasUrl: Boolean(url),
+        accessTokenPrefix: accessToken ? accessToken.slice(0, 24) : null,
+    };
+
+    if (!accessToken) {
+        console.log("setupTotpAction: No access token");
+        return { success: false, message: 'Not authenticated - no access token', debug: debugBase };
     }
 
-    if (!session.url) {
-        console.log("setupTotpAction: No URL in session");
-        return { success: false, message: 'Not authenticated - no URL' };
+    if (!url) {
+        console.log("setupTotpAction: No URL");
+        return { success: false, message: 'Not authenticated - no URL', debug: debugBase };
     }
 
-    console.log("setupTotpAction: Session valid, URL:", session.url);
+    console.log("setupTotpAction: Credentials valid, URL:", url);
 
     try {
-        const totpResponse = await setupTotp(session.url, session.accessToken);
+        const totpResponse = await setupTotp(url, accessToken);
 
-        if (!totpResponse) {
-            return { success: false, message: 'Failed to setup TOTP' };
+        if (!totpResponse.success || !totpResponse.data) {
+            return {
+                success: false,
+                message: 'Failed to setup TOTP',
+                debug: {
+                    ...debugBase,
+                    responseStatus: totpResponse.status?.toString() ?? null,
+                    responseStatusText: totpResponse.statusText ?? null,
+                    responseBody: totpResponse.responseBody ?? null,
+                    parseError: totpResponse.parseError ?? null,
+                },
+            };
         }
 
-        return { success: true, message: 'TOTP setup successful', data: totpResponse };
+        return {
+            success: true,
+            message: 'TOTP setup successful',
+            data: totpResponse.data,
+            debug: {
+                ...debugBase,
+                responseStatus: totpResponse.status?.toString() ?? null,
+                responseStatusText: totpResponse.statusText ?? null,
+                responseBody: totpResponse.responseBody ?? null,
+                parseError: totpResponse.parseError ?? null,
+            },
+        };
     } catch (error) {
         console.error("TOTP setup error:", error);
-        return { success: false, message: 'Something went wrong during TOTP setup.' };
+        return {
+            success: false,
+            message: 'Something went wrong during TOTP setup.',
+            debug: {
+                ...debugBase,
+                errorMessage: error instanceof Error ? error.message : String(error),
+            },
+        };
     }
 }
 
-export async function verifyTotpAction(code: string): Promise<{ success: boolean; message: string }> {
+export async function verifyTotpAction(code: string, directCredentials?: { accessToken: string; url: string }): Promise<{ success: boolean; message: string }> {
     console.log("verifyTotpAction: Verifying TOTP code");
 
     const validatedFields = TotpCodeSchema.safeParse({code});
@@ -51,14 +92,21 @@ export async function verifyTotpAction(code: string): Promise<{ success: boolean
         return { success: false, message: 'Invalid code. Please try again.' };
     }
 
-    const session = await auth();
+    let accessToken: string | undefined = directCredentials?.accessToken;
+    let url: string | undefined = directCredentials?.url;
 
-    if (!session || !session.accessToken || !session.url) {
+    if (!accessToken || !url) {
+        const session = await auth();
+        accessToken = session?.accessToken ?? undefined;
+        url = session?.url ?? undefined;
+    }
+
+    if (!accessToken || !url) {
         return { success: false, message: 'Not authenticated' };
     }
 
     try {
-        const isValid = await verifyTotp(session.url, session.accessToken, validatedFields.data.code);
+        const isValid = await verifyTotp(url, accessToken, validatedFields.data.code);
 
         if (!isValid) {
             return { success: false, message: 'Invalid code. Please try again.' };

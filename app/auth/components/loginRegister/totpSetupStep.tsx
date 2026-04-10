@@ -9,10 +9,11 @@ import {setupTotpAction, verifyTotpAction} from "@/app/auth/actions/totpActions"
 import {TotpCodeSchema} from "@/app/auth/models/authMessaging/totpCode";
 import {TotpSetupStepProps} from "@/app/auth/models/components/totpSetupStepProps";
 
-export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) {
+export default function TotpSetupStep({onComplete, onSkip, required = false, accessToken, url}: TotpSetupStepProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [isVerifying, setIsVerifying] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [debugInfo, setDebugInfo] = useState<Record<string, string | boolean | null> | null>(null);
     const [verifyError, setVerifyError] = useState<string | null>(null);
     const [totpData, setTotpData] = useState<TotpSetupResponse | null>(null);
     const [code, setCode] = useState("");
@@ -25,7 +26,8 @@ export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) 
             setIsLoading(true);
             setError(null);
 
-            const result = await setupTotpAction();
+            const result = await setupTotpAction(accessToken && url ? { accessToken, url } : undefined);
+            setDebugInfo(result.debug ?? null);
 
             if (!result.success || !result.data) {
                 setError(result.message);
@@ -51,7 +53,7 @@ export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) 
         setIsVerifying(true);
         setVerifyError(null);
 
-        const result = await verifyTotpAction(validatedFields.data.code);
+        const result = await verifyTotpAction(validatedFields.data.code, accessToken && url ? { accessToken, url } : undefined);
 
         if (!result.success) {
             setVerifyError(result.message);
@@ -82,9 +84,20 @@ export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) 
                     <ShieldAlert className="h-4 w-4"/>
                     <span>{error}</span>
                 </div>
-                <Button className="w-full" onClick={onSkip}>
-                    {t("continueWithout2FA")}
-                </Button>
+                {debugInfo && (
+                    <pre className="overflow-x-auto rounded bg-muted p-3 text-xs leading-5">
+                        {JSON.stringify(debugInfo, null, 2)}
+                    </pre>
+                )}
+
+                <pre className="overflow-x-auto rounded bg-muted p-3 text-xs leading-5">
+                    {error}
+                </pre>
+                {!required && (
+                    <Button className="w-full" onClick={onSkip}>
+                        {t("continueWithout2FA")}
+                    </Button>
+                )}
             </div>
         );
     }
@@ -99,6 +112,12 @@ export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) 
             <p className="text-sm text-muted-foreground">
                 {t("description")}
             </p>
+
+            {debugInfo && (
+                <pre className="overflow-x-auto rounded bg-muted p-3 text-xs leading-5">
+                    {JSON.stringify(debugInfo, null, 2)}
+                </pre>
+            )}
 
             {totpData && (
                 <div className="space-y-4">
@@ -161,9 +180,11 @@ export default function TotpSetupStep({onComplete, onSkip}: TotpSetupStepProps) 
             )}
 
             <div className="flex gap-2">
-                <Button variant="outline" className="flex-1" onClick={onSkip}>
-                    {t("skipButton")}
-                </Button>
+                {!required && (
+                    <Button variant="outline" className="flex-1" onClick={onSkip}>
+                        {t("skipButton")}
+                    </Button>
+                )}
                 <Button className="flex-1" onClick={onComplete} disabled={!verified}>
                     {t("continueButton")}
                 </Button>
