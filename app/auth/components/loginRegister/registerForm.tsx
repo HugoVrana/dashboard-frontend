@@ -4,15 +4,14 @@ import {ArrowRightIcon, AtSign, KeyIcon, Loader2, ShieldAlert} from "lucide-reac
 import {FormEvent, useContext, useState} from "react";
 import {ApiContext} from "@/app/shared/components/devOverlay/apiContext";
 import {getDashboardAuthLocalUrl, getDashboardAuthRenderUrl} from "@/app/auth/dashboardAuthApiContext";
-import {getSession, signIn} from "next-auth/react";
 import {useDebugTranslations} from "@/app/shared/contexts/translations/useDebugTranslations";
 import {AvatarUpload, Button, CardTitle, Input, Label} from "@hugovrana/dashboard-frontend-shared";
-import {registerUser, setProfilePicture} from "@/app/auth/actions/userActions";
+import {establishSessionAfterRegister, registerUser, setProfilePicture} from "@/app/auth/actions/userActions";
 import {loginAction} from "@/app/auth/actions/loginActions";
 import {RegisterFormSchema} from "@/app/auth/models/authMessaging/registerRequest";
 import {RegisterFormProps} from "@/app/auth/models/components/registerFormProps";
 
-export default function RegisterForm({onComplete}: RegisterFormProps) {
+export default function RegisterForm({onComplete, onMfaRequired, onTwoFactorEnrollmentRequired}: RegisterFormProps) {
     const { dashboardAuthApiIsLocal } = useContext(ApiContext);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +43,7 @@ export default function RegisterForm({onComplete}: RegisterFormProps) {
 
         try {
             const result = await registerUser(url, { message: null }, formData);
+            console.log("[register] registerUser result", result);
 
             if (!result.success) {
                 setError(result.message);
@@ -52,54 +52,55 @@ export default function RegisterForm({onComplete}: RegisterFormProps) {
             }
 
             const loginResult = await loginAction(email, password, url);
+            console.log("[register] loginAction result", loginResult);
 
             if (loginResult.status === 'error') {
-                setError('Registration successful but login failed. Please try logging in.');
+                setError(`Registration succeeded, but login failed: ${loginResult.message}`);
                 setIsLoading(false);
                 return;
             }
 
             if (loginResult.status === 'mfa_required') {
                 setIsLoading(false);
-                onComplete();
+                onMfaRequired();
                 return;
             }
 
-            const signInResult = await signIn('mfa', {
+            const signInResult = await establishSessionAfterRegister({
                 accessToken: loginResult.accessToken,
                 refreshToken: loginResult.refreshToken,
-                expiresIn: loginResult.expiresIn.toString(),
+                expiresIn: loginResult.expiresIn,
                 userInfoJson: loginResult.userInfoJson,
                 url: loginResult.url,
-                redirect: false,
             });
+            console.log("[register] signIn result", signInResult);
 
-            if (signInResult?.error) {
-                setError('Registration successful but login failed. Please try logging in.');
+            if (!signInResult.success) {
+                setError(`Registration succeeded, but session sign-in failed: ${signInResult.message}`);
                 setIsLoading(false);
                 return;
             }
 
             // Upload profile picture if selected
             if (image) {
-                // Force session refresh to ensure cookies are propagated
-                const session = await getSession();
-                if (session) {
-                    const imageFormData = new FormData();
-                    imageFormData.append('file', image);
-                    const uploadResult = await setProfilePicture(imageFormData);
-                    if (!uploadResult.success) {
-                        console.warn('Profile picture upload failed:', uploadResult.message);
-                    }
-                } else {
-                    console.warn('Session not available for profile picture upload');
+                const imageFormData = new FormData();
+                imageFormData.append('file', image);
+                const uploadResult = await setProfilePicture(imageFormData);
+                if (!uploadResult.success) {
+                    console.warn('Profile picture upload failed:', uploadResult.message);
                 }
             }
 
             setIsLoading(false);
+            if (result.nextStep === "ENROLL_2FA") {
+                onTwoFactorEnrollmentRequired({ accessToken: loginResult.accessToken, url: loginResult.url });
+                return;
+            }
+
             onComplete();
-        } catch {
-            setError('Something went wrong.');
+        } catch (error) {
+            console.error("[register] unexpected error", error);
+            setError(error instanceof Error ? error.message : 'Something went wrong.');
             setIsLoading(false);
         }
     };

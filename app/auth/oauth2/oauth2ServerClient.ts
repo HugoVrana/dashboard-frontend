@@ -249,7 +249,29 @@ async function submitAuthorize(
         }
 
         if (res.status === 200) {
-            const parsed = MfaRequiredResponseSchema.safeParse(await res.json());
+            const responseText = await res.text();
+            if (!responseText || responseText.trim() === "") {
+                grafanaClient.error("Authorize submit returned empty MFA response", {
+                    route: "POST /v2/oauth2/authorize",
+                    status: res.status,
+                });
+                return null;
+            }
+
+            let responseData: unknown;
+            try {
+                responseData = JSON.parse(responseText);
+            } catch (error) {
+                grafanaClient.error("Authorize submit returned invalid MFA JSON", {
+                    route: "POST /v2/oauth2/authorize",
+                    status: res.status,
+                    responseText,
+                    error,
+                });
+                return null;
+            }
+
+            const parsed = MfaRequiredResponseSchema.safeParse(responseData);
             if (!parsed.success) return null;
             return {mfaRequired: true, mfaToken: parsed.data.mfa_token};
         }
