@@ -33,6 +33,19 @@
     "forgotPassword" : "Passwort vergessen?",
     "noAccount" : "Noch kein Konto?",
     "signUp" : "Registrieren",
+    "verifyEmail": {
+      "meta": {
+        "title": "E-Mail bestätigen",
+        "description": "Bestätigung der E-Mail-Adresse"
+      },
+      "successTitle": "E-Mail bestätigt!",
+      "successDescription": "Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Sie können sich jetzt anmelden.",
+      "errorTitle": "Bestätigung fehlgeschlagen",
+      "errorExpired": "Dieser Bestätigungslink ist abgelaufen oder ungültig. Bitte fordern Sie einen neuen an.",
+      "errorGeneric": "Bei der Bestätigung Ihrer E-Mail ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+      "missingToken": "Kein Bestätigungstoken angegeben. Bitte überprüfen Sie den Link in Ihrer E-Mail.",
+      "toLogin": "Zur Anmeldung"
+    },
     "unauthorized" : {
       "meta" : {
         "title" : "Nicht berechtig",
