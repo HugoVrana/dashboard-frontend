@@ -33,6 +33,19 @@
     "forgotPassword": "Forgot password?",
     "noAccount": "Don't have an account?",
     "signUp": "Sign up",
+    "verifyEmail": {
+      "meta": {
+        "title": "Verify Email",
+        "description": "Email address verification"
+      },
+      "successTitle": "Email Verified!",
+      "successDescription": "Your email address has been successfully verified. You can now log in to your account.",
+      "errorTitle": "Verification Failed",
+      "errorExpired": "This verification link has expired or is invalid. Please request a new one.",
+      "errorGeneric": "Something went wrong while verifying your email. Please try again.",
+      "missingToken": "No verification token provided. Please check the link in your email.",
+      "toLogin": "Go to Login"
+    },
     "unauthorized": {
       "meta" : {
         "title" : "Unauthorized",
