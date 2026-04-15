@@ -1,0 +1,3 @@
+setup:
+  project: dashboard-frontend
+  config: dev_personal
